@@ -7,13 +7,13 @@ HTTP server, animators, mixer, and Open Pixel Control (OPC) renderer for a 2014 
 Getting Started
 ---------------
 
-You need to install JDK 1.7 or later and Maven 3.2.3 or later.
+You need to install JDK 1.7+ and Maven 3.2.3+.
 
-To help bootstrap development, this repository currently comes with a copy of Maven 3.2.3 and several required jars. Eventually these resources will disappear. If you've already installed the JDK and Maven on your devbox, you don't have to use them. Mac users may `source env.sh` to get set up rapidly.
+To help bootstrap development, this repository currently comes with a copy of Maven 3.2.3 plus several jars required by the application. Eventually these resources will disappear. If you've already installed the JDK and Maven on your devbox, you don't have to use them. Mac OS X users may `source env.sh` to get set up rapidly.
 
-Once Maven and the JDK are installed in your current environment (see env.sh for examples), `cd udder` and run either the `build` script or `build_clean`.
+Once Maven and the JDK are installed in your current environment (see `env.sh` for examples), `cd udder` and run either the `build` script or `build_clean`.
 
-After the build script succeeds, you may start the server using the `serve` script in the same directory. By default the server listens on [link](http://localhost:8080) and attempt to renders at 100fps max.
+After the build script succeeds, you may start the server using the `serve` script in the same directory. By default the server listens on [http://localhost:8080](http://localhost:8080) and attempt to renders at 100fps max.
 
 
 Udder Architecture in a Nutshell
