@@ -55,7 +55,7 @@ Open Pixel Control (OPC), our chosen network protocol for lighting control:
 
 Micah Scott's Fade Candy device, the LED pixel driver we use:
 * [FadeCandy - repository](https://github.com/scanlime/fadecandy)
-* [FadeCandy - Sparkfun catalog page](https://www.sparkfun.com/products/12821
+* [FadeCandy - Sparkfun catalog page](https://www.sparkfun.com/products/12821)
 * [FadeCandy - Adafruit catalog page](http://www.adafruit.com/products/1689)
 
 The official API Javadocs for certain "special sauce" coupler components:
