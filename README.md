@@ -24,7 +24,7 @@ The class com.coillighting.udder.ServicePipeline assembles the application compo
 Network => HttpServiceContainer => ShowRunner => OpcTransmitter => Network
 
 Details:
-* A human **lighting designer** initiates HTTP **requests** from a web page in a browsers.
+* A human **lighting designer** initiates HTTP **requests** from a web page in a browser.
 * A SimpleFramework (v5.1.5) server listens for incoming HTTP **requests**. Request **payloads** are curently expected to be JSON structures.
 * A Boon (v0.23) JSON decoder converts each request **payload** into a **command** object.
 * **Commands** are inserted into a concurrent queue, the **command queue**.
