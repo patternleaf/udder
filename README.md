@@ -41,7 +41,7 @@ Important points:
 * Udder has a **multithreaded** architecture, coupled by two concurrent queues.
 * Data flows down **one** non-branching path, through the three linked stages of the pipeline.
 * The ShowRunner processes commands and renders frames **asynchronously** with respect to incoming requests.
-* The OPC transmitter broadcasts frames **asynchronously** with respect to the renderer.
+* The OpcTransmitter broadcasts frames **asynchronously** with respect to the renderer.
 
 
 Dependency Links
