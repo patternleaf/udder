@@ -4,6 +4,8 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 import java.util.Queue;
 import org.boon.json.JsonFactory;
 import org.simpleframework.http.core.Container;
@@ -14,6 +16,7 @@ import org.simpleframework.transport.Server;
 
 import com.coillighting.udder.Command;
 import com.coillighting.udder.HttpServiceContainer;
+import com.coillighting.udder.OpcTransmitter;
 import com.coillighting.udder.ShowRunner;
 
 
@@ -22,21 +25,27 @@ public class ServicePipeline {
 	// Roughly in order of dependency:
 	private boolean verbose = false;
 	private Queue<Command> commandQueue;
+	private BlockingQueue<Frame> frameQueue;
 	private HttpServiceContainer httpServiceContainer;
 	private Server server;
 	private int listenPort = 8080;
 	private SocketAddress listenAddress;
 	private Connection serverConnection;
-	private Thread showThread;
 	private ShowRunner showRunner;
+	private Thread showThread;
+	private OpcTransmitter opcTransmitter;
+	private Thread transmitterThread;
 
 	public ServicePipeline() throws IOException {
         // TODO args or properties to set connection binding params,
         // framerate, runmode, log level, etc.
 		this.verbose = true;
         this.commandQueue = new ConcurrentLinkedQueue<Command>();
-        this.showRunner = new ShowRunner(this.commandQueue);
+        this.frameQueue = new LinkedBlockingQueue(32); // TODO shrink buffer size
+        this.showRunner = new ShowRunner(this.commandQueue, this.frameQueue);
         this.showThread = new Thread(this.showRunner);
+        this.opcTransmitter = new OpcTransmitter(this.frameQueue);
+        this.transmitterThread = new Thread(this.opcTransmitter);
 
         // TODO rename to HttpServiceContainer or something
         this.httpServiceContainer = new HttpServiceContainer(this.commandQueue);
@@ -49,6 +58,7 @@ public class ServicePipeline {
     }
 
     public void start() throws IOException {
+    	this.transmitterThread.start();
         this.showThread.start();
         this.serverConnection.connect(this.listenAddress);
         this.log("Listening on http://localhost:" + this.listenPort + '/');

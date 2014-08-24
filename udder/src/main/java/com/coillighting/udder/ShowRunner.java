@@ -2,29 +2,39 @@ package com.coillighting.udder;
 
 import java.util.Queue;
 
+import com.coillighting.udder.Frame;
 import com.coillighting.udder.Command;
 
 
 public class ShowRunner implements Runnable {
 
-	private Queue<Command> queue;
+	private Queue<Command> commandQueue;
+	private Queue<Frame> frameQueue;
 	private int targetFrameRateMillis = 10;
 
-	public ShowRunner(Queue<Command> queue) {
-		if(queue==null) {
+	public ShowRunner(Queue<Command> commandQueue, Queue<Frame> frameQueue) {
+		if(commandQueue==null) {
 			throw new NullPointerException(
-				"ShowRunner requires a Queue for supplying commands.");
+				"ShowRunner requires a queue that supplies commands.");
+		} else if(frameQueue==null) {
+			throw new NullPointerException(
+				"ShowRunner requires a queue that supplies frames.");
 		}
-		this.queue=queue;
+		this.commandQueue=commandQueue;
+		this.frameQueue = frameQueue;
 	}
 
 	public void run() {
 		try {
 			this.log("Starting show.");
 			while(true) {
-				Command command = this.queue.poll();
+				Command command = this.commandQueue.poll();
 				if(command!=null) {
-					this.log("Received command: " + command);
+					this.log("Received command: " + command + " (TODO: render a frame)");
+					Frame frame = new Frame(command.getValue());
+					if(!frameQueue.offer(frame)) {
+						this.log("Frame queue overflow. Dropped frame.");
+					}
 				} else {
 					// Our crude timing mechanism currently does not account for
 					// the cost of processing each command.
@@ -39,5 +49,4 @@ public class ShowRunner implements Runnable {
 	public void log(String msg) {
 		System.err.println(msg);
 	}
-
 }

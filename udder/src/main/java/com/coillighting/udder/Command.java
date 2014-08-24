@@ -2,7 +2,7 @@ package com.coillighting.udder;
 
 
 public class Command {
-    public Integer value = null;
+    private Integer value = null;
 
     public Command(Integer value) {
         this.value = value;
