@@ -13,7 +13,7 @@ To help bootstrap development, this repository currently comes with a copy of Ma
 
 Once Maven and the JDK are installed in your current environment (see `env.sh` for examples), `cd udder` and run either the `build` script or `build_clean`.
 
-After the build script succeeds, you may start the server using the `serve` script in the same directory. By default the server listens on [http://localhost:8080](http://localhost:8080) and attempt to renders at 100fps max.
+After the build script succeeds, you may start the server using the `serve` script in the same directory. By default the server listens on [http://localhost:8080](http://localhost:8080) and attempts to render at 100fps max.
 
 
 Udder Architecture in a Nutshell
@@ -34,8 +34,36 @@ The class com.coillighting.udder.ServicePipeline assembles the application compo
 * Pixel devices emit photons, which enter the eyes of the audience.
 
 
+Dependency Links
+----------------
+Apache Maven:
+* [Maven - official website](http://maven.apache.org/)
+* [Maven - source repository](https://git-wip-us.apache.org/repos/asf?p=maven.git)
+
+The Simple webserver:
+* [Simple - official website](http://www.simpleframework.org/)
+* [Simple - repository](http://sourceforge.net/projects/simpleweb/)
+
+Boon, which we include for its JSON support:
+* [Boon - tutorial (beware: some docs may be out of date)](https://github.com/RichardHightower/boon/wiki)
+* [Boon - repository](https://github.com/RichardHightower/boon)
+
+Open Pixel Control (OPC), our chosen network protocol for lighting control:
+* [OPC - official website](http://openpixelcontrol.org/)
+* [OPC - repository](https://github.com/zestyping/openpixelcontrol)
+
+Micah Scott's Fade Candy device, the LED pixel driver we use:
+* [FadeCandy - repository](https://github.com/scanlime/fadecandy)
+* [FadeCandy - Sparkfun catalog page](https://www.sparkfun.com/products/12821
+* [FadeCandy - Adafruit catalog page](http://www.adafruit.com/products/1689)
+
+The official API Javadocs for certain "special sauce" coupler components:
+* [java.util.concurrent.ConcurrentLinkedQueue](http://docs.oracle.com/javase/7/docs/api/index.html?java/util/concurrent/ConcurrentLinkedQueue.html)
+* [java.util.concurrent.LinkedBlockingQueue](http://docs.oracle.com/javase/7/docs/api/index.html?java/util/concurrent/LinkedBlockingQueue.html)
+
+
 Apache License, v2.0
-====================
+--------------------
 
 Copyright 2014 Michael Bissell
 
