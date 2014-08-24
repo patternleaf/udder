@@ -21,7 +21,7 @@ Udder Architecture in a Nutshell
 
 The class com.coillighting.udder.ServicePipeline assembles the application components into a webserver capable of driving OPC RGB pixel lighting instruments. Here's how it works:
 
-* A human lighting designer initiates HTTP **requests** from a web page in a browsers.
+* A human **lighting designer** initiates HTTP **requests** from a web page in a browsers.
 * A SimpleFramework (v5.1.5) server listens for incoming HTTP **requests**. Request **payloads** are curently expected to be JSON structures.
 * A Boon (v0.23) JSON decoder converts each request **payload** into a **command** object.
 * **Commands** are inserted into a concurrent queue, the **command queue**.
@@ -29,10 +29,10 @@ The class com.coillighting.udder.ServicePipeline assembles the application compo
 * A **command** normally mutates the state of the ShowRunner or one of its children (the Mixer, an Animator, or the Renderer).
 * When there are no more commands to process, the ShowRunner animates, composites, and renders the current **frame**.
 * The current **frame** is then inserted into a second concurrent queue, the **output queue**.
-* In another separate thread, an OPCBroadcaster object blocks until the ShowRunner sends it a new **frame** via the output queue. Upon the arrival of a new frame, the OPCBroadcaster transmits the frame via TCP/IP to a remote OPC listener.
+* In another separate thread, an OPCBroadcaster object blocks until the ShowRunner sends it a new **frame** via the **output queue**. Upon the arrival of a new frame, the OPCBroadcaster transmits the frame via TCP/IP to a remote OPC listener.
 * The remote OPC listener (normally a stock OPC daemon process) writes the contents of the incoming **frame** to downstream RGB **pixel devices**, normally an array of LED strips.
 * **Pixel devices** emit **photons**.
-* **Photons** enter the eyes of the audience and of the lighting designer. Thus the cycle is complete.
+* **Photons** enter the eyes of the audience and of the **lighting designer**. Thus the cycle is complete.
 
 
 Dependency Links
