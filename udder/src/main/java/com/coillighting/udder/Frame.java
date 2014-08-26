@@ -2,6 +2,7 @@ package com.coillighting.udder;
 
 
 public class Frame {
+
 	private int value; // TEMP
 
 	public Frame(int value) {
@@ -12,4 +13,11 @@ public class Frame {
 		return "Frame{value=" + this.value + "}";
 	}
 
+	public void setValue(int value) {
+		this.value = value;
+	}
+
+	public int getValue() {
+		return this.value;
+	}
 }
