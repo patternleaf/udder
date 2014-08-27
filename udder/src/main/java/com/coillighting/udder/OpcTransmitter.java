@@ -9,7 +9,13 @@ import java.util.concurrent.TimeUnit;
 
 import com.coillighting.udder.Frame;
 
-
+/**
+ * Note: If the OPC server says "OPC: Source -1 does not exist", check the
+ * very first error message. Its assigned port is probably already in use.
+ *
+ * Note: WATCH OUT FOR JAVA'S EVIL SIGNED BYTES.
+ *
+ */
 public class OpcTransmitter implements Runnable {
 
 	private BlockingQueue<Frame> frameQueue;
@@ -62,42 +68,49 @@ public class OpcTransmitter implements Runnable {
 					Frame frame = this.frameQueue.poll(this.maxDelayMinutes,
 						TimeUnit.MINUTES);
 					if(frame!=null) {
-						byte level = (byte) frame.getValue();
-						this.log("Received frame: " + frame
-							+ ". Generating test pattern, gray level "
-							+ level);
+						// For now, just make a blinking, fading test pattern.
 
-						int pixelLen = 1250;
-						int subpixelLen = 3 * pixelLen;
-						int headerLen = 4 + subpixelLen;
-						int messageLen = headerLen + subpixelLen;
+						// Slowly fade out over many requests.
+						byte level = (byte) ((0xFF - frame.getValue()) % 256);
+
+						// Attempt to blink every 2nd frame for visibility.
+						if(level % 2 == 0) {
+							level = 0;
+						}
+						this.log("Received frame: " + frame
+							+ ". Generating test pattern, gray level " + ((int) level & 0xFF));
+
+						final int pixelLen = 1250; // max 1250 for raver plaid test rig
+						final int subpixelLen = 3 * pixelLen;
+						final int headerLen = 4;
+						final int messageLen = headerLen + subpixelLen;
+
 						byte[] message = new byte[messageLen];
 
 						// header: channel, 0 (??), length MSB, length LSB
-						byte channel = 0;
+						final byte channel = 0;
 
 						// OPC protocol details (byte offsets)
 						// TODO move these into an OpcHeader constants class
-						int CHANNEL = 0;
-						int UNKNOWN = 1; // TODO look this up, not sure what this byte represents
-						int SUBPIXEL_COUNT_MSB = 2;
-						int SUBPIXEL_COUNT_LSB = 3;
-						int SUBPIXEL_START = 4;
+						final int CHANNEL = 0;
+						final int COMMAND = 1;
+						final int COMMAND_SET_PIXELS = 0;
+						final int SUBPIXEL_COUNT_MSB = 2;
+						final int SUBPIXEL_COUNT_LSB = 3;
+						final int SUBPIXEL_START = 4;
 
 						message[CHANNEL] = channel;
-						message[UNKNOWN] = 0;
+						message[COMMAND] = COMMAND_SET_PIXELS;
 
-						// TODO verify the following conversion:
 						message[SUBPIXEL_COUNT_MSB] = (byte)(subpixelLen / 256);
 						message[SUBPIXEL_COUNT_LSB] = (byte)(subpixelLen % 256);
 
 						for(int i=SUBPIXEL_START; i<messageLen; i++) {
 							message[i] = level;
 						}
-						this.log("Sending message: " + message);
 						this.sendBytes(message);
-						this.log("Sent.");
-						// TODO recycle the frame
+						this.log("Sent: " + this.formatMessage(message));
+						// TODO recycle the frame datastructure?
 					} else {
 						// If there are no incoming frames, periodically retransmit
 						// the last frame, in case the remote OPC server process was
@@ -114,6 +127,29 @@ public class OpcTransmitter implements Runnable {
 		} catch(InterruptedException e) {
 			this.log("Stopping OPC transmitter.");
 		}
+	}
+
+	public String formatMessage(byte[] message) throws IOException {
+		// Note: ((int) foo & 0xFF) causes a byte to be printed as if it were
+		// an unsigned value. This is a regrettable Java idiom.
+		if(message.length < 7) {
+			throw new IOException("Each OPC message must be at least 7 bytes long.");
+		}
+		int i = 0;
+		return "[ " + message.length + " bytes:"
+			// OPC header
+			+ " chan=" + ((int) message[i++] & 0xFF)
+			+ " command=" + ((int) message[i++] & 0xFF)
+			+ " lenmsb=" + ((int) message[i++] & 0xFF)
+			+ " lenlsb=" + ((int) message[i++] & 0xFF)
+
+			// Print the first 3 subpixels
+			+ " message:"
+			+ " R" + ((int) message[i++] & 0xFF)
+			+ " G" + ((int) message[i++] & 0xFF)
+			+ " B" + ((int) message[i++] & 0xFF)
+			+ (message.length > 7 ? " ..." : "")
+			+ " ]";
 	}
 
 	public void log(String msg) {
