@@ -3,11 +3,14 @@ package com.coillighting.udder;
 
 /** A frozen point in time against which all frame animations are calculated,
  *  in order to keep nonrandom effects repeatably and deterministically locked
- *  in synch and aligned to a common timeline from one frame to the next.
+ *  in synch with one another and aligned to a common timeline from one frame to
+ *  the next.
+ *
  *  Normally a TimePoint is constructed once per animation loop, before the
  *  loop executes, and passed to each call to Animator.animate().
  *
- *  This class is intended to be immutable after initialization.
+ *  For thread safety, this class is intended to be immutable after
+ *  initialization.
  */
 public class TimePoint {
 

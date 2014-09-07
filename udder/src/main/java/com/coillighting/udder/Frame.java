@@ -2,6 +2,8 @@ package com.coillighting.udder;
 
 import com.coillighting.udder.TimePoint;
 
+
+/** Represent timebased RGB values. */
 public class Frame {
 
 	private TimePoint timePoint;

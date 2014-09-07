@@ -24,6 +24,7 @@ public class ServicePipeline {
 
 	// Roughly in order of dependency:
 	private boolean verbose = false;
+	private Mixer mixer;
 	private Queue<Command> commandQueue;
 	private BlockingQueue<Frame> frameQueue;
 	private HttpServiceContainer httpServiceContainer;
@@ -36,13 +37,18 @@ public class ServicePipeline {
 	private OpcTransmitter opcTransmitter;
 	private Thread transmitterThread;
 
-	public ServicePipeline() throws IOException {
+	public ServicePipeline(Mixer mixer) throws IOException {
+		if(mixer == null) {
+			throw new NullPointerException(
+				"ServicePipeline requires a Mixer that defines the scene.");
+		}
+		this.mixer = mixer;
         // TODO args or properties to set connection binding params,
         // framerate, runmode, log level, etc.
 		this.verbose = true;
         this.commandQueue = new ConcurrentLinkedQueue<Command>();
         this.frameQueue = new LinkedBlockingQueue(32); // TODO shrink buffer size
-        this.showRunner = new ShowRunner(this.commandQueue, this.frameQueue);
+        this.showRunner = new ShowRunner(this.commandQueue, this.mixer, this.frameQueue);
         this.showThread = new Thread(this.showRunner);
         this.opcTransmitter = new OpcTransmitter(this.frameQueue);
         this.transmitterThread = new Thread(this.opcTransmitter);

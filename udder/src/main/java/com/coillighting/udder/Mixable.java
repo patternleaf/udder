@@ -1,12 +1,12 @@
 package com.coillighting.udder;
 
+import com.coillighting.udder.Animator;
 import com.coillighting.udder.BlendOp;
 import com.coillighting.udder.Pixel;
 import com.coillighting.udder.TimePoint;
 
-public interface Mixable {
+public interface Mixable extends Animator {
 
-	public void animate(TimePoint timePoint);
 	public void mixWith(Pixel[] otherPixels);
 
 	public BlendOp getBlendOp();

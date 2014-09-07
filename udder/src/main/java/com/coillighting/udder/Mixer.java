@@ -11,6 +11,11 @@ import com.coillighting.udder.MixableBase;
 import com.coillighting.udder.Mixable;
 
 
+/** A concrete scenegraph is implemented as a Mixer with one or more Layers.
+ *  Each layer holds an Animator, ordinarily an effect plug-in which draws
+ *  part of the scene. The Mixer then composites the complete scene by blending
+ *  each layer in turn with the output of earlier blend operations.
+ */
 public class Mixer extends MixableBase implements Mixable, Iterable<Mixable> {
 
 	/** In order of composition, i.e. first element is the background layer,
@@ -32,6 +37,10 @@ public class Mixer extends MixableBase implements Mixable, Iterable<Mixable> {
 		return this.layers.iterator();
 	}
 
+	/** For each child Layer, draw the subscene and/or update the state of the
+	 *  Layer's animator given the current time. After animating, all Layers
+	 *  will be ready to render their current state as Pixels.
+	 */
 	public void animate(TimePoint timePoint) {
 		for(Mixable layer : this) {
 			layer.animate(timePoint);
