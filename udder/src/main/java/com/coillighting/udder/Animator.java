@@ -1,6 +1,8 @@
 package com.coillighting.udder;
+import com.coillighting.udder.TimePoint;
 
+public interface Animator {
 
-public class Animator {
-	// TODO
+	public void animate(TimePoint timePoint);
+
 }

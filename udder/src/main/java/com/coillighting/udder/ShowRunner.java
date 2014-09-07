@@ -26,14 +26,18 @@ public class ShowRunner implements Runnable {
 
 	public void run() {
 		try {
+			// Immutable, passed down the chain to frames.
+			TimePoint timePoint = new TimePoint();
 			this.log("Starting show.");
 			while(true) {
 				Command command = this.commandQueue.poll();
 				if(command!=null) {
 					this.log("Received command: " + command + " (TODO: render a frame)");
-					Frame frame = new Frame(command.getValue());
+					timePoint = timePoint.next();
+					Frame frame = new Frame(timePoint, command.getValue());
 					if(!frameQueue.offer(frame)) {
-						this.log("Frame queue overflow. Dropped frame.");
+						this.log("Frame queue overflow. Dropped frame "
+							+ timePoint.getFrameIndex() + ".");
 					}
 				} else {
 					// Our crude timing mechanism currently does not account for
