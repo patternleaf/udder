@@ -1,0 +1,53 @@
+From: Eric Miller
+Sent: 8/19/2014 15:55
+
+Hey all -
+
+Finally got some time to update the simulator and OPC-compatible JSON file with the new layout specs.
+
+The new JSON can be found here:
+
+    https://raw.githubusercontent.com/patternleaf/archway/master/assets/test-layout.json
+
+And the simulator (still at http://archway.patternleaf.com/test.php) has the new layout too.
+
+See the sketches behind this layout here:
+
+    https://github.com/patternleaf/archway/blob/master/assets/led-layout-1.jpg
+
+and here:
+
+    https://github.com/patternleaf/archway/blob/master/assets/led-layout-2.jpg
+
+
+###### NOTES:
+
+1. The order of points in the OPC layout at each box is ascending away from the box in both directions. So it's something like:
+
+    D <--------- C [box] A ----------> B
+
+    A: first point 
+    B: end of first strip
+    C: beginning of second strip
+    D: end of second strip
+
+The LED addresses ascend from A through D. I don't remember if that's how it'll actually work out—Dan, is that right, or will this be different?
+
+And each strip pair is ordered in the file as noted in the sketches.
+
+
+2. I put in a mode for the simulator to run using the "deferred" renderer, which allows for realistic point lighting but is slow, and the "standard" WebGL renderer, which doesn't allow for so many point lights, but is faster. Also the sim will remember your camera position between loads.
+
+
+3. You'll note that the LEDs are not evenly spaced in the sim. As far as I can tell this is down to the math used to interpolate points along a curve in three.js (see https://github.com/mrdoob/three.js/blob/master/src/extras/core/Curve.js#L307), and/or floating point precision errors. I could be wrong about this but it seems close enough to work with, yes?
+
+
+###### NEXT:
+
+Get the sim to work as an OPC server.
+
+
+Questions? Let me know!
+
+Eric
+

@@ -3,7 +3,7 @@ package com.coillighting.udder;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.Vector; // TODO switch to arraylist?
+import java.util.ArrayList;
 
 import com.coillighting.udder.MaxBlendOp;
 import com.coillighting.udder.Layer;
@@ -21,11 +21,11 @@ public class Mixer extends MixableBase implements Mixable, Iterable<Mixable> {
 	/** In order of composition, i.e. first element is the background layer,
 	 *  last element is the foreground layer.
 	 */
-	private Vector<Mixable> layers; // TODO switch to arraylist?
+	private ArrayList<Mixable> layers;
 	private Pixel[] pixels; // the developing frame
 
 	public Mixer(Collection<Mixable> layers) {
-		this.layers = new Vector(layers);
+		this.layers = new ArrayList(layers);
 		this.setBlendOp(new MaxBlendOp());
 	}
 
@@ -55,6 +55,12 @@ public class Mixer extends MixableBase implements Mixable, Iterable<Mixable> {
 		Arrays.fill(this.pixels, 0.0);
 		for(Mixable layer : this) {
 			layer.mixWith(this.pixels);
+		}
+	}
+
+	public void patchDevices(Iterable<Device> devices) {
+		for(Mixable layer : layers) {
+			layer.patchDevices(devices);
 		}
 	}
 

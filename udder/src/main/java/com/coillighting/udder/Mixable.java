@@ -9,7 +9,7 @@ import com.coillighting.udder.TimePoint;
  *  but there is a single physical display. Resolving conflicts between sources
  *  is called blending.
  */
-public interface Mixable extends Animator {
+public interface Mixable extends Animator, Patchable {
 
 	/** One step in the mixdown loop. Compare otherPixels to this Animator's
 	 *  version of the scene and resolve conflicts according to this Mixable's

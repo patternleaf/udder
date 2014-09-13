@@ -23,12 +23,16 @@ public class Device extends Object {
 	private double y = 0;
 	private double z = 0;
 
-	public void Device(long addr, long group, double x, double y, double z) {
+	public Device(long addr, long group, double x, double y, double z) {
 		this.addr = addr;
 		this.group = group;
 		this.x = x;
 		this.y = y;
 		this.z = z;
+	}
+
+	public String toString() {
+		return "Device @"+addr+" ["+group+"] ("+x+","+y+","+z+")";
 	}
 
 }

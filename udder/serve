@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
-java -cp "target/udder-1.0-SNAPSHOT.jar:lib/simple-5.1.5.jar:lib/boon-0.23.jar" com.coillighting.udder.Main
+java -cp "target/udder-1.0-SNAPSHOT.jar:lib/simple-5.1.5.jar:lib/boon-0.23.jar" com.coillighting.udder.Main conf/patch_sheet.json
 
