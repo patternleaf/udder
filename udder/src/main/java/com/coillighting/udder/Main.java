@@ -10,6 +10,7 @@ import java.util.List;
 import org.boon.json.JsonFactory;
 
 import com.coillighting.udder.DairyScene;
+import com.coillighting.udder.Device;
 import com.coillighting.udder.PatchElement;
 import com.coillighting.udder.ServicePipeline;
 
@@ -55,11 +56,23 @@ public class Main {
             "Usage: java com.coillighting.udder.Main [path/to/config.json]");
     }
 
-    public static List<PatchElement> createDevicesFromJSONFile(String filename)
+    public static List<Device> createDevicesFromJSONFile(String filename)
             throws IOException {
         byte[] encoded = Files.readAllBytes(Paths.get(filename));
         String json = new String(encoded, StandardCharsets.UTF_8);
-        return JsonFactory.fromJsonArray(json, PatchElement.class);
+        List<PatchElement> patchElements = JsonFactory.fromJsonArray(
+            json, PatchElement.class);
+
+        // TODO sort out address mapping
+        List<Device> devices = new ArrayList(patchElements.size());
+        int addr = 0;
+        for(PatchElement pe : patchElements) {
+            Device device = pe.toDevice(addr);
+            System.err.println(device); //TEMP
+            devices.add(device);
+            ++addr;
+        }
+        return devices;
     }
 
 }
