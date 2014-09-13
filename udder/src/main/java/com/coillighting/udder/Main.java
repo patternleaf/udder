@@ -56,6 +56,9 @@ public class Main {
             "Usage: java com.coillighting.udder.Main [path/to/config.json]");
     }
 
+    /** Parse the JSON patch sheet as a list of Devices. The 'gate' properties
+     *  from the patch sheet are interpreted as Device.group values. (FIXME)
+     */
     public static List<Device> createDevicesFromJSONFile(String filename)
             throws IOException {
         byte[] encoded = Files.readAllBytes(Paths.get(filename));
