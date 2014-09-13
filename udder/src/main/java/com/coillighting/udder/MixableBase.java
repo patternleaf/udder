@@ -7,6 +7,9 @@ import com.coillighting.udder.Pixel;
 import com.coillighting.udder.TimePoint;
 
 
+/** A concrete base class implementation of Mixable. Removes boilerplate from
+ *  Layer and Mixer.
+ */
 public abstract class MixableBase implements Mixable {
 
 	private BlendOp blendOp;

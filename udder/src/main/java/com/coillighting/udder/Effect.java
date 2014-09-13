@@ -1,6 +1,9 @@
 package com.coillighting.udder;
 
 
-public interface Effect extends Animator, Renderer {
+/** When your drawing routine can be patched, animated, and rendered, then
+ *  it is ready to be loaded onto a Layer as an Effect.
+ */
+public interface Effect extends Animator, Patchable, Renderer {
 
 }

@@ -7,6 +7,12 @@ import com.coillighting.udder.MixableBase;
 import com.coillighting.udder.Mixable;
 
 
+/** A Mixer is typically composed of several Layers. Each Layer is capable of
+ *  animating and rendering the whole scene, so the parent Mixer is responsible
+ *  for resolving conflicts between each Layer's version of the scene by
+ *  blending them together. This step is called mixdown, and we implement it as
+ *  a series of mixWith(..) calls.
+ */
 public class Layer extends MixableBase implements Effect, Mixable {
 
 	/** A human-readable display name for this Layer. (Keep it short.) */
@@ -38,6 +44,10 @@ public class Layer extends MixableBase implements Effect, Mixable {
 		Pixel[] myPixels = this.render();
 		throw new UnsupportedOperationException(
 			"TODO - blend r, g, b per pixel");
+	}
+
+	public void patchDevices(Iterable<Device> devices) {
+		this.effect.patchDevices(devices);
 	}
 
 }

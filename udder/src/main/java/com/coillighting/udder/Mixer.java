@@ -37,9 +37,10 @@ public class Mixer extends MixableBase implements Mixable, Iterable<Mixable> {
 		return this.layers.iterator();
 	}
 
-	/** For each child Layer, draw the subscene and/or update the state of the
-	 *  Layer's animator given the current time. After animating, all Layers
-	 *  will be ready to render their current state as Pixels.
+	/** For each child Mixable (e.g. Layer), draw the subscene and/or update the
+	 *  state of the child's (Layer's) animator given the current time. After
+	 *  animating, all children (Layers) will be ready to render their current
+	 *  state as Pixels.
 	 */
 	public void animate(TimePoint timePoint) {
 		for(Mixable layer : this) {
@@ -47,6 +48,9 @@ public class Mixer extends MixableBase implements Mixable, Iterable<Mixable> {
 		}
 	}
 
+	/** Mix the output of each child (Layer), starting with the background and
+	 *  ending with the foreground.
+	 */
 	public void mixWith(Pixel[] otherPixels) {
 		Arrays.fill(this.pixels, 0.0);
 		for(Mixable layer : this) {

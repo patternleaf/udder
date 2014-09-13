@@ -11,6 +11,9 @@ import org.simpleframework.http.core.Container;
 import com.coillighting.udder.Command;
 
 
+/** The HTTP controller for Udder's Simple-brand webserver.
+ *  Receives requests, translates them into commands, and responds as needed.
+ */
 public class HttpServiceContainer implements Container {
 
     private Queue<Command> queue; // feed requests to this queue

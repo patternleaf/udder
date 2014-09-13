@@ -13,4 +13,8 @@ public class MonochromeEffect implements Effect {
 		System.err.println("TODO - render (solid color");
 		return new Pixel[0]; // TEMP
 	}
+
+	public void patchDevices(Iterable<Device> devices) {
+		System.err.println("TODO - patchDevices");
+	}
 }

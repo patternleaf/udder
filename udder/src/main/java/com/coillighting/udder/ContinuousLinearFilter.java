@@ -1,7 +1,7 @@
 package com.coillighting.udder;
 
-public interface ContinuousLinearFilter {
 
+public interface ContinuousLinearFilter {
 
 	/** Given any double value, return some double value. This patchpoint
 	 *  interface let you wire up scalings, inversions, dithering, distortions,

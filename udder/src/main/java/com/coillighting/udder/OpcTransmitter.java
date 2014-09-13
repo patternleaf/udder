@@ -9,12 +9,17 @@ import java.util.concurrent.TimeUnit;
 
 import com.coillighting.udder.Frame;
 
-/**
- * Note: If the OPC server says "OPC: Source -1 does not exist", check the
- * very first error message. Its assigned port is probably already in use.
+/** First stab at an Open Pixel Control network client.
+ *  This class is responsible for translating the pixels in mixed down frames
+ *  into OPC messages, then transmitting them to the OPC server.
  *
- * Note: WATCH OUT FOR JAVA'S EVIL SIGNED BYTES.
+ *  Runs in its own thread, kicked off by ServicePipeline.
+ *  Typically deployed as a singleton.
  *
+ *  Note: If the OPC server says "OPC: Source -1 does not exist", check the
+ *  very first error message. Its assigned port is probably already in use.
+ *
+ *  Note: WATCH OUT FOR JAVA'S EVIL SIGNED BYTES.
  */
 public class OpcTransmitter implements Runnable {
 

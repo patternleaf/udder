@@ -20,6 +20,12 @@ import com.coillighting.udder.OpcTransmitter;
 import com.coillighting.udder.ShowRunner;
 
 
+/** Udder's central patchbay. Owns references to all of the persistent entities
+ *  in the program. Manages Thread lifecycles for each components.
+ *
+ *  Normally runs in the main thread, started by Main.
+ *  Typically deployed as a singleton.
+ */
 public class ServicePipeline {
 
 	// Roughly in order of dependency:

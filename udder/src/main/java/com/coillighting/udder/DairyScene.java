@@ -13,6 +13,7 @@ import com.coillighting.udder.MonochromeEffect;
  */
 public abstract class DairyScene {
 
+	/** Instantiate a new scene in the form of a Mixer. */
 	public static Mixer create() {
 		// A basic three-layer look to get started.
 		Layer background = new Layer("Background", new MonochromeEffect());

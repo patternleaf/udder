@@ -8,7 +8,11 @@ import com.coillighting.udder.Mixer;
 
 
 /** A ShowRunner owns all the infrastructure required to pump events through
- *  a Mixer which implements the current scenegraph.
+ *  a Mixer which implements the current scenegraph. This object owns the scene
+ *  itself, while its neighbors manage the infrastructure.
+ *
+ *  Runs in its own thread, started by ServicePipeline.
+ *  Typically deployed as a singleton.
  */
 public class ShowRunner implements Runnable {
 

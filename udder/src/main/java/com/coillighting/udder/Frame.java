@@ -3,11 +3,11 @@ package com.coillighting.udder;
 import com.coillighting.udder.TimePoint;
 
 
-/** Represent timebased RGB values. */
+/** An instantaneous sample of all timebased RGB values for the entire scene. */
 public class Frame {
 
 	private TimePoint timePoint;
-	private int value; // TEMP - eventually there will be a raster here, not an int
+	private int value; // TODO: Placeholder. Eventually there will be some sort of a raster here, not an int.
 
 	public Frame(TimePoint timePoint, int value) {
 		this.timePoint = timePoint;
