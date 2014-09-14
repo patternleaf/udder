@@ -35,4 +35,9 @@ public class Device extends Object {
 		return "Device @"+addr+" ["+group+"] ("+x+","+y+","+z+")";
 	}
 
+	// TODO refactor x, y and z as a double[] for consistency with other classes?
+	public double[] getPoint() {
+		return new double[]{x, y, z};
+	}
+
 }
