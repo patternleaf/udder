@@ -1,6 +1,7 @@
 package com.coillighting.udder;
 
 import java.lang.UnsupportedOperationException;
+import java.util.List;
 
 import com.coillighting.udder.Effect;
 import com.coillighting.udder.MixableBase;
@@ -24,8 +25,7 @@ public class Layer extends MixableBase implements Effect, Mixable {
 	public Layer(String name, Effect effect) {
 		if(effect == null) {
 			throw new NullPointerException("Layer requires an Effect to animate and render pixels.");
-		}
-		if(name == null) {
+		} else if(name == null) {
 			name = "Untitled";
 		}
 		this.name = name;
@@ -42,11 +42,13 @@ public class Layer extends MixableBase implements Effect, Mixable {
 
 	public void mixWith(Pixel[] otherPixels) {
 		Pixel[] myPixels = this.render();
-		throw new UnsupportedOperationException(
-			"TODO - blend r, g, b per pixel");
+		int length = myPixels.length;
+		for(int i=0; i<otherPixels.length && i<myPixels.length; i++) {
+			otherPixels[i].blendWith(myPixels[i], this.blendOp);
+		}
 	}
 
-	public void patchDevices(Iterable<Device> devices) {
+	public void patchDevices(List<Device> devices) {
 		this.effect.patchDevices(devices);
 	}
 

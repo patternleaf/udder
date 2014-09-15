@@ -1,5 +1,7 @@
 package com.coillighting.udder;
 
+import java.util.List;
+
 import com.coillighting.udder.Device;
 
 
@@ -18,6 +20,6 @@ public interface Patchable extends Animator {
 	 *  Expensive setup computations might be performed only when we
 	 *  patchDevices, allowing us to animate pixels efficiently.
 	 */
-	public void patchDevices(Iterable<Device> devices);
+	public void patchDevices(List<Device> devices);
 
 }

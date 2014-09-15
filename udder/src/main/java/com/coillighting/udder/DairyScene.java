@@ -19,10 +19,14 @@ public abstract class DairyScene {
 	/** Instantiate a new scene in the form of a Mixer. */
 	public static Mixer create(List<Device> devices) {
 		// A basic three-layer look to get started.
-		Layer background = new Layer("Background", new MonochromeEffect());
+		Layer background = new Layer("Background",
+			new MonochromeEffect(new Pixel(0.0, 0.0, 0.0)));
+
 		Layer rainbowStupidity = new Layer("Rainbow stupidity",
-			new MonochromeEffect()); // TODO: gradient effect here
-		Layer gel = new Layer("Gel", new MonochromeEffect()); // TODO: multiply blend mode
+			new MonochromeEffect(new Pixel(0.0, 0.0, 0.0))); // TODO: gradient effect here
+
+		Layer gel = new Layer("Gel",
+			new MonochromeEffect(new Pixel(0.0, 0.0, 0.0))); // TODO: multiply blend mode
 
 		// Add layers from bottom (background) to top (foreground), i.e. in
 		// order of composition.

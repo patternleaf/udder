@@ -12,8 +12,8 @@ import com.coillighting.udder.TimePoint;
  */
 public abstract class MixableBase implements Mixable {
 
-	private BlendOp blendOp;
-	private double level;
+	protected BlendOp blendOp;
+	protected double level;
 
 	public MixableBase() {
 		this.blendOp = null; // TODO: default to max mode

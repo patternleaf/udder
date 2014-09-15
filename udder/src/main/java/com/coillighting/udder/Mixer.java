@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.coillighting.udder.MaxBlendOp;
 import com.coillighting.udder.Layer;
@@ -58,7 +59,7 @@ public class Mixer extends MixableBase implements Mixable, Iterable<Mixable> {
 		}
 	}
 
-	public void patchDevices(Iterable<Device> devices) {
+	public void patchDevices(List<Device> devices) {
 		for(Mixable layer : layers) {
 			layer.patchDevices(devices);
 		}
