@@ -72,25 +72,33 @@ public class OpcTransmitter implements Runnable {
 				try {
 					Frame frame = this.frameQueue.poll(this.maxDelayMinutes,
 						TimeUnit.MINUTES);
-					if(frame!=null) {
-						// For now, just make a blinking, fading test pattern.
-
-						// Slowly fade out over many requests.
-						byte level = (byte) ((0xFF - frame.getValue()) % 256);
-
-						// Attempt to blink every 2nd frame for visibility.
-						if(level % 2 == 0) {
-							level = 0;
+					if(frame != null) {
+						Pixel[] pixels = frame.getPixels();
+						if(pixels == null) {
+							throw new NullPointerException("Corrupt Frame: null pixel array.");
+						} else if(pixels.length < 2000) { // TEMP-DEBUG
+							throw new NullPointerException("Corrupt Frame: pixel array len=" + pixels.length);
 						}
-						this.log("Received frame: " + frame
-							+ ". Generating test pattern, gray level " + ((int) level & 0xFF));
-
-						final int pixelLen = 1250; // max 1250 for raver plaid test rig
+						final int pixelLen = pixels.length;
 						final int subpixelLen = 3 * pixelLen;
 						final int headerLen = 4;
 						final int messageLen = headerLen + subpixelLen;
-
 						byte[] message = new byte[messageLen];
+
+						// boolean test = false;
+						// if(test) {
+						// 	// For now, just make a blinking, fading test pattern.
+
+						// 	// Slowly fade out over many requests.
+						// 	byte level = (byte) ((0xFF - frame.getValue()) % 256);
+
+						// 	// Attempt to blink every 2nd frame for visibility.
+						// 	if(level % 2 == 0) {
+						// 		level = 0;
+						// 	}
+						// 	this.log("Received frame: " + frame
+						// 		+ ". Generating test pattern, gray level " + ((int) level & 0xFF));
+						// }
 
 						// header: channel, 0 (??), length MSB, length LSB
 						final byte channel = 0;
@@ -110,8 +118,13 @@ public class OpcTransmitter implements Runnable {
 						message[SUBPIXEL_COUNT_MSB] = (byte)(subpixelLen / 256);
 						message[SUBPIXEL_COUNT_LSB] = (byte)(subpixelLen % 256);
 
-						for(int i=SUBPIXEL_START; i<messageLen; i++) {
-							message[i] = level;
+						// TODO consider relocating this into Frame
+						int i=SUBPIXEL_START;
+						for(Pixel pixel: pixels) {
+							message[i] = (byte) (0xFF & Double.doubleToLongBits(255.99999999 * pixel.r));
+							message[i+1] = (byte) (0xFF & Double.doubleToLongBits(255.99999999 * pixel.g));
+							message[i+2] = (byte) (0xFF & Double.doubleToLongBits(255.99999999 * pixel.b));
+							i += 3;
 						}
 						this.sendBytes(message);
 						this.log("Sent: " + this.formatMessage(message));

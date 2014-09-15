@@ -24,6 +24,7 @@ public class Mixer extends MixableBase implements Mixable, Iterable<Mixable> {
 	 */
 	private ArrayList<Mixable> layers;
 	private Pixel[] pixels; // the developing frame
+	private int deviceCount = 0;
 
 	public Mixer(Collection<Mixable> layers) {
 		this.layers = new ArrayList(layers);
@@ -53,16 +54,26 @@ public class Mixer extends MixableBase implements Mixable, Iterable<Mixable> {
 	 *  ending with the foreground.
 	 */
 	public void mixWith(Pixel[] otherPixels) {
-		Arrays.fill(this.pixels, 0.0);
+		this.pixels = new Pixel[this.deviceCount];
+		for(int i=0; i<this.pixels.length; i++) {
+			this.pixels[i] = new Pixel(0.0, 0.0, 0.0);
+		}
 		for(Mixable layer : this) {
 			layer.mixWith(this.pixels);
 		}
 	}
 
 	public void patchDevices(List<Device> devices) {
+		this.deviceCount = devices.size();
 		for(Mixable layer : layers) {
 			layer.patchDevices(devices);
 		}
+	}
+
+	public Pixel[] render() {
+		// FIXME make a whole new frame? or copy the developed frame before giving it away? clarify ownership.
+		this.mixWith(this.pixels);
+		return this.pixels;
 	}
 
 }

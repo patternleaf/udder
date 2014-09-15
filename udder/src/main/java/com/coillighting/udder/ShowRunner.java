@@ -48,8 +48,12 @@ public class ShowRunner implements Runnable {
 					this.log("Received command: " + command);
 					timePoint = timePoint.next();
 					this.mixer.animate(timePoint);
-					// TODO frame = mixer.mixWith(background) or whatnot
-					Frame frame = new Frame(timePoint, command.getValue()); // TEMP
+
+					// FIXME clarify ownership of pixels.. render() isn't quite threadsafe yet.
+					Pixel[] pixels = this.mixer.render();
+					// FIXME REF: get this Frame straight from the Mixer?
+					Frame frame = new Frame(timePoint, pixels);
+
 					if(!frameQueue.offer(frame)) {
 						this.log("Frame queue overflow. Dropped frame " + timePoint);
 					}

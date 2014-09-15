@@ -17,32 +17,38 @@ public class Pixel {
 	public Pixel() {}
 
 	public Pixel(double r, double g, double b) {
-		this.r = r;
-		this.g = g;
-		this.b = b;
+		this.setColor(r, g, b);
 	}
 
 	public Pixel(Pixel pixel) {
-		this.r = pixel.r;
-		this.g = pixel.g;
-		this.b = pixel.b;
+		this.setColor(pixel.r, pixel.g, pixel.b);
+	}
+
+	public void setColor(double r, double g, double b) {
+		this.r = r;
+		this.g = g;
+		this.b = b;
 	}
 
 	public void setColor(Pixel pixel) {
 		if(pixel == null) {
 			throw new NullPointerException("A null pixel has no color.");
 		} else {
-			this.r = pixel.r;
-			this.g = pixel.g;
-			this.b = pixel.b;
+			this.setColor(pixel.r, pixel.g, pixel.b);
 		}
 	}
 
 	public void blendWith(Pixel foreground, BlendOp blendOp) {
-		if(foreground != null) {
+		if(blendOp == null) {
+			throw new NullPointerException("BlendOp is required.");
+		} else if(foreground != null) {
 			this.r = blendOp.blend(this.r, foreground.r);
 			this.g = blendOp.blend(this.g, foreground.g);
 			this.b = blendOp.blend(this.b, foreground.b);
+		}
+		else {
+			// TEMP- DEBUG
+			System.err.println("Warning: null foreground");
 		}
 	}
 

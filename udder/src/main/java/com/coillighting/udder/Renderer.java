@@ -9,5 +9,6 @@ public interface Renderer {
 	 *  to animate(TimePoint). See Effect.
 	 */
 	public Pixel[] render();
+	// FIXME clarify ownership of the returned pixel array
 
 }

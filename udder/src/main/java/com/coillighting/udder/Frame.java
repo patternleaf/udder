@@ -7,23 +7,35 @@ import com.coillighting.udder.TimePoint;
 public class Frame {
 
 	private TimePoint timePoint;
-	private int value; // TODO: Placeholder. Eventually there will be some sort of a raster here, not an int.
+	private Pixel[] pixels;
 
-	public Frame(TimePoint timePoint, int value) {
+	public Frame(TimePoint timePoint, Pixel[] pixels) {
+		if(timePoint == null) {
+			throw new NullPointerException("Frame requires a timePoint.");
+		}
 		this.timePoint = timePoint;
-		this.value = value;
+		this.setPixels(pixels);
 	}
 
 	public String toString() {
-		return "Frame{time=" + this.timePoint + " value=" + this.value + "}";
+		int len = 0;
+		if(this.pixels != null) {
+			len = this.pixels.length;
+		}
+		return "Frame{time=" + this.timePoint + ", " + len + " pixels}";
 	}
 
-	public void setValue(int value) {
-		this.value = value;
+	public void setPixels(Pixel[] pixels) {
+		if(pixels == null) {
+			throw new NullPointerException("Pixel array must not be null.");
+		} else if(pixels.length < 2000) { // TEMP-DEBUG
+			throw new NullPointerException("Corrupt Frame: pixel array len=" + pixels.length);
+		}
+		this.pixels = pixels;
 	}
 
-	public int getValue() {
-		return this.value;
+	public Pixel[] getPixels() {
+		return this.pixels;
 	}
 
 	public TimePoint getTimePoint() {

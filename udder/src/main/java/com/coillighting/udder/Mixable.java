@@ -1,6 +1,6 @@
 package com.coillighting.udder;
 
-import com.coillighting.udder.Animator;
+import com.coillighting.udder.Effect;
 import com.coillighting.udder.BlendOp;
 import com.coillighting.udder.Pixel;
 import com.coillighting.udder.TimePoint;
@@ -9,7 +9,7 @@ import com.coillighting.udder.TimePoint;
  *  but there is a single physical display. Resolving conflicts between sources
  *  is called blending.
  */
-public interface Mixable extends Animator, Patchable {
+public interface Mixable extends Effect {
 
 	/** One step in the mixdown loop. Compare otherPixels to this Animator's
 	 *  version of the scene and resolve conflicts according to this Mixable's
