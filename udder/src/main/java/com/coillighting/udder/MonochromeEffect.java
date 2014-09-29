@@ -20,6 +20,22 @@ public class MonochromeEffect implements Effect {
 		return Pixel.class;
 	}
 
+	public Object getState() {
+		if(this.color == null) {
+			return null;
+		} else {
+			return new Pixel(this.color);
+		}
+	}
+
+	public void setState(Object state) throws ClassCastException {
+		if(state instanceof Pixel) {
+			Pixel newColor = (Pixel) state;
+			newColor.clip();
+			this.setColor(newColor);
+		}
+	}
+
 	public void setColor(Pixel color) {
 		// Do not dirty this effect if color hasn't actually changed.
 		if(color == null) {

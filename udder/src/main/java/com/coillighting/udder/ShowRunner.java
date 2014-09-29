@@ -44,8 +44,22 @@ public class ShowRunner implements Runnable {
 			this.log("Starting show.");
 			while(true) {
 				Command command = this.commandQueue.poll();
-				if(command!=null) {
+				if(command != null) {
 					this.log("Received command: " + command);
+
+					// (TEMP) TODO - don't hardcode this routing table. Handle out-of-bounds exception instead.
+					Integer destination = command.getDestination();
+					if(destination == 0) {
+						Layer layer = (Layer) this.mixer.getLayer(0); // FIXME sort out interfaces so that getEffect is accessible without casting - maybe just a Mixer.getEffect()?
+						Effect effect = layer.getEffect();
+						try {
+							effect.setState(command.getValue());
+						} catch(ClassCastException e) {
+							this.log("Failed setting state on destination "
+								+ destination + ": " + e);
+						}
+					}
+
 					timePoint = timePoint.next();
 					this.mixer.animate(timePoint);
 

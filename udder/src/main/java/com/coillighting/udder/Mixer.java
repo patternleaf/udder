@@ -35,6 +35,15 @@ public class Mixer extends MixableBase implements Mixable, Iterable<Mixable> {
 		return Object.class; // TODO
 	}
 
+	public Object getState() {
+		// TODO
+		return null;
+	}
+
+	public void setState(Object state) throws ClassCastException {
+		// TODO
+	}
+
 	public Mixable getLayer(int index) {
 		return this.layers.get(index);
 	}

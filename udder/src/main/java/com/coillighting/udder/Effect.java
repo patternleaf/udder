@@ -6,4 +6,8 @@ package com.coillighting.udder;
  */
 public interface Effect extends Animator, Patchable, Renderer {
 
+	public Object getState();
+
+	public void setState(Object state) throws ClassCastException;
+
 }

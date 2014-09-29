@@ -36,6 +36,15 @@ public class Layer extends MixableBase implements Effect, Mixable {
 		return Object.class; // TODO
 	}
 
+	public Object getState() {
+		// TODO
+		return null;
+	}
+
+	public void setState(Object state) throws ClassCastException {
+		// TODO
+	}
+
 	public void animate(TimePoint timePoint) {
 		this.effect.animate(timePoint);
 	}
@@ -54,6 +63,10 @@ public class Layer extends MixableBase implements Effect, Mixable {
 
 	public void patchDevices(List<Device> devices) {
 		this.effect.patchDevices(devices);
+	}
+
+	public Effect getEffect() {
+		return this.effect;
 	}
 
 }

@@ -28,7 +28,7 @@ public class Command {
         this.value = value;
     }
 
-    public Object getDestination() {
+    public Integer getDestination() {
         return this.destination;
     }
 
