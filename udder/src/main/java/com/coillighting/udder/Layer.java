@@ -32,6 +32,10 @@ public class Layer extends MixableBase implements Effect, Mixable {
 		this.effect = effect;
 	}
 
+	public static Class getStateClass() {
+		return Object.class; // TODO
+	}
+
 	public void animate(TimePoint timePoint) {
 		this.effect.animate(timePoint);
 	}

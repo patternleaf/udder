@@ -24,15 +24,15 @@ public abstract class DairyScene {
 
 		// A basic three-layer look to get started.
 		Layer background = new Layer("Background",
-			new MonochromeEffect(new Pixel(1.0, 0.5, 0.0)));
+			new MonochromeEffect(new Pixel(1.0f, 0.5f, 0.0f)));
 		background.setBlendOp(max);
 
 		Layer rainbowStupidity = new Layer("Rainbow stupidity",
-			new MonochromeEffect(new Pixel(0.0, 0.0, 0.0))); // TODO: gradient effect here
+			new MonochromeEffect(new Pixel(0.0f, 0.0f, 0.0f))); // TODO: gradient effect here
 		rainbowStupidity.setBlendOp(max);
 
 		Layer gel = new Layer("Gel",
-			new MonochromeEffect(new Pixel(0.0, 0.0, 0.0))); // TODO: multiply blend mode
+			new MonochromeEffect(new Pixel(0.0f, 0.0f, 0.0f))); // TODO: multiply blend mode
 		gel.setBlendOp(max);
 
 		// Add layers from bottom (background) to top (foreground), i.e. in

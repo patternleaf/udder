@@ -31,6 +31,10 @@ public class Mixer extends MixableBase implements Mixable, Iterable<Mixable> {
 		this.setBlendOp(new MaxBlendOp());
 	}
 
+	public static Class getStateClass() {
+		return Object.class; // TODO
+	}
+
 	public Mixable getLayer(int index) {
 		return this.layers.get(index);
 	}
@@ -56,7 +60,7 @@ public class Mixer extends MixableBase implements Mixable, Iterable<Mixable> {
 	public void mixWith(Pixel[] otherPixels) {
 		this.pixels = new Pixel[this.deviceCount];
 		for(int i=0; i<this.pixels.length; i++) {
-			this.pixels[i] = new Pixel(0.0, 0.0, 0.0);
+			this.pixels[i] = new Pixel(0.0f, 0.0f, 0.0f);
 		}
 		for(Mixable layer : this) {
 			layer.mixWith(this.pixels);

@@ -12,6 +12,6 @@ public interface BlendOp {
 	/** Blend the channel value in foreground with the value in background, and
 	 *  return the result.
 	 */
-	public double blend(double background, double foreground);
+	public float blend(float background, float foreground);
 
 }

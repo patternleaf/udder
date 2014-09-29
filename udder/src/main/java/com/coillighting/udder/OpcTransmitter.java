@@ -74,11 +74,6 @@ public class OpcTransmitter implements Runnable {
 						TimeUnit.MINUTES);
 					if(frame != null) {
 						Pixel[] pixels = frame.getPixels();
-						if(pixels == null) {
-							throw new NullPointerException("Corrupt Frame: null pixel array.");
-						} else if(pixels.length < 2000) { // TEMP-DEBUG
-							throw new NullPointerException("Corrupt Frame: pixel array len=" + pixels.length);
-						}
 						final int pixelLen = pixels.length;
 						final int subpixelLen = 3 * pixelLen;
 						final int headerLen = 4;

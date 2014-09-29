@@ -4,7 +4,7 @@ import com.coillighting.udder.BlendOp;
 
 public class MaxBlendOp implements BlendOp {
 
-	public double blend(double background, double foreground) {
+	public float blend(float background, float foreground) {
 		return background >= foreground ? background : foreground;
 	}
 

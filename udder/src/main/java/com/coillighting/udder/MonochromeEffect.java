@@ -16,6 +16,10 @@ public class MonochromeEffect implements Effect {
 		this.setColor(color);
 	}
 
+	public static Class getStateClass() {
+		return Pixel.class;
+	}
+
 	public void setColor(Pixel color) {
 		// Do not dirty this effect if color hasn't actually changed.
 		if(color == null) {

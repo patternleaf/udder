@@ -4,24 +4,35 @@ package com.coillighting.udder;
  *  from an external client, often a browser. Commands do not know or care how
  *  they were wrapped for transport. They represent only their payload.
  *
- *  Currently the payload is just a numeric placeholder value. (TODO)
+ *  The command's payload is an arbitrary object (or null).
  */
 public class Command {
-    private Integer value = null;
 
-    public Command(Integer value) {
+    private Object value = null;
+    private Integer destination = null;
+
+    public Command(Object value, Integer destination) {
         this.value = value;
+        this.destination = destination;
     }
 
     public String toString() {
         return "Command{value=" + this.value + "}";
     }
 
-    public Integer getValue() {
+    public Object getValue() {
         return this.value;
     }
 
-    public void setValue(Integer value) {
+    public void setValue(Object value) {
         this.value = value;
+    }
+
+    public Object getDestination() {
+        return this.destination;
+    }
+
+    public void setDestination(Integer destination) {
+        this.destination = destination;
     }
 }
