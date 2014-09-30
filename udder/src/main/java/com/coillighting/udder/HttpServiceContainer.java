@@ -43,6 +43,8 @@ public class HttpServiceContainer implements Container {
     /** Format the HTTP request path as a multiline string. */
     public String formatRequest(Request request) {
         Query query = request.getQuery();
+
+        // poss. optimization, but how to use it?:
         boolean persistent = request.isKeepAlive();
         Path path = request.getPath();
         String directory = path.getDirectory();
@@ -76,9 +78,7 @@ public class HttpServiceContainer implements Container {
 
         Query query = request.getQuery();
         String rawState = query.get("state");
-        this.log("rawState=" + rawState);
-        String json = URLDecoder.decode(rawState); // TEMP
-        this.log("json=" + json); // TEMP
+        String json = URLDecoder.decode(rawState);
         Path path = request.getPath();
         String directory = path.getDirectory();
         String[] segments = path.getSegments();
@@ -91,22 +91,27 @@ public class HttpServiceContainer implements Container {
                     // TODO pass in layer effects' stateclass array to this object
                     // instead of hardcoding layer
                     Class stateClass = null;
-                    if(segments[1].equals("layer0")) {
+                    String key = segments[1];
+                    if(key.equals("layer0")) {
                         // Color or color cycling modulation.
                         // Route to the Background layer.
                         stateClass = MonochromeEffect.getStateClass();
                         destination = 0;
-                    } else if(segments[1].equals("layer1")) {
+                    } else if(key.equals("layer1")) {
                         // Color gradient or color cycling automation.
                         // Route to the Rainbow Stupidity layer.
                         // TODO: gradient, not monochrome here.
                         stateClass = MonochromeEffect.getStateClass();
                         destination = 1;
-                    } else if(segments[1].equals("layer2")) {
+                    } else if(key.equals("layer2")) {
+                        // Route eric's pixels to the External Input layer.
+                        stateClass = RasterEffect.getStateClass();
+                        destination = 2;
+                    } else if(key.equals("layer3")) {
                         // Color or color cycling modulation.
                         // Route to the Gel layer.
                         stateClass = MonochromeEffect.getStateClass();
-                        destination = 2;
+                        destination = 3;
                     }
 
                     if(stateClass != null) {
@@ -131,18 +136,10 @@ public class HttpServiceContainer implements Container {
 
     public void handle(Request request, Response response) {
 
-        this.log(this.formatRequest(request));
-        // getting query values
-        // Query query = request.getQuery();
-        // String value = query.get(String key); or List<String> = getAll(key)
-        // for GET key-values pairs in URL there are also these conveniences:
-        // int real = query.getInteger(key);
-        // float decimal = query.getFloat(key);
+        // To see what is happening:
+        // this.log(this.formatRequest(request));
 
-        // poss. optimization, but how to use it?:
-        // boolean persistent = request.isKeepAlive();
-
-        // For asynch response mode, see "asynchronous services" here:
+        // NOTE For asynch response mode, see "asynchronous services" here:
         // http://www.simpleframework.org/doc/tutorial/tutorial.php
 
         this.log("handle()");

@@ -54,11 +54,15 @@ public class Layer extends MixableBase implements Effect, Mixable {
 	}
 
 	public void mixWith(Pixel[] otherPixels) {
+		String before = otherPixels[0].toString();
 		Pixel[] myPixels = this.render();
 		int length = myPixels.length;
 		for(int i=0; i<otherPixels.length && i<myPixels.length; i++) {
-			otherPixels[i].blendWith(myPixels[i], this.blendOp);
+			otherPixels[i].blendWith(myPixels[i], this.level, this.blendOp);
 		}
+		String fg = myPixels[0].toString();
+		String after = otherPixels[0].toString();
+		System.err.println("mixWith: " + before + " + " + fg + " @" + this.level + " = " + after);
 	}
 
 	public void patchDevices(List<Device> devices) {

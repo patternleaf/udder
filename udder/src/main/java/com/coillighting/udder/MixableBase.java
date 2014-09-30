@@ -12,13 +12,10 @@ import com.coillighting.udder.TimePoint;
  */
 public abstract class MixableBase implements Mixable {
 
-	protected BlendOp blendOp;
-	protected double level;
+	protected BlendOp blendOp = null; // TODO: default to max mode
+	protected float level = 0.0f; // dark by default so we can fade in, not pop on
 
-	public MixableBase() {
-		this.blendOp = null; // TODO: default to max mode
-		this.level = 0.0; // dark by default so we can fade in, not pop on
-	}
+	public MixableBase() { }
 
 	public abstract void animate(TimePoint timePoint);
 
@@ -32,11 +29,11 @@ public abstract class MixableBase implements Mixable {
 		this.blendOp = blendOp;
 	}
 
-	public double getLevel() {
+	public float getLevel() {
 		return this.level;
 	}
 
-	public void setLevel(double level) {
+	public void setLevel(float level) {
 		this.level=level;
 	}
 

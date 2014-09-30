@@ -47,17 +47,21 @@ public class ShowRunner implements Runnable {
 				if(command != null) {
 					this.log("Received command: " + command);
 
-					// (TEMP) TODO - don't hardcode this routing table. Handle out-of-bounds exception instead.
+					// TODO - routing for mixer, layers vs. effects, timer
 					Integer destination = command.getDestination();
-					if(destination == 0) {
-						Layer layer = (Layer) this.mixer.getLayer(0); // FIXME sort out interfaces so that getEffect is accessible without casting - maybe just a Mixer.getEffect()?
+					try {
+						// FIXME sort out interfaces so that getEffect is accessible without casting - maybe just a Mixer.getEffect()?
+						Layer layer = (Layer) this.mixer.getLayer(destination);
 						Effect effect = layer.getEffect();
+
 						try {
 							effect.setState(command.getValue());
-						} catch(ClassCastException e) {
+						} catch(Exception e) {
 							this.log("Failed setting state on destination "
 								+ destination + ": " + e);
 						}
+					} catch(IndexOutOfBoundsException e) {
+						this.log("Invalid layer index: " + destination);
 					}
 
 					timePoint = timePoint.next();

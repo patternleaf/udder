@@ -32,7 +32,7 @@ public interface Mixable extends Effect {
 	 *
 	 *  This is your layer's volume knob, a.k.a. its submaster.
 	 */
-	public double getLevel();
-	public void setLevel(double level);
+	public float getLevel();
+	public void setLevel(float level);
 
 }
