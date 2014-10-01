@@ -1,12 +1,5 @@
 package com.coillighting.udder;
 
-import com.coillighting.udder.BlendOp;
-import com.coillighting.udder.Layer;
-import com.coillighting.udder.Mixable;
-import com.coillighting.udder.Pixel;
-import com.coillighting.udder.TimePoint;
-
-
 /** A concrete base class implementation of Mixable. Removes boilerplate from
  *  Layer and Mixer.
  */
@@ -34,7 +27,13 @@ public abstract class MixableBase implements Mixable {
 	}
 
 	public void setLevel(float level) {
+		if(level < 0.0f) {
+			level = 0.0f;
+		} else if(level > 1.0f) {
+			level = 1.0f;
+		}
 		this.level=level;
+		System.err.println("level=" + level + " in " + this);
 	}
 
 }

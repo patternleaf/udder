@@ -6,12 +6,6 @@ import java.util.Iterator;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.coillighting.udder.MaxBlendOp;
-import com.coillighting.udder.Layer;
-import com.coillighting.udder.MixableBase;
-import com.coillighting.udder.Mixable;
-
-
 /** A concrete scenegraph is implemented as a Mixer with one or more Layers.
  *  Each layer holds an Animator, ordinarily an effect plug-in which draws
  *  part of the scene. The Mixer then composites the complete scene by blending
@@ -22,34 +16,42 @@ public class Mixer extends MixableBase implements Mixable, Iterable<Mixable> {
 	/** In order of composition, i.e. first element is the background layer,
 	 *  last element is the foreground layer.
 	 */
-	private ArrayList<Mixable> layers;
-	private Pixel[] pixels; // the developing frame
-	private int deviceCount = 0;
+	protected ArrayList<Mixable> layers;
+	protected Pixel[] pixels; // the developing frame
+	protected int deviceCount = 0;
 
 	public Mixer(Collection<Mixable> layers) {
 		this.layers = new ArrayList(layers);
 		this.setBlendOp(new MaxBlendOp());
 	}
 
-	public static Class getStateClass() {
-		return Object.class; // TODO
+	public Class getStateClass() {
+		// TODO - let users set all levels for all layers at once
+		return LayerState.class;
 	}
 
 	public Object getState() {
-		// TODO
-		return null;
+		return null; // TODO
 	}
 
 	public void setState(Object state) throws ClassCastException {
-		// TODO
+		this.setLevel(((LayerState)state).getLevel());
 	}
 
-	public Mixable getLayer(int index) {
+	public Mixable getLayer(int index) throws IndexOutOfBoundsException {
 		return this.layers.get(index);
 	}
 
 	public Iterator<Mixable> iterator() {
 		return this.layers.iterator();
+	}
+
+	public int size() {
+		if(this.layers == null) {
+			return 0;
+		} else {
+			return this.layers.size();
+		}
 	}
 
 	/** For each child Mixable (e.g. Layer), draw the subscene and/or update the
@@ -67,13 +69,23 @@ public class Mixer extends MixableBase implements Mixable, Iterable<Mixable> {
 	 *  ending with the foreground.
 	 */
 	public void mixWith(Pixel[] otherPixels) {
-		this.pixels = new Pixel[this.deviceCount];
+		this.pixels = new Pixel[this.deviceCount]; // canvas
+
 		for(int i=0; i<this.pixels.length; i++) {
 			this.pixels[i] = new Pixel(0.0f, 0.0f, 0.0f);
 		}
-		for(Mixable layer : this) {
-			layer.mixWith(this.pixels);
+
+		if(this.level > 0.0) {
+			for(Mixable layer : this) {
+				layer.mixWith(this.pixels);
+			}
+			if(this.level < 1.0) {
+				for(Pixel p: this.pixels) {
+					p.scale(this.level);
+				}
+			}
 		}
+		System.err.println("mixWith: Mixer @" + this.getLevel() + " = " + this.pixels[0]); // TEMP
 	}
 
 	public void patchDevices(List<Device> devices) {

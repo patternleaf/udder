@@ -3,11 +3,6 @@ package com.coillighting.udder;
 import java.lang.UnsupportedOperationException;
 import java.util.List;
 
-import com.coillighting.udder.Effect;
-import com.coillighting.udder.MixableBase;
-import com.coillighting.udder.Mixable;
-
-
 /** A Mixer is typically composed of several Layers. Each Layer is capable of
  *  animating and rendering the whole scene, so the parent Mixer is responsible
  *  for resolving conflicts between each Layer's version of the scene by
@@ -32,17 +27,16 @@ public class Layer extends MixableBase implements Effect, Mixable {
 		this.effect = effect;
 	}
 
-	public static Class getStateClass() {
-		return Object.class; // TODO
+	public Class getStateClass() {
+		return LayerState.class;
 	}
 
 	public Object getState() {
-		// TODO
-		return null;
+		return null; // TODO
 	}
 
 	public void setState(Object state) throws ClassCastException {
-		// TODO
+		this.setLevel(((LayerState)state).getLevel());
 	}
 
 	public void animate(TimePoint timePoint) {
@@ -53,15 +47,17 @@ public class Layer extends MixableBase implements Effect, Mixable {
 		return this.effect.render();
 	}
 
-	public void mixWith(Pixel[] otherPixels) {
-		String before = otherPixels[0].toString();
+	public void mixWith(Pixel[] canvasPixels) {
+		String before = canvasPixels[0].toString(); //TEMP
 		Pixel[] myPixels = this.render();
 		int length = myPixels.length;
-		for(int i=0; i<otherPixels.length && i<myPixels.length; i++) {
-			otherPixels[i].blendWith(myPixels[i], this.level, this.blendOp);
+		int min = canvasPixels.length > myPixels.length ? myPixels.length : canvasPixels.length;
+		for(int i=0; i<min; i++) {
+			canvasPixels[i].blendWith(myPixels[i], this.level, this.blendOp);
 		}
+		// TEMP:
 		String fg = myPixels[0].toString();
-		String after = otherPixels[0].toString();
+		String after = canvasPixels[0].toString();
 		System.err.println("mixWith: " + before + " + " + fg + " @" + this.level + " = " + after);
 	}
 

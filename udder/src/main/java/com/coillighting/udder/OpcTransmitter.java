@@ -7,8 +7,6 @@ import java.net.Socket;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-import com.coillighting.udder.Frame;
-
 /** First stab at an Open Pixel Control network client.
  *  This class is responsible for translating the pixels in mixed down frames
  *  into OPC messages, then transmitting them to the OPC server.
@@ -74,6 +72,7 @@ public class OpcTransmitter implements Runnable {
 						TimeUnit.MINUTES);
 					if(frame != null) {
 						Pixel[] pixels = frame.getPixels();
+						this.log("===============> pixels[0]=" + pixels[0]); // TEMP
 						final int pixelLen = pixels.length;
 						final int subpixelLen = 3 * pixelLen;
 						final int headerLen = 4;
@@ -116,10 +115,28 @@ public class OpcTransmitter implements Runnable {
 						// TODO consider relocating this into Frame
 						int i=SUBPIXEL_START;
 						for(Pixel pixel: pixels) {
-							message[i] = (byte) (0xFF & Double.doubleToLongBits(255.99999999 * pixel.r));
-							message[i+1] = (byte) (0xFF & Double.doubleToLongBits(255.99999999 * pixel.g));
-							message[i+2] = (byte) (0xFF & Double.doubleToLongBits(255.99999999 * pixel.b));
+							message[i] = (byte)(0xFF & (int)(255.99999f * pixel.r));
+							message[i+1] = (byte) (0xFF & (int)(255.99999f * pixel.g));
+							message[i+2] = (byte) (0xFF & (int)(255.99999f * pixel.b));
 							i += 3;
+
+							// message[i] = (byte)(0xFF & Float.floatToIntBits(255.99999f * pixel.r));
+							// if(i == SUBPIXEL_START) { // TEMP
+							// 	this.log("message[start] pixel.r:      " + pixel.r);
+							// 	this.log("message[start] float:        " + 255.99999f * pixel.r);
+							// 	int theint = (int)(255.99999f * pixel.r);
+							// 	this.log("message[start] int:        " + theint);
+							// 	this.log("message[start] &0xFF int:*  " + (0xFF & theint));
+							// 	this.log("message[start] &0xFF (byte):*" + (byte)(0xFF & theint));
+
+							// 	// this.log("message[start] intbits:      " + Float.floatToIntBits(255.99999f * pixel.r));
+							// 	// this.log("message[start] &0xFF int:   " + (0xFF & Float.floatToIntBits(255.99999f * pixel.r)));
+							// 	// this.log("message[start] &0xFF (byte): " + (byte)(0xFF & Float.floatToIntBits(255.99999f * pixel.r)));
+							// }
+							// message[i+1] = (byte) (0xFF & Float.floatToIntBits(255.99999f * pixel.g));
+							// message[i+2] = (byte) (0xFF & Float.floatToIntBits(255.99999f * pixel.b));
+							// i += 3;
+
 						}
 						this.sendBytes(message);
 						this.log("Sent: " + this.formatMessage(message));
@@ -158,9 +175,9 @@ public class OpcTransmitter implements Runnable {
 
 			// Print the first 3 subpixels
 			+ " message:"
-			+ " R" + ((int) message[i++] & 0xFF)
-			+ " G" + ((int) message[i++] & 0xFF)
-			+ " B" + ((int) message[i++] & 0xFF)
+			+ " R" + message[i] + "=" + (((int) message[i++]) & 0xFF)
+			+ " G" + message[i] + "=" + (((int) message[i++]) & 0xFF)
+			+ " B" + message[i] + "=" + (((int) message[i++]) & 0xFF)
 			+ (message.length > 7 ? " ..." : "")
 			+ " ]";
 	}

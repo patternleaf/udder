@@ -3,6 +3,7 @@ package com.coillighting.udder;
 import java.io.PrintStream;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import java.util.Queue;
 
 import org.boon.json.JsonFactory;
@@ -12,24 +13,26 @@ import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.core.Container;
 
-import com.coillighting.udder.Command;
-
-
 /** The HTTP controller for Udder's Simple-brand webserver.
  *  Receives requests, translates them into commands, and responds as needed.
  */
 public class HttpServiceContainer implements Container {
 
-    private Queue<Command> queue; // feed requests to this queue
-    private boolean verbose = false;
-    private int requestIndex = 0; // TEMP count requests to assist debugging
+    protected Queue<Command> queue; // feed requests to this queue
+    protected Map<String, Class> commandMap; // translate JSON to command object
+    protected int requestIndex = 0; // TEMP count requests to assist debugging
+    protected boolean verbose = false;
 
-    public HttpServiceContainer(Queue<Command> queue) {
+    public HttpServiceContainer(Queue<Command> queue, Map<String, Class> commandMap) {
         if(queue==null) {
             throw new NullPointerException(
-                "HelloWorldServer requires a Queue for consuming commands.");
+                "HttpServiceContainer requires a Queue for consuming commands.");
+        } else if(commandMap==null) {
+            throw new NullPointerException(
+                "HttpServiceContainer requires a commandMap for dispatching commands.");
         }
         this.queue = queue;
+        this.commandMap = commandMap;
     }
 
     public void setVerbose(boolean verbose) {
@@ -73,63 +76,36 @@ public class HttpServiceContainer implements Container {
      */
     public Command createCommand(Request request) {
         Command command = null;
-        Object state = null;
-        Integer destination = null; // EXPERIMENTAL!
-
         Query query = request.getQuery();
-        String rawState = query.get("state");
-        String json = URLDecoder.decode(rawState);
         Path path = request.getPath();
-        String directory = path.getDirectory();
-        String[] segments = path.getSegments();
-
-        if(segments.length >= 1) {
-            if(segments[0].equals("mixer0")) {
-                destination = -1;
-                if(segments.length >= 2) {
-
-                    // TODO pass in layer effects' stateclass array to this object
-                    // instead of hardcoding layer
-                    Class stateClass = null;
-                    String key = segments[1];
-                    if(key.equals("layer0")) {
-                        // Color or color cycling modulation.
-                        // Route to the Background layer.
-                        stateClass = MonochromeEffect.getStateClass();
-                        destination = 0;
-                    } else if(key.equals("layer1")) {
-                        // Color gradient or color cycling automation.
-                        // Route to the Rainbow Stupidity layer.
-                        // TODO: gradient, not monochrome here.
-                        stateClass = MonochromeEffect.getStateClass();
-                        destination = 1;
-                    } else if(key.equals("layer2")) {
-                        // Route eric's pixels to the External Input layer.
-                        stateClass = RasterEffect.getStateClass();
-                        destination = 2;
-                    } else if(key.equals("layer3")) {
-                        // Color or color cycling modulation.
-                        // Route to the Gel layer.
-                        stateClass = MonochromeEffect.getStateClass();
-                        destination = 3;
-                    }
-
-                    if(stateClass != null) {
-                        state = JsonFactory.fromJson(json, stateClass);
-                    }
-                }
-            } else if(segments[0].equals("timer0")) {
-                // Timebase modulation. Route to ShowRunner.
-                destination = -2;
-            }
-        }
-
-        if(state == null) {
-            this.log("No route for path: " + path);
+        String route = path.toString();
+        Class stateClass = this.commandMap.get(route);
+        if(stateClass == null) {
+            this.log("No route for path: " + route);
+            this.log("Available routes:\n    "
+                + Util.join(Util.sorted(this.commandMap.keySet()), "\n    "));
         } else {
-            // TODO - route the command to a specific layer
-            command = new Command(state, destination);
-            this.log("command=Command("+command.getValue()+", " + command.getDestination() + ")"); // TEMP
+            String rawState = query.get("state");
+            if(rawState == null) {
+                this.log("The 'state' request param is required for " + route);
+            } else {
+                String json = URLDecoder.decode(rawState);
+                if(json == null) {
+                    this.log("Failed to URL-decode a raw JSON string for " + route);
+                }
+
+                Object state = JsonFactory.fromJson(json, stateClass);
+                if(state == null) {
+                    this.log("Failed to deserialize a JSON command of length "
+                        + json.length() + " for path " + route);
+                } else if(state.getClass() == stateClass) {
+                    command = new Command(route, state);
+                } else {
+                    this.log("Failed to convert a command of length "
+                        + json.length() + " for path " + route + " into a "
+                        + stateClass.getSimpleName() + ".");
+                }
+            }
         }
         return command;
     }
@@ -142,13 +118,11 @@ public class HttpServiceContainer implements Container {
         // NOTE For asynch response mode, see "asynchronous services" here:
         // http://www.simpleframework.org/doc/tutorial/tutorial.php
 
-        this.log("handle()");
         try {
-            final int index = this.requestIndex;
-            ++this.requestIndex;
+            int index = this.requestIndex;
+            ++this.requestIndex; // Increment before possible exception.
 
-            final String response_body =
-                "Hello, this is the Simple webserver. [" + index + "]";
+            String response_body ="OK [" + index + "]";
 
             PrintStream body = response.getPrintStream();
             long time = System.currentTimeMillis();
@@ -160,12 +134,6 @@ public class HttpServiceContainer implements Container {
 
             body.println(response_body);
             body.close();
-
-            // Simulate parsing of a request payload
-            // Command simCommand = new Command(index);
-            // String json = JsonFactory.toJson(simCommand);
-            // this.log(json);
-            // Command command = JsonFactory.fromJson(json, Command.class);
 
             Command command = this.createCommand(request);
             if(command == null) {

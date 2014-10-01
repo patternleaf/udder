@@ -2,9 +2,6 @@ package com.coillighting.udder;
 
 import java.util.List;
 
-import com.coillighting.udder.Effect;
-
-
 public abstract class EffectBase implements Effect {
 
 	protected Pixel[] pixels = null;

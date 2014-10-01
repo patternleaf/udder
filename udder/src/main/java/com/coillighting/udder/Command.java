@@ -9,15 +9,19 @@ package com.coillighting.udder;
 public class Command {
 
     private Object value = null;
-    private Integer destination = null;
+    private String path = null;
 
-    public Command(Object value, Integer destination) {
+    public Command(String path, Object value) {
         this.value = value;
-        this.destination = destination;
+        this.path = path;
     }
 
     public String toString() {
-        return "Command{value=" + this.value + "}";
+        String v = null;
+        if(value!=null) {
+            v = value.getClass().getSimpleName();
+        }
+        return "Command(" + path + ", " + v + ")";
     }
 
     public Object getValue() {
@@ -28,11 +32,11 @@ public class Command {
         this.value = value;
     }
 
-    public Integer getDestination() {
-        return this.destination;
+    public String getPath() {
+        return this.path;
     }
 
-    public void setDestination(Integer destination) {
-        this.destination = destination;
+    public void setPath(String path) {
+        this.path = path;
     }
 }

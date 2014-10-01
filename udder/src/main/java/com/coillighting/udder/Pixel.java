@@ -1,7 +1,5 @@
 package com.coillighting.udder;
 
-import com.coillighting.udder.BlendOp;
-
 /** A simple data structure for representing high-resolution RGB pixel data.
  *  We eventually mix down to 8 bit RGB, but we animate and mix in this high
  *  resolution (3x float) space. We have this luxury because our fixtures are
@@ -34,6 +32,12 @@ public class Pixel {
 		this.b = b;
 	}
 
+	public void scale(float scale) {
+		this.r *= scale;
+		this.g *= scale;
+		this.b *= scale;
+	}
+
 	public void setColor(Pixel pixel) {
 		if(pixel == null) {
 			throw new NullPointerException("A null pixel has no color.");
@@ -50,7 +54,8 @@ public class Pixel {
 			this.setColor(
 				blendOp.blend(this.r, level * foreground.r),
 				blendOp.blend(this.g, level * foreground.g),
-				blendOp.blend(this.b, level * foreground.b));
+				blendOp.blend(this.b, level * foreground.b)
+			);
 		}
 		else if(foreground == null) { // TEMP- DEBUG
 			System.err.println("Warning: null foreground");

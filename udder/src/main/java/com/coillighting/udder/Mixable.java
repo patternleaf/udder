@@ -1,10 +1,5 @@
 package com.coillighting.udder;
 
-import com.coillighting.udder.Effect;
-import com.coillighting.udder.BlendOp;
-import com.coillighting.udder.Pixel;
-import com.coillighting.udder.TimePoint;
-
 /** We typically construct scenes from multiple conflicting Mixable sources,
  *  but there is a single physical display. Resolving conflicts between sources
  *  is called blending.

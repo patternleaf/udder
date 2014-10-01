@@ -13,12 +13,6 @@ import org.simpleframework.transport.connect.Connection;
 import org.simpleframework.transport.connect.SocketConnection;
 import org.simpleframework.transport.Server;
 
-import com.coillighting.udder.Command;
-import com.coillighting.udder.HttpServiceContainer;
-import com.coillighting.udder.OpcTransmitter;
-import com.coillighting.udder.ShowRunner;
-
-
 /** Udder's central patchbay. Owns references to all of the persistent entities
  *  in the program. Manages Thread lifecycles for each components.
  *
@@ -28,19 +22,20 @@ import com.coillighting.udder.ShowRunner;
 public class ServicePipeline {
 
 	// Roughly in order of dependency:
-	private boolean verbose = false;
-	private Mixer mixer;
-	private Queue<Command> commandQueue;
-	private BlockingQueue<Frame> frameQueue;
-	private HttpServiceContainer httpServiceContainer;
-	private Server server;
-	private int listenPort = 8080;
-	private SocketAddress listenAddress;
-	private Connection serverConnection;
-	private ShowRunner showRunner;
-	private Thread showThread;
-	private OpcTransmitter opcTransmitter;
-	private Thread transmitterThread;
+	protected boolean verbose = false;
+	protected Mixer mixer;
+	protected Router router;
+	protected Queue<Command> commandQueue;
+	protected BlockingQueue<Frame> frameQueue;
+	protected HttpServiceContainer httpServiceContainer;
+	protected Server server;
+	protected int listenPort = 8080;
+	protected SocketAddress listenAddress;
+	protected Connection serverConnection;
+	protected ShowRunner showRunner;
+	protected Thread showThread;
+	protected OpcTransmitter opcTransmitter;
+	protected Thread transmitterThread;
 
 	public ServicePipeline(Mixer mixer) throws IOException {
 		if(mixer == null) {
@@ -48,18 +43,26 @@ public class ServicePipeline {
 				"ServicePipeline requires a Mixer that defines the scene.");
 		}
 		this.mixer = mixer;
+		this.router = new Router();
+
+		// TODO variable base path token for mixer - add constructor arg
+		this.router.addRoutes("mixer0", this.mixer);
+
         // TODO args or properties to set connection binding params,
         // framerate, runmode, log level, etc.
 		this.verbose = true;
         this.commandQueue = new ConcurrentLinkedQueue<Command>();
         this.frameQueue = new LinkedBlockingQueue(32); // TODO shrink buffer size
-        this.showRunner = new ShowRunner(this.commandQueue, this.mixer, this.frameQueue);
+        this.showRunner = new ShowRunner(this.commandQueue, this.mixer,
+        	this.router, this.frameQueue);
         this.showThread = new Thread(this.showRunner);
         this.opcTransmitter = new OpcTransmitter(this.frameQueue);
         this.transmitterThread = new Thread(this.opcTransmitter);
 
         // TODO rename to HttpServiceContainer or something
-        this.httpServiceContainer = new HttpServiceContainer(this.commandQueue);
+        this.httpServiceContainer = new HttpServiceContainer(
+        	this.commandQueue,
+        	this.router.getCommandMap());
         this.httpServiceContainer.setVerbose(this.verbose);
 
         this.server = new ContainerServer((Container) this.httpServiceContainer);

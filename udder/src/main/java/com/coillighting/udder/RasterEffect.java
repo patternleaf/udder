@@ -2,10 +2,6 @@ package com.coillighting.udder;
 
 import java.util.List;
 
-import com.coillighting.udder.EffectBase;
-import com.coillighting.udder.RgbaRaster;
-
-
 public class RasterEffect extends EffectBase {
 
 	public RasterEffect(RgbaRaster raster) {
@@ -21,7 +17,7 @@ public class RasterEffect extends EffectBase {
 		}
 	}
 
-	public static Class getStateClass() {
+	public Class getStateClass() {
 		return RgbaRaster.class;
 	}
 
@@ -54,7 +50,6 @@ public class RasterEffect extends EffectBase {
 			for(int i=0; i<rgbaPixels.length && i<this.pixels.length; i++) {
 				this.pixels[i].setColor(rgbaPixels[i]);
 			}
-			System.err.println("setPixels[0] cp " + rgbaPixels[0] + " to " + this.pixels[0] + " ~~~~~~~~~~~~~~");
 		}
 	}
 

@@ -14,7 +14,7 @@ public class MonochromeEffect extends EffectBase {
 		this.setColor(color);
 	}
 
-	public static Class getStateClass() {
+	public Class getStateClass() {
 		return Pixel.class;
 	}
 
