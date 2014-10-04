@@ -35,7 +35,13 @@ Fade-in and fade-out timing variable.
 Render as if the figure is rectilinear, BUT
 Offer a linear distortion of a 4-point control polygon so that they can shrink-to-fit onsite.
 Possibly do gate 1 first, then gate 2.
-Possibly implement as a composite of (background as a single pixel) + (warp as a single oversampled scanline of pixels) + (weft as two oversampled scanlines)?
-Alternately implement as a composite of (background pixel) + (warp as a scanline of n pixels, where n is the number of warp stripes to fit into the figure) + (weft as two such scanlines)?
-...and then in either case map Devices onto those scanlines by interpolating from the highrez model to the lowrez buffers, poss. w/antialiasing.
-
+Alternately implement as a composite of three rendered microrasters:
+    background: 1 pixel
+  + warp: a scanline of a*b*n pixels, where
+      n is the number of warp stripes to fit into the figure
+      a is the proportion of warp stripe width
+      b is the proportion of black bg between stripes
+  + weft as a 2abn raster like warp, where
+      column[0] is the idealized left edge, and
+      column[1] is the idealized right edge
+...and then in either case map Devices onto those scanlines by interpolating into the highrez model pixels from the lowrez buffers, poss. with oversampling/antialiasing.
