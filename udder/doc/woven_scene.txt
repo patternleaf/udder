@@ -1,40 +1,48 @@
 Cue 0: Blackout
+---------------
 All other active layers fade to black.
 
 Cue 1: Curtain
+--------------
 Fade in faint background color.
 To fade out slowly through the following cue.
 
 Cue 2: Warp
+-----------
 Monochromatic vertical stripes fill from right to left of the figure.
 Between each stripe is a gap where the background shows through.
 Background fades out.
 (Bonus points: variegated warp. Low priority.)
 (Bonus points: cursor draws attention to active sites in the fill.)
 
-
 Cue 3: Weft
+-----------
 Monochromatic horizontal sawtooth ping-pong fill from the bottom to top of the figure.
-Max (or add?) blend of warp and weft.
+The scan pattern starts from the lower right corner.
+Max (or add?) blend of warp + weft layers.
 Between each hotspot is a gap where the warp shows through.
 (Bonus points: cursor continues to draw attention to activity in the fill.)
 
 Cue 4: Finale
+-------------
 Visually punctuate the completion of the figure (to taste).
 Fade to black.
 
 Cue 5: Return to default state
+------------------------------
 All other active layers fade in. (See Cue 0.)
 
 Notes
+-----
 Stripe frequency and proportional foreground/background widths variable.
 Warp and weft colors variable.
 Horizontal and vertical fill timing variable.
 Possibly ease the fade-in of each stripe or ping-pong hotspot.
 Fade-in and fade-out timing variable.
 Render as if the figure is rectilinear, BUT
-Offer a linear distortion of a 4-point control polygon so that they can shrink-to-fit onsite.
 Possibly do gate 1 first, then gate 2.
+Offer a linear distortion of a 4-point control polygon so that they can shrink-to-fit onsite.
+Possibly expand the distortion control polygon into an 8-point control cube.
 Alternately implement as a composite of three rendered microrasters:
     background: 1 pixel
   + warp: a scanline of a*b*n pixels, where
@@ -44,4 +52,7 @@ Alternately implement as a composite of three rendered microrasters:
   + weft as a 2abn raster like warp, where
       column[0] is the idealized left edge, and
       column[1] is the idealized right edge
-...and then in either case map Devices onto those scanlines by interpolating into the highrez model pixels from the lowrez buffers, poss. with oversampling/antialiasing.
+  + tbd optional cursor implmentation, which might be incorporated into the above layers.
+...and then in either case map Devices onto those scanlines by interpolating
+	into the highrez model pixels from the lowrez buffers, poss. with
+	oversampling/antialiasing.
