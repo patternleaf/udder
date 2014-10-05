@@ -1,3 +1,6 @@
+Scene: Woven ("Luminescence" archways at the Boulder Dairy)
+===========================================================
+
 Cue 0: Blackout
 ---------------
 All other active layers fade to black.
