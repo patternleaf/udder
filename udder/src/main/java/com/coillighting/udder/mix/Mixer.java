@@ -1,10 +1,15 @@
-package com.coillighting.udder;
+package com.coillighting.udder.mix;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.coillighting.udder.Device;
+import com.coillighting.udder.MaxBlendOp;
+import com.coillighting.udder.Pixel;
+import com.coillighting.udder.TimePoint;
 
 /** A concrete scenegraph is implemented as a Mixer with one or more Layers.
  *  Each layer holds an Animator, ordinarily an effect plug-in which draws

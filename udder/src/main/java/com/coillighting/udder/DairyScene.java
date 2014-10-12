@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.coillighting.udder.mix.*;
+
 /** Define the scenegraph for the December, 2014 weavers' conference at
  *  Boulder's Dairy Center for the Arts (thedairy.org). An Udder scenegraph
  *  has as its root a Mixer object, and each layer in the scene is backed by

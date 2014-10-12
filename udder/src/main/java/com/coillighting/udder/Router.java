@@ -3,6 +3,13 @@ package com.coillighting.udder;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.coillighting.udder.mix.Layer;
+import com.coillighting.udder.mix.Mixable;
+import com.coillighting.udder.mix.Mixer;
+
+/** Route command names (ordinarily derives from HTTP request URLs) to their
+ *  consumers in a Mixer tree.
+ */
 public class Router {
 
 	protected HashMap<String, Effect> routes = null;

@@ -2,6 +2,9 @@ package com.coillighting.udder;
 
 import java.util.Queue;
 
+import com.coillighting.udder.mix.Frame;
+import com.coillighting.udder.mix.Mixer;
+
 /** A ShowRunner owns all the infrastructure required to pump events through
  *  a Mixer which implements the current scenegraph. This object owns the scene
  *  itself, while its neighbors manage the infrastructure.

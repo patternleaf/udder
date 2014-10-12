@@ -1,4 +1,4 @@
-package com.coillighting.udder;
+package com.coillighting.udder.mix;
 
 /** A simple datastructure wrapping layer-related state. This is a mapping
  *  target for the Boon JSON loader. LayerState objects become Command payloads.

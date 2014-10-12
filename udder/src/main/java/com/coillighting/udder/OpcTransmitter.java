@@ -7,6 +7,8 @@ import java.net.Socket;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import com.coillighting.udder.mix.Frame;
+
 /** First stab at an Open Pixel Control network client.
  *  This class is responsible for translating the pixels in mixed down frames
  *  into OPC messages, then transmitting them to the OPC server.
