@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
-mvn clean
-mvn package
+# -q hides INFO messages
+mvn -q clean
+mvn -q package
