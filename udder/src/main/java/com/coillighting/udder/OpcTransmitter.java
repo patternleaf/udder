@@ -24,7 +24,7 @@ import com.coillighting.udder.mix.Frame;
 public class OpcTransmitter implements Runnable {
 
 	private BlockingQueue<Frame> frameQueue;
-	private int maxDelayMinutes;
+	private int maxDelayMillis;
 	private Socket socket;
 	private DataOutputStream dataOutputStream;
 	private String serverAddress;
@@ -36,7 +36,7 @@ public class OpcTransmitter implements Runnable {
 				"ShowRunner requires a queue that supplies frames.");
 		}
 		this.frameQueue = frameQueue;
-		this.maxDelayMinutes = 1;
+		this.maxDelayMillis = 1500; // TODO: tune this
 
 		// TODO: pass in the user-configured properties as params
 		this.serverAddress = "127.0.0.1";
@@ -68,10 +68,11 @@ public class OpcTransmitter implements Runnable {
 	public void run() {
 		try {
 			this.log("Starting OPC transmitter.");
+			byte[] message = null;
 			while(true) {
 				try {
-					Frame frame = this.frameQueue.poll(this.maxDelayMinutes,
-						TimeUnit.MINUTES);
+					Frame frame = this.frameQueue.poll(this.maxDelayMillis,
+						TimeUnit.MILLISECONDS);
 					if(frame != null) {
 						Pixel[] pixels = frame.getPixels();
 						this.log("===============> pixels[0]=" + pixels[0]); // TEMP
@@ -79,7 +80,7 @@ public class OpcTransmitter implements Runnable {
 						final int subpixelLen = 3 * pixelLen;
 						final int headerLen = 4;
 						final int messageLen = headerLen + subpixelLen;
-						byte[] message = new byte[messageLen];
+						message = new byte[messageLen]; // TODO: recycle if len identical
 
 						// boolean test = false;
 						// if(test) {
@@ -148,8 +149,11 @@ public class OpcTransmitter implements Runnable {
 						// the last frame, in case the remote OPC server process was
 						// restarted and needs its state refreshed.
 						this.log("Received no new frame in the past "
-							+ this.maxDelayMinutes + " minutes. Retransmitting the "
-							+ "previous frame (TODO).");
+							+ this.maxDelayMillis + " milliseconds. Retransmitting the "
+							+ "previous frame (if any).");
+						if(message != null) {
+							this.sendBytes(message);
+						}
 					}
 				} catch(IOException e) {
 					this.log("\nERROR -----------------------------------------");
