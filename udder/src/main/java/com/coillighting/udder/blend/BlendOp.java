@@ -1,5 +1,4 @@
-package com.coillighting.udder;
-
+package com.coillighting.udder.blend;
 
 /** A colorspace-agnostic, per-channel blending function. We build up
  *  colorspace-specific blend modes by combining blend ops. You can construct

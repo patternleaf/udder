@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.coillighting.udder.BlendOp;
+import com.coillighting.udder.blend.BlendOp;
+import com.coillighting.udder.blend.MaxBlendOp;
+import com.coillighting.udder.blend.MultiplyBlendOp;
 import com.coillighting.udder.effect.MonochromeEffect;
 import com.coillighting.udder.effect.RasterEffect;
 import com.coillighting.udder.effect.woven.WovenEffect;
-import com.coillighting.udder.MaxBlendOp;
-import com.coillighting.udder.MultiplyBlendOp;
 import com.coillighting.udder.Device;
 import com.coillighting.udder.mix.*;
 import com.coillighting.udder.Pixel;

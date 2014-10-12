@@ -1,5 +1,7 @@
 package com.coillighting.udder;
 
+import com.coillighting.udder.blend.BlendOp;
+
 /** A simple data structure for representing high-resolution RGB pixel data.
  *  We eventually mix down to 8 bit RGB, but we animate and mix in this high
  *  resolution (3x float) space. We have this luxury because our fixtures are

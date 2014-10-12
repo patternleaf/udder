@@ -6,8 +6,8 @@ import java.util.Iterator;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.coillighting.udder.blend.MaxBlendOp;
 import com.coillighting.udder.Device;
-import com.coillighting.udder.MaxBlendOp;
 import com.coillighting.udder.Pixel;
 import com.coillighting.udder.TimePoint;
 

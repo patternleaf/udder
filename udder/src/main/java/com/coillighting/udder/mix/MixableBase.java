@@ -1,6 +1,6 @@
 package com.coillighting.udder.mix;
 
-import com.coillighting.udder.BlendOp;
+import com.coillighting.udder.blend.BlendOp;
 import com.coillighting.udder.Pixel;
 import com.coillighting.udder.TimePoint;
 

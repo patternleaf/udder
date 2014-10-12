@@ -1,4 +1,4 @@
-package com.coillighting.udder;
+package com.coillighting.udder.blend;
 
 public class MaxBlendOp implements BlendOp {
 
