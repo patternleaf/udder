@@ -1,4 +1,4 @@
-package com.coillighting.udder;
+package com.coillighting.udder.filter;
 
 
 public interface DiscreteLinearFilter {
