@@ -128,7 +128,8 @@ public class HttpServiceContainer implements Container {
             long time = System.currentTimeMillis();
 
             response.setValue("Content-Type", "text/plain");
-            response.setValue("Server", "HelloWorld/1.0 (Simple 4.0)");
+            response.setValue("Server", "Udder/1.0 (Simple 4.0)");
+            response.setValue("Access-Control-Allow-Origin", "*");
             response.setDate("Date", time);
             response.setDate("Last-Modified", time);
 
