@@ -9,7 +9,7 @@ public interface Cue extends Animator {
      */
     public void reset();
 
-    public long getDuration();
+    public void setDuration(long duration);
     public long getDuration();
 
     /** Set the pixels that we'll be drawing on, then reset(). */
