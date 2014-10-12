@@ -16,7 +16,7 @@ public class WovenEffect extends EffectBase {
     protected Cue currentCue = null;
     protected CueEnum currentStep = null;
 
-    public WovenScene() {
+    public WovenEffect() {
         cues = new LinkedHashMap<CueEnum, Cue>();
         cues.put(BLACKOUT, new BlackoutCue(1000));
         cues.put(CURTAIN, new CurtainCue(1000));
