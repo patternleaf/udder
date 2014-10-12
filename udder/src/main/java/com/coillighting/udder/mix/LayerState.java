@@ -5,15 +5,15 @@ package com.coillighting.udder.mix;
  */
 public class LayerState {
 
-	// Just level so far, but eventually probably also at least one LFO.
-	protected float level = 0.0f;
+    // Just level so far, but eventually probably also at least one LFO.
+    protected float level = 0.0f;
 
-	public LayerState(float level) {
-		this.level = level;
-	}
+    public LayerState(float level) {
+        this.level = level;
+    }
 
-	public float getLevel() {
-		return this.level;
-	}
+    public float getLevel() {
+        return this.level;
+    }
 
 }

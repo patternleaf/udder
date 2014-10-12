@@ -13,7 +13,7 @@ package com.coillighting.udder;
  *          {"point": [1.32, 0.00, 1.32]},
  *          {"point": [1.32, 0.00, 1.21]},
  *          {"point": [1.32, 0.00, 1.10]}
- *		]
+ *      ]
  *
  *  Like Command and PatchElement, this class is structured for compatibility
  *  with the Boon JsonFactory, which automatically binds JSON bidirectionally
@@ -30,19 +30,19 @@ package com.coillighting.udder;
  */
 public class OpcLayoutPoint {
 
-	private double[] point;
+    private double[] point;
 
-	public OpcLayoutPoint(double[] point) {
-		if(point == null) {
-			throw new NullPointerException("point is null");
-		} else if(point.length != 3) {
-			throw new IllegalArgumentException("invalid point length " + point.length);
-		}
-		this.point = point;
-	}
+    public OpcLayoutPoint(double[] point) {
+        if(point == null) {
+            throw new NullPointerException("point is null");
+        } else if(point.length != 3) {
+            throw new IllegalArgumentException("invalid point length " + point.length);
+        }
+        this.point = point;
+    }
 
-	public double[] getPoint() {
-		return this.point;
-	}
+    public double[] getPoint() {
+        return this.point;
+    }
 
 }

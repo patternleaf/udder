@@ -18,92 +18,92 @@ import com.coillighting.udder.TimePoint;
  */
 public class Mixer extends MixableBase implements Mixable, Iterable<Mixable> {
 
-	/** In order of composition, i.e. first element is the background layer,
-	 *  last element is the foreground layer.
-	 */
-	protected ArrayList<Mixable> layers;
-	protected Pixel[] pixels; // the developing frame
-	protected int deviceCount = 0;
+    /** In order of composition, i.e. first element is the background layer,
+     *  last element is the foreground layer.
+     */
+    protected ArrayList<Mixable> layers;
+    protected Pixel[] pixels; // the developing frame
+    protected int deviceCount = 0;
 
-	public Mixer(Collection<Mixable> layers) {
-		this.layers = new ArrayList(layers);
-		this.setBlendOp(new MaxBlendOp());
-	}
+    public Mixer(Collection<Mixable> layers) {
+        this.layers = new ArrayList(layers);
+        this.setBlendOp(new MaxBlendOp());
+    }
 
-	public Class getStateClass() {
-		// TODO - let users set all levels for all layers at once
-		return LayerState.class;
-	}
+    public Class getStateClass() {
+        // TODO - let users set all levels for all layers at once
+        return LayerState.class;
+    }
 
-	public Object getState() {
-		return null; // TODO
-	}
+    public Object getState() {
+        return null; // TODO
+    }
 
-	public void setState(Object state) throws ClassCastException {
-		this.setLevel(((LayerState)state).getLevel());
-	}
+    public void setState(Object state) throws ClassCastException {
+        this.setLevel(((LayerState)state).getLevel());
+    }
 
-	public Mixable getLayer(int index) throws IndexOutOfBoundsException {
-		return this.layers.get(index);
-	}
+    public Mixable getLayer(int index) throws IndexOutOfBoundsException {
+        return this.layers.get(index);
+    }
 
-	public Iterator<Mixable> iterator() {
-		return this.layers.iterator();
-	}
+    public Iterator<Mixable> iterator() {
+        return this.layers.iterator();
+    }
 
-	public int size() {
-		if(this.layers == null) {
-			return 0;
-		} else {
-			return this.layers.size();
-		}
-	}
+    public int size() {
+        if(this.layers == null) {
+            return 0;
+        } else {
+            return this.layers.size();
+        }
+    }
 
-	/** For each child Mixable (e.g. Layer), draw the subscene and/or update the
-	 *  state of the child's (Layer's) animator given the current time. After
-	 *  animating, all children (Layers) will be ready to render their current
-	 *  state as Pixels.
-	 */
-	public void animate(TimePoint timePoint) {
-		for(Mixable layer : this) {
-			layer.animate(timePoint);
-		}
-	}
+    /** For each child Mixable (e.g. Layer), draw the subscene and/or update the
+     *  state of the child's (Layer's) animator given the current time. After
+     *  animating, all children (Layers) will be ready to render their current
+     *  state as Pixels.
+     */
+    public void animate(TimePoint timePoint) {
+        for(Mixable layer : this) {
+            layer.animate(timePoint);
+        }
+    }
 
-	/** Mix the output of each child (Layer), starting with the background and
-	 *  ending with the foreground.
-	 */
-	public void mixWith(Pixel[] otherPixels) {
-		this.pixels = new Pixel[this.deviceCount]; // canvas
+    /** Mix the output of each child (Layer), starting with the background and
+     *  ending with the foreground.
+     */
+    public void mixWith(Pixel[] otherPixels) {
+        this.pixels = new Pixel[this.deviceCount]; // canvas
 
-		for(int i=0; i<this.pixels.length; i++) {
-			this.pixels[i] = new Pixel(0.0f, 0.0f, 0.0f);
-		}
+        for(int i=0; i<this.pixels.length; i++) {
+            this.pixels[i] = new Pixel(0.0f, 0.0f, 0.0f);
+        }
 
-		if(this.level > 0.0) {
-			for(Mixable layer : this) {
-				layer.mixWith(this.pixels);
-			}
-			if(this.level < 1.0) {
-				for(Pixel p: this.pixels) {
-					p.scale(this.level);
-				}
-			}
-		}
-		System.err.println("mixWith: Mixer @" + this.getLevel() + " = " + this.pixels[0]); // TEMP
-	}
+        if(this.level > 0.0) {
+            for(Mixable layer : this) {
+                layer.mixWith(this.pixels);
+            }
+            if(this.level < 1.0) {
+                for(Pixel p: this.pixels) {
+                    p.scale(this.level);
+                }
+            }
+        }
+        System.err.println("mixWith: Mixer @" + this.getLevel() + " = " + this.pixels[0]); // TEMP
+    }
 
-	public void patchDevices(List<Device> devices) {
-		this.deviceCount = devices.size();
-		for(Mixable layer : layers) {
-			layer.patchDevices(devices);
-		}
-	}
+    public void patchDevices(List<Device> devices) {
+        this.deviceCount = devices.size();
+        for(Mixable layer : layers) {
+            layer.patchDevices(devices);
+        }
+    }
 
-	public Pixel[] render() {
-		// FIXME make a whole new frame? or copy the developed frame before giving it away? clarify ownership.
-		this.mixWith(this.pixels);
-		return this.pixels;
-	}
+    public Pixel[] render() {
+        // FIXME make a whole new frame? or copy the developed frame before giving it away? clarify ownership.
+        this.mixWith(this.pixels);
+        return this.pixels;
+    }
 
 }

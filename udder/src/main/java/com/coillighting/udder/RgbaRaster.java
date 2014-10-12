@@ -5,15 +5,15 @@ package com.coillighting.udder;
  */
 public class RgbaRaster {
 
-	private Integer[] pixels = null;
+    private Integer[] pixels = null;
 
-	public RgbaRaster(Integer[] pixels) {
-		// TODO assert not null
-		this.pixels = pixels;
-	}
+    public RgbaRaster(Integer[] pixels) {
+        // TODO assert not null
+        this.pixels = pixels;
+    }
 
-	public Integer[] getPixels() {
-		return this.pixels;
-	}
+    public Integer[] getPixels() {
+        return this.pixels;
+    }
 
 }

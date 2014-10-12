@@ -8,9 +8,9 @@ package com.coillighting.udder.blend;
  */
 public interface BlendOp {
 
-	/** Blend the channel value in foreground with the value in background, and
-	 *  return the result.
-	 */
-	public float blend(float background, float foreground);
+    /** Blend the channel value in foreground with the value in background, and
+     *  return the result.
+     */
+    public float blend(float background, float foreground);
 
 }
