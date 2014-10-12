@@ -21,46 +21,46 @@ import com.coillighting.udder.Pixel;
  */
 public abstract class DairyScene {
 
-	/** Instantiate a new scene in the form of a Mixer. */
-	public static Mixer create(List<Device> devices) {
-		BlendOp max = new MaxBlendOp();
-		BlendOp mult = new MultiplyBlendOp();
+    /** Instantiate a new scene in the form of a Mixer. */
+    public static Mixer create(List<Device> devices) {
+        BlendOp max = new MaxBlendOp();
+        BlendOp mult = new MultiplyBlendOp();
 
-		// A basic three-layer look to get started.
-		Layer background = new Layer("Background",
-			new MonochromeEffect(Pixel.black()));
-		background.setBlendOp(max);
+        // A basic three-layer look to get started.
+        Layer background = new Layer("Background",
+            new MonochromeEffect(Pixel.black()));
+        background.setBlendOp(max);
 
-		Layer woven = new Layer("Woven", new WovenEffect());
-		woven.setBlendOp(max);
+        Layer woven = new Layer("Woven", new WovenEffect());
+        woven.setBlendOp(max);
 
-		Layer externalRaster = new Layer("External input",
-			new RasterEffect(null));
-		externalRaster.setBlendOp(max);
+        Layer externalRaster = new Layer("External input",
+            new RasterEffect(null));
+        externalRaster.setBlendOp(max);
 
-		Layer gel = new Layer("Gel", new MonochromeEffect(Pixel.black()));
-		gel.setBlendOp(mult);
+        Layer gel = new Layer("Gel", new MonochromeEffect(Pixel.black()));
+        gel.setBlendOp(mult);
 
-		// Add layers from bottom (background) to top (foreground), i.e. in
-		// order of composition.
-		ArrayList<Mixable> layers = new ArrayList<Mixable>(3);
-		layers.add(background);
-		layers.add(woven);
-		layers.add(externalRaster);
-		layers.add(gel);
+        // Add layers from bottom (background) to top (foreground), i.e. in
+        // order of composition.
+        ArrayList<Mixable> layers = new ArrayList<Mixable>(3);
+        layers.add(background);
+        layers.add(woven);
+        layers.add(externalRaster);
+        layers.add(gel);
 
-		Mixer mixer = new Mixer((Collection<Mixable>) layers);
-		mixer.patchDevices(devices);
-		System.err.println("Patched " + devices.size()
-			+ " devices to the DairyScene's Mixer.");
+        Mixer mixer = new Mixer((Collection<Mixable>) layers);
+        mixer.patchDevices(devices);
+        System.err.println("Patched " + devices.size()
+            + " devices to the DairyScene's Mixer.");
 
-		for(Mixable layer: mixer) {
-			layer.setLevel(0.0f);
-		}
-		externalRaster.setLevel(1.0f);
-		mixer.setLevel(1.0f);
+        for(Mixable layer: mixer) {
+            layer.setLevel(0.0f);
+        }
+        externalRaster.setLevel(1.0f);
+        mixer.setLevel(1.0f);
 
-		return mixer;
-	}
+        return mixer;
+    }
 
 }
