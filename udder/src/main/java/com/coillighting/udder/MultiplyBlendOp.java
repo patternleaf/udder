@@ -1,9 +1,9 @@
 package com.coillighting.udder;
 
-public class MaxBlendOp implements BlendOp {
+public class MultiplyBlendOp implements BlendOp {
 
 	public float blend(float background, float foreground) {
-		float val = background >= foreground ? background : foreground;
+		float val = background * foreground;
 		if(val < 0.0) {
 			val = 0.0;
 		} else if(val > 1.0) {
