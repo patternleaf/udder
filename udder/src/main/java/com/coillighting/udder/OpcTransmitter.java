@@ -148,11 +148,15 @@ public class OpcTransmitter implements Runnable {
 						// If there are no incoming frames, periodically retransmit
 						// the last frame, in case the remote OPC server process was
 						// restarted and needs its state refreshed.
-						this.log("Received no new frame in the past "
-							+ this.maxDelayMillis + " milliseconds. Retransmitting the "
-							+ "previous frame (if any).");
 						if(message != null) {
+							this.log("Received no new frame in the past "
+								+ this.maxDelayMillis
+								+ " milliseconds. Retransmitting the previous frame.");
 							this.sendBytes(message);
+						} else {
+							this.log("Received no new frame in the past "
+								+ this.maxDelayMillis
+								+ " milliseconds. Awaiting the first frame.");
 						}
 					}
 				} catch(IOException e) {
