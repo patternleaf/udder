@@ -1,4 +1,4 @@
-package com.coillighting.udder.woven;
+package com.coillighting.udder.scene.woven;
 
 public class CueBase implements Cue {
 
