@@ -1,14 +1,14 @@
-package com.coillighting.udder.scene.woven;
+package com.coillighting.udder.effect.woven;
 
 import java.util.LinkedHashMap;
 
 import com.coillighting.udder.effect.EffectBase;
-import static com.coillighting.udder.scene.woven.CueEnum.*;
+import static com.coillighting.udder.effect.woven.CueEnum.*;
 
-public class WovenScene extends EffectBase {
+public class WovenEffect extends EffectBase {
 
     /** The cuesheet represents the cues that will be run the next time the
-     *  scene reaches that state. If the current cue is edited, the cuesheet is
+     *  effect reaches that state. If the current cue is edited, the cuesheet is
      *  changed, but not the running cue, in order to avoid corrupting or
      *  recomputing its state.
      */
@@ -24,6 +24,7 @@ public class WovenScene extends EffectBase {
         cues.put(WEFT, new WeftCue(3000));
         cues.put(FINALE, new FinaleCue(2000));
         cues.put(FADEOUT, new FadeOutCue(1000));
+        this.reset();
     }
 
     /** Stop processing cues and clear their states. */

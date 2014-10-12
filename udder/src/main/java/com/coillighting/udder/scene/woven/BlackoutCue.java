@@ -1,4 +1,4 @@
-package com.coillighting.udder.scene.woven;
+package com.coillighting.udder.effect.woven;
 
 public class BlackoutCue extends CueBase {
 
