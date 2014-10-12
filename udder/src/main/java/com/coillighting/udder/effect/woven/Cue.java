@@ -4,10 +4,16 @@ import com.coillighting.udder.Animator;
 
 public interface Cue extends Animator {
 
-    public long getDuration();
-
+    /** Rewind the cue's animation state so that it is ready to render anew
+     *  from the beginning of the cue.
+     */
     public void reset();
 
+    public long getDuration();
+    public long getDuration();
+
+    /** Set the pixels that we'll be drawing on, then reset(). */
     public void setFrame(WovenFrame frame);
+    public WovenFrame getFrame();
 
 }

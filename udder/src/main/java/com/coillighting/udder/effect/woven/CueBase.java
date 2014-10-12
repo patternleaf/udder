@@ -7,6 +7,7 @@ public class CueBase implements Cue {
     /** Target duration in milliseconds. */
     protected long duration = 0;
 
+    /** Rasters we might want to draw on for this cue. */
     protected WovenFrame frame = null;
 
     public CueBase(long duration, WovenFrame frame) {
@@ -25,20 +26,15 @@ public class CueBase implements Cue {
         return this.duration;
     }
 
-    /** Rewind the cue's animation state so that it is ready to render anew
-     *  from the beginning of the cue.
-     */
-    public void reset() {}
-
-    /** Set the pixels that we'll be drawing on, then reset(). */
     public void setFrame(WovenFrame frame) {
         this.frame = frame;
     }
 
-    /** Set the pixels that we'll be drawing on, then reset(). */
     public WovenFrame getFrame() {
         return frame;
     }
+
+    public void reset() {}
 
     public void animate(TimePoint timePoint) {}
 

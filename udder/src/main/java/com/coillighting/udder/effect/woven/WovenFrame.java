@@ -11,19 +11,19 @@ public class WovenFrame {
     protected int height = 7;
 
     /** A single pixel maps onto the whole background. */
-	public Pixel background = null;
+    public Pixel background = null;
 
     /** A single horizontal scanline row represents the warp. */
-	public Pixel[] warp = null; // [x]
+    public Pixel[] warp = null; // [x]
 
     /** A pair of vertical scanline columns represent the weft. */
-	public Pixel[][] weft = null; // [x][y]
+    public Pixel[][] weft = null; // [x][y]
 
-	public WovenFrame() {
-		this.reset();
-	}
+    public WovenFrame() {
+        this.reset();
+    }
 
-	public void reset() {
+    public void reset() {
         background = Pixel.black();
 
         warp = new Pixel[width];
@@ -37,15 +37,15 @@ public class WovenFrame {
                 weft[x][y] = Pixel.black();
             }
         }
-	}
+    }
 
     public String toString() {
-    	StringBuffer sb = new StringBuffer("background " + background.toRGB()
-    		+ " = " + background.toRGBA() + "\n"); //TEMP-TEST
+        StringBuffer sb = new StringBuffer("background " + background.toHexRGB()
+            + " = " + background.toHexRGBA() + "\n"); //TEMP-TEST
 
-    	sb.append("warp       ");
+        sb.append("warp       ");
         for(int x=0; x<warp.length; x++) {
-            sb.append(warp[x].toRGB()).append(' ');
+            sb.append(warp[x].toHexRGB()).append(' ');
         }
         sb.append("\n");
 
@@ -55,7 +55,7 @@ public class WovenFrame {
                 sb.append("\n           ");
             }
             for(int x=0; x<weft.length; x++) {
-                sb.append(weft[x][y].toRGB()).append(' ');
+                sb.append(weft[x][y].toHexRGB()).append(' ');
             }
         }
         sb.append("\n");
