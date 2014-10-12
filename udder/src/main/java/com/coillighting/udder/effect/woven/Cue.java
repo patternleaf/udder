@@ -1,9 +1,13 @@
 package com.coillighting.udder.effect.woven;
 
-public interface Cue {
+import com.coillighting.udder.Animator;
+
+public interface Cue extends Animator {
 
     public long getDuration();
 
     public void reset();
+
+    public void setFrame(WovenFrame frame);
 
 }

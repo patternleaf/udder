@@ -27,27 +27,17 @@ public class WovenEffect extends EffectBase {
     protected LinkedHashMap<CueEnum, Cue> cues = null;
     protected Cue currentCue = null;
     protected CueEnum currentStep = null;
-
-    protected int width = 7;
-    protected int height = 7;
-
-    /** A single pixel maps onto the whole background. */
-    protected Pixel background = null;
-
-    /** A single horizontal scanline row represents the warp. */
-    protected Pixel[] warp = null; // [x]
-
-    /** A pair of vertical scanline columns represent the weft. */
-    protected Pixel[][] weft = null; // [x][y]
+    protected WovenFrame frame = null;
 
     public WovenEffect() {
         cues = new LinkedHashMap<CueEnum, Cue>();
-        cues.put(BLACKOUT, new BlackoutCue(1000));
-        cues.put(CURTAIN, new CurtainCue(1000));
-        cues.put(WARP, new WarpCue(2000));
-        cues.put(WEFT, new WeftCue(3000));
-        cues.put(FINALE, new FinaleCue(2000));
-        cues.put(FADEOUT, new FadeOutCue(1000));
+        frame = new WovenFrame();
+        cues.put(BLACKOUT, new BlackoutCue(1000, frame));
+        cues.put(CURTAIN, new CurtainCue(1000, frame));
+        cues.put(WARP, new WarpCue(2000, frame));
+        cues.put(WEFT, new WeftCue(3000, frame));
+        cues.put(FINALE, new FinaleCue(2000, frame));
+        cues.put(FADEOUT, new FadeOutCue(1000, frame));
         this.reset();
     }
 
@@ -55,24 +45,11 @@ public class WovenEffect extends EffectBase {
      *  graphics buffers and reinitialize them to black.
      */
     public void reset() {
+        this.frame.reset();
         currentCue = null;
         currentStep = null;
         for(Cue cue: cues.values()) {
-            cue.reset();
-        }
-
-        background = Pixel.black();
-
-        warp = new Pixel[width];
-        for(int x=0; x<warp.length; x++) {
-            warp[x] = Pixel.black();
-        }
-
-        weft = new Pixel[2][height];
-        for(int x=0; x<weft.length; x++) {
-            for(int y=0; y<weft[x].length; y++) {
-                weft[x][y] = Pixel.black();
-            }
+            cue.setFrame(this.frame); // also resets
         }
     }
 
@@ -127,26 +104,12 @@ public class WovenEffect extends EffectBase {
         System.err.println(msg);
     }
 
-    // TEMP: ASCII placeholder animation
     public void animate(TimePoint timePoint) {
-        this.log("background " + background.toRGB() + " = " + background.toRGBA()); //TEMP-TEST
-
-        StringBuffer warpsb = new StringBuffer("warp       ");
-        for(int x=0; x<warp.length; x++) {
-            warpsb.append(warp[x].toRGB()).append(' ');
+        for(Cue cue: this.cues.values()) {
+            cue.animate(timePoint);
         }
-        this.log(warpsb);
-
-        StringBuffer weftsb = new StringBuffer("weft       ");
-        for(int y=0; y<weft[0].length; y++) {
-            if(y > 0) {
-                weftsb.append("\n           ");
-            }
-            for(int x=0; x<weft.length; x++) {
-                weftsb.append(weft[x][y].toRGB()).append(' ');
-            }
-        }
-        this.log(weftsb);
+        // TEMP: ASCII placeholder animation
+        this.log(this.frame);
     }
 
 }
