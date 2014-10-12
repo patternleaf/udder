@@ -2,9 +2,21 @@ package com.coillighting.udder.effect.woven;
 
 import java.util.LinkedHashMap;
 
+import com.coillighting.udder.Pixel;
+import com.coillighting.udder.TimePoint;
 import com.coillighting.udder.effect.EffectBase;
 import static com.coillighting.udder.effect.woven.CueEnum.*;
 
+/** The Woven effect conveys the motions of manually weaving on a loom. This
+ *  effect is mapped onto the Boulder Dairy's architectural-scale metal tapestry
+ *  sculpture, and its details are designed to mesh nicely with that target.
+ *
+ *  This effect consists of several cues, each of which is basically a step
+ *  sequence with some easing in of each step, followed by a brief finale.
+ *
+ *  Effect originally conceived by Becky Vanderslice. Storyboarding and detailed
+ *  design by Becky and Coil Lighting staff.
+ */
 public class WovenEffect extends EffectBase {
 
     /** The cuesheet represents the cues that will be run the next time the
@@ -15,6 +27,18 @@ public class WovenEffect extends EffectBase {
     protected LinkedHashMap<CueEnum, Cue> cues = null;
     protected Cue currentCue = null;
     protected CueEnum currentStep = null;
+
+    protected int width = 7;
+    protected int height = 7;
+
+    /** A single pixel maps onto the whole background. */
+    protected Pixel background = null;
+
+    /** A single horizontal scanline row represents the warp. */
+    protected Pixel[] warp = null; // [x]
+
+    /** A pair of vertical scanline columns represent the weft. */
+    protected Pixel[][] weft = null; // [x][y]
 
     public WovenEffect() {
         cues = new LinkedHashMap<CueEnum, Cue>();
@@ -27,12 +51,28 @@ public class WovenEffect extends EffectBase {
         this.reset();
     }
 
-    /** Stop processing cues and clear their states. */
+    /** Stop processing cues and clear their states. Also replace the internal
+     *  graphics buffers and reinitialize them to black.
+     */
     public void reset() {
         currentCue = null;
         currentStep = null;
         for(Cue cue: cues.values()) {
             cue.reset();
+        }
+
+        background = Pixel.black();
+
+        warp = new Pixel[width];
+        for(int x=0; x<warp.length; x++) {
+            warp[x] = Pixel.black();
+        }
+
+        weft = new Pixel[2][height];
+        for(int x=0; x<weft.length; x++) {
+            for(int y=0; y<weft[x].length; y++) {
+                weft[x][y] = Pixel.black();
+            }
         }
     }
 
@@ -72,7 +112,7 @@ public class WovenEffect extends EffectBase {
     }
 
     public Class getStateClass() {
-        return null; // TODO
+        return Object.class; // TODO
     }
 
     public Object getState() {
@@ -82,4 +122,31 @@ public class WovenEffect extends EffectBase {
     public void setState(Object state) throws ClassCastException {
         // TODO
     }
+
+    protected void log(Object msg) {
+        System.err.println(msg);
+    }
+
+    // TEMP: ASCII placeholder animation
+    public void animate(TimePoint timePoint) {
+        this.log("background " + background.toRGB() + " = " + background.toRGBA()); //TEMP-TEST
+
+        StringBuffer warpsb = new StringBuffer("warp       ");
+        for(int x=0; x<warp.length; x++) {
+            warpsb.append(warp[x].toRGB()).append(' ');
+        }
+        this.log(warpsb);
+
+        StringBuffer weftsb = new StringBuffer("weft       ");
+        for(int y=0; y<weft[0].length; y++) {
+            if(y > 0) {
+                weftsb.append("\n           ");
+            }
+            for(int x=0; x<weft.length; x++) {
+                weftsb.append(weft[x][y].toRGB()).append(' ');
+            }
+        }
+        this.log(weftsb);
+    }
+
 }

@@ -10,11 +10,21 @@ package com.coillighting.udder;
  */
 public class Pixel {
 
-	/** These are public for fast, direct access. Use with caution. */
-	// FIXME the json mapper is not using the standard constructor for this
+	/** These are public for fast, direct access. Use with caution.
+     *  TODO: just make 'em protected?
+	 */
+	// FIXME the json mapper is not using the standard constructor for these.
 	public float r=0.0f;
 	public float g=0.0f;
 	public float b=0.0f;
+
+	public static Pixel black() {
+		return new Pixel(0.0f, 0.0f, 0.0f);
+	}
+
+	public static Pixel white() {
+		return new Pixel(1.0f, 1.0f, 1.0f);
+	}
 
 	public Pixel() {}
 
@@ -87,6 +97,28 @@ public class Pixel {
 		return "Pixel(" + r + ", " + g + ", " + b + ")";
 	}
 
+	/** Some loss of precision is inevitable. Include alpha. */
+	public String toHexRGBA() {
+		return String.format("%08X", this.toRGBA() & 0xFFFFFFFF);
+	}
+
+	/** Some loss of precision is inevitable. Skip alpha. */
+	public String toHexRGB() {
+		return String.format("%06X", this.toRGB() & 0xFFFFFF);
+	}
+
+	/** Return an int approximation of this pixel value, encoded 0xRRGGBB.
+	 *  Skip alpha.
+	 */
+	public int toRGB() {
+     	// TODO: ask Eric whether to switch this to ARGB so it aligns with toRGB.
+		return this.toRGBA() >> 8;
+	}
+
+	/** Return an int approximation of this pixel value, encoded 0xRRGGBBAA.
+     *  Include alpha.
+     *  TODO: switch to ARGB?
+	 */
 	public int toRGBA() {
 		float conv = 255.99f;
 		int rr = (int)(this.r * conv);
@@ -96,6 +128,9 @@ public class Pixel {
 		return 0x00000000 | (rr << 24) | (gg << 16) | (bb << 8) | aa;
 	}
 
+	/** Ignore alpha for now. (TODO)
+     *  TODO: switch to ARGB?
+	 */
 	public void setColor(int rgba) {
 		float conv = 255.0f;
 		int rr = (rgba >> 24) & 0xFF;
@@ -106,6 +141,9 @@ public class Pixel {
 		this.b = (float)bb / conv;
 	}
 
+	/** Ignore alpha for now. (TODO).
+     *  TODO: switch to ARGB?
+	 */
 	public static Pixel fromRGBA(int rgba) {
 		float conv = 255.0f;
 		int rr = (rgba >> 24) & 0xFF;

@@ -7,7 +7,9 @@ import java.util.List;
 import com.coillighting.udder.BlendOp;
 import com.coillighting.udder.effect.MonochromeEffect;
 import com.coillighting.udder.effect.RasterEffect;
+import com.coillighting.udder.effect.woven.WovenEffect;
 import com.coillighting.udder.MaxBlendOp;
+import com.coillighting.udder.MultiplyBlendOp;
 import com.coillighting.udder.Device;
 import com.coillighting.udder.mix.*;
 import com.coillighting.udder.Pixel;
@@ -22,29 +24,28 @@ public abstract class DairyScene {
 	/** Instantiate a new scene in the form of a Mixer. */
 	public static Mixer create(List<Device> devices) {
 		BlendOp max = new MaxBlendOp();
+		BlendOp mult = new MultiplyBlendOp();
 
 		// A basic three-layer look to get started.
 		Layer background = new Layer("Background",
-			new MonochromeEffect(new Pixel(1.0f, 0.5f, 0.0f)));
+			new MonochromeEffect(Pixel.black()));
 		background.setBlendOp(max);
 
-		Layer rainbowStupidity = new Layer("Rainbow stupidity",
-			new MonochromeEffect(new Pixel(0.0f, 0.0f, 0.0f))); // TODO: gradient effect here
-		rainbowStupidity.setBlendOp(max);
+		Layer woven = new Layer("Woven", new WovenEffect());
+		woven.setBlendOp(max);
 
 		Layer externalRaster = new Layer("External input",
 			new RasterEffect(null));
 		externalRaster.setBlendOp(max);
 
-		Layer gel = new Layer("Gel",
-			new MonochromeEffect(new Pixel(0.0f, 0.0f, 0.0f))); // TODO: multiply blend mode
-		gel.setBlendOp(max);
+		Layer gel = new Layer("Gel", new MonochromeEffect(Pixel.black()));
+		gel.setBlendOp(mult);
 
 		// Add layers from bottom (background) to top (foreground), i.e. in
 		// order of composition.
 		ArrayList<Mixable> layers = new ArrayList<Mixable>(3);
 		layers.add(background);
-		layers.add(rainbowStupidity);
+		layers.add(woven);
 		layers.add(externalRaster);
 		layers.add(gel);
 
