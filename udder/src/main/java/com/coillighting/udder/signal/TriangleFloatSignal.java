@@ -1,5 +1,6 @@
-package com.coillighting.udder;
+package com.coillighting.udder.signal;
 
+import com.coillighting.udder.Util;
 
 /** A linearly interpolated signal that continuously oscillates between two
  *  values, with sharp corners at the values themselves.

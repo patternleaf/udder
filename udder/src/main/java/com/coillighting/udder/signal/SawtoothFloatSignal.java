@@ -1,5 +1,6 @@
-package com.coillighting.udder;
+package com.coillighting.udder.signal;
 
+import com.coillighting.udder.Util;
 
 /** A linearly interpolated signal that continuously oscillates from start to
  *  end, looping back discontinuously to the start value when the period has

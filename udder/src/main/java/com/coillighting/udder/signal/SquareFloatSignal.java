@@ -1,4 +1,4 @@
-package com.coillighting.udder;
+package com.coillighting.udder.signal;
 
 
 /** An uninterpolated signal that discontinuously switches between two

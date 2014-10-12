@@ -1,5 +1,6 @@
-package com.coillighting.udder;
+package com.coillighting.udder.signal;
 
+import com.coillighting.udder.TimePoint;
 
 /** Abstract base class for removing boilerplate from the implementation of
  *  periodic floating-point Signal generators.

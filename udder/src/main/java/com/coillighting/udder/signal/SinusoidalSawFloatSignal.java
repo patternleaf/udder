@@ -1,5 +1,6 @@
-package com.coillighting.udder;
+package com.coillighting.udder.signal;
 
+import com.coillighting.udder.Util;
 
 /** A sinusoidally interpolated signal that continuously oscillates from start
  *  to end, then discontinuously jumps back to the start value.

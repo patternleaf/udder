@@ -1,5 +1,6 @@
-package com.coillighting.udder;
+package com.coillighting.udder.signal;
 
+import com.coillighting.udder.TimePoint;
 
 /** A Signal supplies some value as a function of time. We can compose Signals
  *  for independent, external control of related modulation sources.
