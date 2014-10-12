@@ -9,9 +9,11 @@ public class CurtainCue extends CueBase {
     }
 
     public void animate(TimePoint timePoint) {
-        // Bring up the lights a little so that it's not totally black.
-        // TODO: decide on the color. currently red.
-        this.frame.background.setColor(1.0f, 0.0f, 0.0f);
+        if(this.fadeState != CueFadeStateEnum.INVISIBLE) {
+            // Bring up the lights a little so that it's not totally black.
+            // TODO: decide on the color. currently red.
+            this.frame.background.setColor(1.0f, 0.0f, 0.0f);
+        }
     }
 
 }

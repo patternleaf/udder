@@ -10,8 +10,10 @@ public class BlackoutCue extends CueBase {
     }
 
     public void animate(TimePoint timePoint) {
-        // Placeholder: black out the scene
-        this.frame.setColor(Pixel.black());
+        if(this.fadeState != CueFadeStateEnum.INVISIBLE) {
+            // Placeholder: black out the scene
+            this.frame.setColor(Pixel.black());
+        }
     }
 
 }

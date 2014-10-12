@@ -10,10 +10,12 @@ public class WeftCue extends CueBase {
     }
 
     public void animate(TimePoint timePoint) {
-        // Placeholder: light up the entire weft blue
-        for(Pixel[] pixels: this.frame.weft) {
-            for(Pixel p: pixels) {
-                p.setColor(0.0f, 0.0f, 1.0f);
+        if(this.fadeState != CueFadeStateEnum.INVISIBLE) {
+            // Placeholder: light up the entire weft blue
+            for(Pixel[] pixels: this.frame.weft) {
+                for(Pixel p: pixels) {
+                    p.setColor(0.0f, 0.0f, 1.0f);
+                }
             }
         }
     }

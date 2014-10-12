@@ -9,6 +9,9 @@ public interface Cue extends Animator {
      */
     public void reset();
 
+    public void setFadeState(CueFadeStateEnum fadeState);
+    public CueFadeStateEnum getFadeState();
+
     public void setDuration(long duration);
     public long getDuration();
 

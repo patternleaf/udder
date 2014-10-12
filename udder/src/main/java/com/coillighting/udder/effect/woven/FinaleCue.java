@@ -10,15 +10,17 @@ public class FinaleCue extends CueBase {
     }
 
     public void animate(TimePoint timePoint) {
-        // Placeholder: light up the entire warp a cold grey
-        for(Pixel p: this.frame.warp) {
-            p.setColor(0.77f, 0.88f, 0.99f);
-        }
+        if(this.fadeState != CueFadeStateEnum.INVISIBLE) {
+            // Placeholder: light up the entire warp a cold grey
+            for(Pixel p: this.frame.warp) {
+                p.setColor(0.77f, 0.88f, 0.99f);
+            }
 
-        // Placeholder: light up the entire weft a warm grey
-        for(Pixel[] pixels: this.frame.weft) {
-            for(Pixel p: pixels) {
-                p.setColor(0.66f, 0.55f, 0.44f);
+            // Placeholder: light up the entire weft a warm grey
+            for(Pixel[] pixels: this.frame.weft) {
+                for(Pixel p: pixels) {
+                    p.setColor(0.66f, 0.55f, 0.44f);
+                }
             }
         }
     }

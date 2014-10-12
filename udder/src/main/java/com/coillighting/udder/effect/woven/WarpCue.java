@@ -10,9 +10,11 @@ public class WarpCue extends CueBase {
     }
 
     public void animate(TimePoint timePoint) {
-        // Placeholder: light up the entire warp green
-        for(Pixel p: this.frame.warp) {
-            p.setColor(0.0f, 1.0f, 0.0f);
+        if(this.fadeState != CueFadeStateEnum.INVISIBLE) {
+            // Placeholder: light up the entire warp green
+            for(Pixel p: this.frame.warp) {
+                p.setColor(0.0f, 1.0f, 0.0f);
+            }
         }
     }
 

@@ -56,12 +56,15 @@ public class WovenEffect extends EffectBase {
     /** Jump directly to the specified step. If step is null, reset the scene. */
     protected void setStep(CueEnum step) {
         if(step == null) {
+            this.log("\n\n============================ reset woven scene");
             this.reset();
         } else {
+            this.log("\n---------------------------- woven cue " + step);
             Cue cue = cues.get(step);
             if(cue == null) {
                 throw new NullPointerException("Invalid cue: " + step);
             } else {
+                cue.setFadeState(CueFadeStateEnum.FADE_IN);
                 currentCue = cue;
                 currentStep = step;
             }
@@ -105,6 +108,7 @@ public class WovenEffect extends EffectBase {
     }
 
     public void animate(TimePoint timePoint) {
+        this.nextCue();
         for(Cue cue: this.cues.values()) {
             cue.animate(timePoint);
         }

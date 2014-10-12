@@ -4,6 +4,8 @@ import com.coillighting.udder.TimePoint;
 
 public class CueBase implements Cue {
 
+    protected CueFadeStateEnum fadeState = null;
+
     /** Target duration in milliseconds. */
     protected long duration = 0;
 
@@ -13,6 +15,14 @@ public class CueBase implements Cue {
     public CueBase(long duration, WovenFrame frame) {
         this.setDuration(duration);
         this.setFrame(frame);
+    }
+
+    public void setFadeState(CueFadeStateEnum fadeState) {
+        this.fadeState = fadeState;
+    }
+
+    public CueFadeStateEnum getFadeState() {
+        return fadeState;
     }
 
     public void setDuration(long duration) {
@@ -28,13 +38,16 @@ public class CueBase implements Cue {
 
     public void setFrame(WovenFrame frame) {
         this.frame = frame;
+        this.reset();
     }
 
     public WovenFrame getFrame() {
         return frame;
     }
 
-    public void reset() {}
+    public void reset() {
+        this.setFadeState(CueFadeStateEnum.INVISIBLE);
+    }
 
     public void animate(TimePoint timePoint) {}
 
