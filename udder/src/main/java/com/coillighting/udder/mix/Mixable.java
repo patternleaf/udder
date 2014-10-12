@@ -1,7 +1,7 @@
 package com.coillighting.udder.mix;
 
 import com.coillighting.udder.BlendOp;
-import com.coillighting.udder.Effect;
+import com.coillighting.udder.effect.Effect;
 import com.coillighting.udder.Pixel;
 
 /** We typically construct scenes from multiple conflicting Mixable sources,

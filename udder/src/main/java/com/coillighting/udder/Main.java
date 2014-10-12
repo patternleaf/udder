@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.boon.json.JsonFactory;
 
-import com.coillighting.udder.DairyScene;
+import com.coillighting.udder.scene.DairyScene;
 import com.coillighting.udder.Device;
 import com.coillighting.udder.PatchElement;
 import com.coillighting.udder.ServicePipeline;

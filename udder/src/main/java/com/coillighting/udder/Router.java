@@ -3,6 +3,7 @@ package com.coillighting.udder;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.coillighting.udder.effect.Effect;
 import com.coillighting.udder.mix.Layer;
 import com.coillighting.udder.mix.Mixable;
 import com.coillighting.udder.mix.Mixer;

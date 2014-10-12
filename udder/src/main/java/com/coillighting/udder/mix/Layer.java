@@ -4,7 +4,7 @@ import java.lang.UnsupportedOperationException;
 import java.util.List;
 
 import com.coillighting.udder.Pixel;
-import com.coillighting.udder.Effect;
+import com.coillighting.udder.effect.Effect;
 import com.coillighting.udder.Device;
 import com.coillighting.udder.TimePoint;
 

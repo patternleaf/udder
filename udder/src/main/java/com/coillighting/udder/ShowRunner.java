@@ -2,6 +2,7 @@ package com.coillighting.udder;
 
 import java.util.Queue;
 
+import com.coillighting.udder.effect.Effect;
 import com.coillighting.udder.mix.Frame;
 import com.coillighting.udder.mix.Mixer;
 

@@ -1,12 +1,16 @@
-package com.coillighting.udder;
+package com.coillighting.udder.scene;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.coillighting.udder.BlendOp;
 import com.coillighting.udder.effect.MonochromeEffect;
 import com.coillighting.udder.effect.RasterEffect;
+import com.coillighting.udder.MaxBlendOp;
+import com.coillighting.udder.Device;
 import com.coillighting.udder.mix.*;
+import com.coillighting.udder.Pixel;
 
 /** Define the scenegraph for the December, 2014 weavers' conference at
  *  Boulder's Dairy Center for the Arts (thedairy.org). An Udder scenegraph

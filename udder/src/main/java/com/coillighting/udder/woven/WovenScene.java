@@ -2,7 +2,7 @@ package com.coillighting.udder.woven;
 
 import java.util.LinkedHashMap;
 
-import com.coillighting.udder.EffectBase;
+import com.coillighting.udder.effect.EffectBase;
 import static com.coillighting.udder.woven.CueEnum.*;
 
 public class WovenScene extends EffectBase {

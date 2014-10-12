@@ -1,6 +1,9 @@
-package com.coillighting.udder;
+package com.coillighting.udder.effect;
 
 import java.util.List;
+
+import com.coillighting.udder.Pixel;
+import com.coillighting.udder.RgbaRaster;
 
 public class RasterEffect extends EffectBase {
 

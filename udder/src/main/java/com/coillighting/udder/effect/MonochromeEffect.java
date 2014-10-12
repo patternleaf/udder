@@ -1,9 +1,9 @@
-package com.coillighting.udder;
+package com.coillighting.udder.effect;
 
 import java.util.List;
 
-import com.coillighting.udder.EffectBase;
-
+import com.coillighting.udder.Pixel;
+import com.coillighting.udder.TimePoint;
 
 public class MonochromeEffect extends EffectBase {
 
