@@ -24,7 +24,8 @@ public class Stretch {
     }
 
     /** Distort xy given the control polygon consisting of the points sw, nw,
-     *  etc. Assume xy is normalized to ([0..1.0], [0..1.0]).
+     *  etc. Assume xy is normalized to ([0..1.0], [0..1.0]). For no distortion,
+     *  specify the unit square as the control polygon.
      */
     public static Point2D.Float stretchxy(Point2D.Float xy,
             Point2D.Float sw, Point2D.Float se,
