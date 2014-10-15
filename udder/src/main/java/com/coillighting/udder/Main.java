@@ -14,6 +14,7 @@ import org.boon.json.JsonFactory;
 import com.coillighting.udder.scene.DairyScene;
 import com.coillighting.udder.Device;
 import com.coillighting.udder.PatchElement;
+import com.coillighting.udder.PatchSheet;
 import com.coillighting.udder.ServicePipeline;
 
 
@@ -38,7 +39,7 @@ public class Main {
         File flayout = null;
 
         if(args.length == 1 || args.length == 2) {
-            // FIXME: convert from .io to .nio?
+            // TODO: convert from .io to .nio?
             configPath = args[0];
             fconfig = new File(configPath);
             if(!fconfig.exists()) {
@@ -57,17 +58,18 @@ public class Main {
         }
 
         System.err.println("Using config " + configPath);
-        List<Device> devices = Main.createDevices(configPath);
+        PatchSheet patchSheet = Main.createDevices(configPath);
 
         if(layoutPath != null) {
             String layoutJson = JsonFactory.toJson(
-                Main.createOpcLayoutPointsFromDevices(devices));
+                Main.createOpcLayoutPointsFromDevices(patchSheet));
             Main.stringToFile(layoutPath, layoutJson);
             System.err.println("Dumped OPC JSON layout to " + layoutPath);
         }
 
+        // TODO: how to communicate addressSpaceDeviceMap to the transmitter?
         ServicePipeline pipeline = new ServicePipeline(
-            DairyScene.create(devices));
+            DairyScene.create(patchSheet.getModelSpaceDevices()));
         pipeline.start();
     }
 
@@ -98,33 +100,41 @@ public class Main {
         return new String(encoded, StandardCharsets.UTF_8);
     }
 
-    /** Parse the JSON patch sheet as a list of Devices. The 'gate' properties
-     *  from the patch sheet are interpreted as Device.group values. (FIXME)
-     */
-    protected static List<Device> createDevices(String configPath)
-            throws IOException {
+    /** Parse the JSON patch sheet as a list of Devices. */
+    protected static PatchSheet createDevices(String configPath)
+            throws IllegalArgumentException, IOException {
 
         byte[] encoded = Files.readAllBytes(Paths.get(configPath));
         String json = new String(encoded, StandardCharsets.UTF_8);
         List<PatchElement> patchElements = JsonFactory.fromJsonArray(
             Main.fileToString(configPath), PatchElement.class);
 
-        // TODO sort out address mapping. Currently all addresses are in model space.
+        // TODO REF? Why Arraylist instead of array? (Same below.)
         List<Device> devices = new ArrayList(patchElements.size());
-        int addr = 0;
         for(PatchElement pe: patchElements) {
-            Device device = pe.toDevice(addr);
+            Device device = pe.toDevice();
             System.err.println(device); //TEMP
             devices.add(device);
-            ++addr;
         }
-        return devices;
+        return new PatchSheet(devices);
     }
 
-    protected static List<OpcLayoutPoint> createOpcLayoutPointsFromDevices(List<Device> devices) {
-        ArrayList<OpcLayoutPoint> points = new ArrayList<OpcLayoutPoint>(devices.size());
-        for (Device device: devices) {
-            points.add(new OpcLayoutPoint(device.getPoint()));
+    protected static List<OpcLayoutPoint> createOpcLayoutPointsFromDevices(PatchSheet patchSheet) {
+        List<Device> devices = patchSheet.getModelSpaceDevices();
+        int[] addrMap = patchSheet.getAddressSpaceDeviceMap();
+        ArrayList<OpcLayoutPoint> points = new ArrayList<OpcLayoutPoint>(addrMap.length);
+        double [] origin = {0.0, 0.0, 0.0};
+        for(int index: addrMap) {
+            OpcLayoutPoint pt;
+            if(index < 0) {
+                // If a device for an OPC address is not patched, just put that
+                // address's pixel on the origin where it won't cause trouble.
+                pt = new OpcLayoutPoint(origin);
+            } else {
+                // TODO scale everything down to what'll fit in the gl server
+                pt = new OpcLayoutPoint(devices.get(index).getPoint());
+            }
+            points.add(pt);
         }
         return points;
     }

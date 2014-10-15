@@ -9,17 +9,19 @@ import com.coillighting.udder.Device;
  *  convert these PatchElements to Devices after parsing.
  *
  *  Example input consisting of three JSON-serialized PatchElements:
- *  FIXME: convert 'gate' to the more generic 'group'.
  *
  *      [{
- *          "point": [-0.43054129481340775, 0.3497840264671482, -0.30439668544441917],
- *          "gate": 0
+ *          "point": [-111, 92.33984355642154, -78.20986874321204],
+ *          "group": 0,
+ *          "address": 57
  *      }, {
- *          "point": [-0.43054129481340775, 0.3586044964826967, -0.30330178155620713],
- *          "gate": 0
+ *          "point": [-111, 93.58520914575311, -78.05527879900943],
+ *          "group": 0,
+ *          "address": 56
  *      }, {
- *          "point": [-0.43054129481340775, 0.36362235722669783, -0.3026789035512811],
- *          "gate": 1
+ *          "point": [-111, 94.70067095432645, -77.91681404627441],
+ *          "group": 0,
+ *          "address": 55
  *      }]
  *
  *  Like Command and PatchElement, this class is structured for compatibility
@@ -29,31 +31,51 @@ import com.coillighting.udder.Device;
 public class PatchElement {
 
     private double[] point;
-    private long gate; // a.k.a. group FIXME - ask Eric
+    private int group;
+    private int address;
 
-    public PatchElement(double[] point, long gate) {
+    // TODO validate parameter ranges
+    public PatchElement(double[] point, int group, int address) {
         this.point = point;
-        this.gate = gate;
+        this.group = group;
+        this.address = address;
     }
 
-    /** Given an address, conver this intermediate representation into a full
-     *  fledged Udder Device. TODO: work out address mappings from model space
-     *  to OPC low-level addr space.
+    // TEMP
+    private double getZ() {
+        double z;
+        if(this.point != null && this.point.length == 2) {
+            // The Z-axis disappeared, so for now just set Z to a multiple of group.
+            // FIXME this 15' offset is hardcoded for the dairy, no good for other shows.
+            z = (15.0 * 12.0) * (double) group;
+        } else if(this.point != null && this.point.length == 3) {
+            z = this.point[2];
+        } else {
+            throw new IllegalArgumentException("Udder does not support "
+                + this.point.length + "-dimensional shows.");
+        }
+        return z;
+    }
+
+    /** Convert this intermediate representation into a full-fledged Udder Device.
      */
-    public Device toDevice(long addr) {
-        return new Device(addr, this.gate, this.point[0], this.point[1], this.point[2]);
+    public Device toDevice() {
+        double z = this.getZ(); // simultaneously validate point
+        return new Device(this.address, this.group, this.point[0], this.point[1], z);
     }
 
     public String toString() {
-        return "PatchElement(["+this.point[0]+","+this.point[1]+","+this.point[2]+"], "+gate+")";
+        double z = this.getZ(); // simultaneously validate point
+        return "PatchElement([" + point[0] + "," + point[1] + "," + z
+            + "], " + group + ")";
     }
 
     public double[] getPoint() {
         return this.point;
     }
 
-    public long getGate() {
-        return this.gate;
+    public int getGroup() {
+        return this.group;
     }
 
 }
