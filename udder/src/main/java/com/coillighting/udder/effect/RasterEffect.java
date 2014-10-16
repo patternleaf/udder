@@ -17,7 +17,6 @@ public class RasterEffect extends ArrayEffectBase {
         if(rgbaPixels == null) {
             throw new NullPointerException("RasterEffect requires rgbaPixels.");
         }
-        this.setPixels(new Pixel(0.0f, 0.0f, 0.0f));
         if(pixels != null) {
             for(int i=0; i<rgbaPixels.length && i<pixels.length; i++) {
                 pixels[i].setColor(rgbaPixels[i]);

@@ -8,25 +8,48 @@ import com.coillighting.udder.TimePoint;
 
 public class ChaseEffect extends ArrayEffectBase {
 
-    protected int offset = 0;
+    protected int offset = 0; // current scrolling offset
+    protected int step = 1; // how fast to scroll
+    protected Integer[] rgbaPixels = null;
 
     public ChaseEffect(RgbaRaster raster) {
         super(raster);
     }
 
+    /** Draw a single frame, then scroll everything by one step. */
     public void animate(TimePoint timePoint) {
-        ++this.offset;
+        this.setPixels(new Pixel(0.0f, 0.0f, 0.0f));
+        if(rgbaPixels != null) {
+            if(pixels != null) {
+                for(int i=0; i<rgbaPixels.length; i++) {
+                    pixels[(i + offset) % pixels.length].setColor(rgbaPixels[i]);
+                }
+                System.err.println("rendered dest pixels");
+                offset += step;
+            }
+            else System.err.println("no dest pixels!") // TEMP
+        }
+        else System.err.println("no source pixels"); //TEMP
+    }
+
+    public int getOffset() {
+        return this.offset;
+    }
+
+    public void setOffset(int offset) {
+        this.offset = offset;
+    }
+
+    public int getStep() {
+        return this.step;
+    }
+
+    public void setStep(int step) {
+        this.step = step;
     }
 
     public void setPixels(Integer [] rgbaPixels) {
-        if(rgbaPixels == null) {
-            throw new NullPointerException("RasterEffect requires rgbaPixels.");
-        }
-        if(pixels != null) {
-            for(int i=0; i<rgbaPixels.length; i++) {
-                pixels[(i + offset) % pixels.length].setColor(rgbaPixels[i]);
-            }
-        }
+        this.rgbaPixels = rgbaPixels;
     }
 
 }

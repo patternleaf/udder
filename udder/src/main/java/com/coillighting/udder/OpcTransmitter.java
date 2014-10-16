@@ -36,7 +36,7 @@ public class OpcTransmitter implements Runnable {
                 "ShowRunner requires a queue that supplies frames.");
         }
         this.frameQueue = frameQueue;
-        this.maxDelayMillis = 1500; // TODO: tune this
+        this.maxDelayMillis = 5000; // TODO: tune this
 
         // TODO: pass in the user-configured properties as params
         this.serverAddress = "127.0.0.1";

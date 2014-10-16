@@ -1,4 +1,4 @@
-package com.coillighting.udder.scene;
+    package com.coillighting.udder.scene;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,6 +8,7 @@ import com.coillighting.udder.blend.BlendOp;
 import com.coillighting.udder.blend.MaxBlendOp;
 import com.coillighting.udder.blend.MultiplyBlendOp;
 import com.coillighting.udder.effect.MonochromeEffect;
+import com.coillighting.udder.effect.ChaseEffect;
 import com.coillighting.udder.effect.RasterEffect;
 import com.coillighting.udder.effect.woven.WovenEffect;
 import com.coillighting.udder.Device;
@@ -34,9 +35,11 @@ public abstract class DairyScene {
         Layer woven = new Layer("Woven", new WovenEffect());
         woven.setBlendOp(max);
 
-        Layer externalRaster = new Layer("External input",
-            new RasterEffect(null));
-        externalRaster.setBlendOp(max);
+        Layer external = new Layer("External input", new RasterEffect(null));
+        external.setBlendOp(max);
+
+        Layer chase = new Layer("Chase", new ChaseEffect(null));
+        chase.setBlendOp(max);
 
         Layer gel = new Layer("Gel", new MonochromeEffect(Pixel.black()));
         gel.setBlendOp(mult);
@@ -46,7 +49,8 @@ public abstract class DairyScene {
         ArrayList<Mixable> layers = new ArrayList<Mixable>(3);
         layers.add(background);
         layers.add(woven);
-        layers.add(externalRaster);
+        layers.add(external);
+        layers.add(chase);
         layers.add(gel);
 
         Mixer mixer = new Mixer((Collection<Mixable>) layers);
@@ -57,7 +61,8 @@ public abstract class DairyScene {
         for(Mixable layer: mixer) {
             layer.setLevel(0.0f);
         }
-        externalRaster.setLevel(1.0f);
+        external.setLevel(1.0f);
+        chase.setLevel(1.0f);
         mixer.setLevel(1.0f);
 
         return mixer;
