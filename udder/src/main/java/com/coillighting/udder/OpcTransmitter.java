@@ -84,21 +84,6 @@ public class OpcTransmitter implements Runnable {
                         final int messageLen = headerLen + subpixelLen;
                         message = new byte[messageLen]; // TODO: recycle if len identical
 
-                        // boolean test = false;
-                        // if(test) {
-                        //  // For now, just make a blinking, fading test pattern.
-
-                        //  // Slowly fade out over many requests.
-                        //  byte level = (byte) ((0xFF - frame.getValue()) % 256);
-
-                        //  // Attempt to blink every 2nd frame for visibility.
-                        //  if(level % 2 == 0) {
-                        //      level = 0;
-                        //  }
-                        //  this.log("Received frame: " + frame
-                        //      + ". Generating test pattern, gray level " + ((int) level & 0xFF));
-                        // }
-
                         // header: channel, 0 (??), length MSB, length LSB
                         final byte channel = 0;
 
@@ -124,24 +109,6 @@ public class OpcTransmitter implements Runnable {
                             message[i+1] = (byte) (0xFF & (int)(255.99999f * pixel.g));
                             message[i+2] = (byte) (0xFF & (int)(255.99999f * pixel.b));
                             i += 3;
-
-                            // message[i] = (byte)(0xFF & Float.floatToIntBits(255.99999f * pixel.r));
-                            // if(i == SUBPIXEL_START) { // TEMP
-                            //  this.log("message[start] pixel.r:      " + pixel.r);
-                            //  this.log("message[start] float:        " + 255.99999f * pixel.r);
-                            //  int theint = (int)(255.99999f * pixel.r);
-                            //  this.log("message[start] int:        " + theint);
-                            //  this.log("message[start] &0xFF int:*  " + (0xFF & theint));
-                            //  this.log("message[start] &0xFF (byte):*" + (byte)(0xFF & theint));
-
-                            //  // this.log("message[start] intbits:      " + Float.floatToIntBits(255.99999f * pixel.r));
-                            //  // this.log("message[start] &0xFF int:   " + (0xFF & Float.floatToIntBits(255.99999f * pixel.r)));
-                            //  // this.log("message[start] &0xFF (byte): " + (byte)(0xFF & Float.floatToIntBits(255.99999f * pixel.r)));
-                            // }
-                            // message[i+1] = (byte) (0xFF & Float.floatToIntBits(255.99999f * pixel.g));
-                            // message[i+2] = (byte) (0xFF & Float.floatToIntBits(255.99999f * pixel.b));
-                            // i += 3;
-
                         }
                         this.sendBytes(message);
                         this.log("Sent: " + this.formatMessage(message));
