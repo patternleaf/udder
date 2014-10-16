@@ -17,6 +17,15 @@ import com.coillighting.udder.PatchElement;
 import com.coillighting.udder.PatchSheet;
 import com.coillighting.udder.ServicePipeline;
 
+// TODO drive the animation when people aren't hitting it with requests
+// look into Timer, TimerTask, and this stuff from JDK 5+:
+// ScheduledExecutorService es = Executors.newScheduledThreadPool(1);
+// es.schedule(new Runnable(){
+//     @Override
+//     public void run() {
+//         //RSS checking
+//     }
+// }, 10, TimeUnit.MINUTES);
 
 /** Application entrypoint.
  *  Start up a new Udder lighting server. Load the scene for the Boulder Dairy.

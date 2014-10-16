@@ -4,6 +4,7 @@ import java.io.OutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -70,6 +71,7 @@ public class OpcTransmitter implements Runnable {
     public void run() {
         try {
             this.log("Starting OPC transmitter.");
+            final Pixel black = new Pixel(0.0f, 0.0f, 0.0f);
             byte[] message = null;
             while(true) {
                 try {
@@ -77,8 +79,10 @@ public class OpcTransmitter implements Runnable {
                         TimeUnit.MILLISECONDS);
                     if(frame != null) {
                         Pixel[] pixels = frame.getPixels();
-                        this.log("===============> pixels[0]=" + pixels[0]); // TEMP
-                        final int pixelLen = pixels.length;
+
+                        // count the opc pixels, which might be a superset of
+                        // the patched pixels:
+                        final int pixelLen = deviceAddressMap.length;
                         final int subpixelLen = 3 * pixelLen;
                         final int headerLen = 4;
                         final int messageLen = headerLen + subpixelLen;
@@ -104,14 +108,20 @@ public class OpcTransmitter implements Runnable {
 
                         // TODO consider relocating this into Frame
                         int i=SUBPIXEL_START;
-                        for(Pixel pixel: pixels) {
+                        for(int opcAddr: deviceAddressMap) {
+                            Pixel pixel;
+                            if(opcAddr < 0 || opcAddr >= pixels.length) {
+                                pixel = black;
+                            } else {
+                                pixel = pixels[opcAddr];
+                            }
                             message[i] = (byte)(0xFF & (int)(255.99999f * pixel.r));
                             message[i+1] = (byte) (0xFF & (int)(255.99999f * pixel.g));
                             message[i+2] = (byte) (0xFF & (int)(255.99999f * pixel.b));
                             i += 3;
                         }
                         this.sendBytes(message);
-                        this.log("Sent: " + this.formatMessage(message));
+                        this.log("Sent " + pixelLen + " OPC pixels for " + pixels.length + " devices: " + this.formatMessage(message) + '\n'); //TEMP
                         // TODO recycle the frame datastructure?
                     } else {
                         // If there are no incoming frames, periodically retransmit
@@ -128,6 +138,25 @@ public class OpcTransmitter implements Runnable {
                                 + " milliseconds. Awaiting the first frame.");
                         }
                     }
+                } catch(SocketException e) {
+                    // FIXME: this catches the exception when the OPC server
+                    // goes down, but it doesn't actually sleep.
+                    // might also look into this stuff from jdk 5:
+                    // ScheduledExecutorService es = Executors.newScheduledThreadPool(1);
+                    // es.schedule(new Runnable(){
+                    //     @Override
+                    //     public void run() {
+                    //         //RSS checking
+                    //     }
+                    // }, 10, TimeUnit.MINUTES);
+                    this.log("\nERROR -----------------------------------------");
+                    this.socket = null;
+                    this.dataOutputStream = null;
+                    int timeout = 10000;
+                    this.log(e.toString());
+                    this.log("Waiting " + timeout + " milliseconds...");
+                    Thread.currentThread().sleep(timeout);
+                    this.log("Will attempt to reconnect."); // upon next sendBytes()
                 } catch(IOException e) {
                     this.log("\nERROR -----------------------------------------");
                     this.log(e.toString());

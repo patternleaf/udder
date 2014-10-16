@@ -74,4 +74,8 @@ public class Layer extends MixableBase implements Effect, Mixable {
         return this.effect;
     }
 
+    public String toString() {
+        return this.name;
+    }
+
 }

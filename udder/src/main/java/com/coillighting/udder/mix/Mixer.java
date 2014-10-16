@@ -106,4 +106,8 @@ public class Mixer extends MixableBase implements Mixable, Iterable<Mixable> {
         return this.pixels;
     }
 
+    public String toString() {
+        return "Mixer";
+    }
+
 }

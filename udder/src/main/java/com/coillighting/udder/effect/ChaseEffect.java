@@ -9,8 +9,8 @@ import com.coillighting.udder.TimePoint;
 public class ChaseEffect extends ArrayEffectBase {
 
     protected int offset = 0; // current scrolling offset
-    protected int step = 50; // how fast to scroll
-    protected Integer[] rgbaPixels = null;
+    protected int step = 10; // how fast to scroll
+    protected Integer[] rgbaTexture = null;
 
     public ChaseEffect(RgbaRaster raster) {
         super(raster);
@@ -19,13 +19,12 @@ public class ChaseEffect extends ArrayEffectBase {
     /** Draw a single frame, then scroll everything by one step. */
     public void animate(TimePoint timePoint) {
         this.setPixels(new Pixel(0.0f, 0.0f, 0.0f));
-        if(rgbaPixels != null) {
-            if(pixels != null) {
-                for(int i=0; i<rgbaPixels.length; i++) {
-                    pixels[(i + offset) % pixels.length].setColor(rgbaPixels[i]);
-                }
-                offset += step;
+        if(rgbaTexture != null && pixels != null) {
+            for(int t=0; t<rgbaTexture.length; t++) {
+                int p = (t + offset) % pixels.length;
+                pixels[p].setColor(rgbaTexture[t]);
             }
+            offset += step;
         }
     }
 
@@ -45,8 +44,8 @@ public class ChaseEffect extends ArrayEffectBase {
         this.step = step;
     }
 
-    public void setPixels(Integer [] rgbaPixels) {
-        this.rgbaPixels = rgbaPixels;
+    public void setPixels(Integer [] rgbaTexture) {
+        this.rgbaTexture = rgbaTexture;
     }
 
 }
