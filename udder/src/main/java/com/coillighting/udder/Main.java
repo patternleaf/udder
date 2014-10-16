@@ -130,6 +130,8 @@ public class Main {
     }
 
     protected static List<OpcLayoutPoint> createOpcLayoutPointsFromDevices(PatchSheet patchSheet) {
+        boolean autoscale = true; // to debug we sometimes want to skip scaling
+
         // Shrink the layout, which at the Dairy arrived in inches, to fit the
         // limited viewport of the OPC gl model.
         double glViewportScale = 3.0;
@@ -158,8 +160,10 @@ public class Main {
                 }
             }
         }
-        for(OpcLayoutPoint opcPoint: points) {
-            opcPoint.scale(glViewportScale / modelScale);
+        if(autoscale) {
+            for(OpcLayoutPoint opcPoint: points) {
+                opcPoint.scale(glViewportScale / modelScale);
+            }
         }
         return points;
     }
