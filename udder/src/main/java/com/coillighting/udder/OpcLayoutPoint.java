@@ -45,4 +45,10 @@ public class OpcLayoutPoint {
         return this.point;
     }
 
+    public void scale(double factor) {
+        for(int i=0; i<point.length; i++) {
+            point[i] *= factor;
+        }
+    }
+
 }

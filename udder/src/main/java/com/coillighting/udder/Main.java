@@ -130,21 +130,36 @@ public class Main {
     }
 
     protected static List<OpcLayoutPoint> createOpcLayoutPointsFromDevices(PatchSheet patchSheet) {
+        // Shrink the layout, which at the Dairy arrived in inches, to fit the
+        // limited viewport of the OPC gl model.
+        double glViewportScale = 3.0;
         List<Device> devices = patchSheet.getModelSpaceDevices();
         int[] addrMap = patchSheet.getDeviceAddressMap();
         ArrayList<OpcLayoutPoint> points = new ArrayList<OpcLayoutPoint>(addrMap.length);
         double [] origin = {0.0, 0.0, 0.0};
+        double modelScale = 0.0;
         for(int index: addrMap) {
-            OpcLayoutPoint pt;
+            double[] p;
             if(index < 0) {
                 // If a device for an OPC address is not patched, just put that
                 // address's pixel on the origin where it won't cause trouble.
-                pt = new OpcLayoutPoint(origin);
+                p = origin.clone();
             } else {
                 // TODO scale everything down to what'll fit in the gl server
-                pt = new OpcLayoutPoint(devices.get(index).getPoint());
+                p = devices.get(index).getPoint().clone();
             }
-            points.add(pt);
+            points.add(new OpcLayoutPoint(p));
+        }
+        for(OpcLayoutPoint opcPoint: points) {
+            double[] p = opcPoint.getPoint();
+            for(int i=0; i<p.length; i++) {
+                if(Math.abs(p[i]) > Math.abs(modelScale)) {
+                    modelScale = p[i];
+                }
+            }
+        }
+        for(OpcLayoutPoint opcPoint: points) {
+            opcPoint.scale(glViewportScale / modelScale);
         }
         return points;
     }
