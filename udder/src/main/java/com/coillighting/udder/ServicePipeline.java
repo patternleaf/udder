@@ -39,7 +39,7 @@ public class ServicePipeline {
     protected OpcTransmitter opcTransmitter;
     protected Thread transmitterThread;
 
-    public ServicePipeline(Mixer mixer) throws IOException {
+    public ServicePipeline(Mixer mixer, int[] deviceAddressMap) throws IOException {
         if(mixer == null) {
             throw new NullPointerException(
                 "ServicePipeline requires a Mixer that defines the scene.");
@@ -58,7 +58,7 @@ public class ServicePipeline {
         this.showRunner = new ShowRunner(this.commandQueue, this.mixer,
             this.router, this.frameQueue);
         this.showThread = new Thread(this.showRunner);
-        this.opcTransmitter = new OpcTransmitter(this.frameQueue);
+        this.opcTransmitter = new OpcTransmitter(this.frameQueue, deviceAddressMap.clone());
         this.transmitterThread = new Thread(this.opcTransmitter);
 
         // TODO rename to HttpServiceContainer or something

@@ -69,7 +69,8 @@ public class Main {
 
         // TODO: how to communicate addressSpaceDeviceMap to the transmitter?
         ServicePipeline pipeline = new ServicePipeline(
-            DairyScene.create(patchSheet.getModelSpaceDevices()));
+            DairyScene.create(patchSheet.getModelSpaceDevices()),
+            patchSheet.getDeviceAddressMap());
         pipeline.start();
     }
 
@@ -121,7 +122,7 @@ public class Main {
 
     protected static List<OpcLayoutPoint> createOpcLayoutPointsFromDevices(PatchSheet patchSheet) {
         List<Device> devices = patchSheet.getModelSpaceDevices();
-        int[] addrMap = patchSheet.getAddressSpaceDeviceMap();
+        int[] addrMap = patchSheet.getDeviceAddressMap();
         ArrayList<OpcLayoutPoint> points = new ArrayList<OpcLayoutPoint>(addrMap.length);
         double [] origin = {0.0, 0.0, 0.0};
         for(int index: addrMap) {

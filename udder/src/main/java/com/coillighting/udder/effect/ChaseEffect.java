@@ -9,7 +9,7 @@ import com.coillighting.udder.TimePoint;
 public class ChaseEffect extends ArrayEffectBase {
 
     protected int offset = 0; // current scrolling offset
-    protected int step = 1; // how fast to scroll
+    protected int step = 50; // how fast to scroll
     protected Integer[] rgbaPixels = null;
 
     public ChaseEffect(RgbaRaster raster) {
@@ -24,12 +24,9 @@ public class ChaseEffect extends ArrayEffectBase {
                 for(int i=0; i<rgbaPixels.length; i++) {
                     pixels[(i + offset) % pixels.length].setColor(rgbaPixels[i]);
                 }
-                System.err.println("rendered dest pixels");
                 offset += step;
             }
-            else System.err.println("no dest pixels!") // TEMP
         }
-        else System.err.println("no source pixels"); //TEMP
     }
 
     public int getOffset() {

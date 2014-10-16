@@ -10,7 +10,9 @@ public class PatchSheet {
 
     // TODO: shouldn't this just be an array, too?
     protected List<Device> modelSpaceDevices;
-    protected int[] addressSpaceDeviceMap; // -1 means "not patched"
+
+    // Encode {opc_addr: device_index} as an array. -1 means "not patched."
+    protected int[] deviceAddressMap;
 
     // TODO: custom exception?
     public PatchSheet(List<Device> modelSpaceDevices) throws IllegalArgumentException {
@@ -27,17 +29,17 @@ public class PatchSheet {
             }
         }
 
-        addressSpaceDeviceMap = new int[maxAddr + 1];
-        Arrays.fill(addressSpaceDeviceMap, -1);
+        deviceAddressMap = new int[maxAddr + 1];
+        Arrays.fill(deviceAddressMap, -1);
         int i=0;
         for(Iterator<Device> it = modelSpaceDevices.iterator(); it.hasNext(); i++) {
             int addr = it.next().getAddr();
-            if(addressSpaceDeviceMap[addr] != -1) {
+            if(deviceAddressMap[addr] != -1) {
                 throw new IllegalArgumentException("Address " + addr
                     + " appears more than once in the patch sheet.");
             }
             // My kingdom for a list comprehension!
-            addressSpaceDeviceMap[addr] = i;
+            deviceAddressMap[addr] = i;
         }
 
         // TODO write a self-test here
@@ -55,7 +57,7 @@ public class PatchSheet {
      *  devices[n] has the address n. If there is only null at devices[n],
      *  then no device was patched to that address.
      */
-    public int[] getAddressSpaceDeviceMap() {
-        return this.addressSpaceDeviceMap;
+    public int[] getDeviceAddressMap() {
+        return this.deviceAddressMap;
     }
 }

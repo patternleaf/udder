@@ -29,8 +29,9 @@ public class OpcTransmitter implements Runnable {
     private DataOutputStream dataOutputStream;
     private String serverAddress;
     private int serverPort;
+    private int[] deviceAddressMap; // see PatchSheet.deviceAddressMap
 
-    public OpcTransmitter(BlockingQueue<Frame> frameQueue) {
+    public OpcTransmitter(BlockingQueue<Frame> frameQueue, int[] deviceAddressMap) {
         if(frameQueue==null) {
             throw new NullPointerException(
                 "ShowRunner requires a queue that supplies frames.");
@@ -41,6 +42,7 @@ public class OpcTransmitter implements Runnable {
         // TODO: pass in the user-configured properties as params
         this.serverAddress = "127.0.0.1";
         this.serverPort = 7890;
+        this.deviceAddressMap = deviceAddressMap;
     }
 
     protected void connect() throws IOException {
