@@ -28,6 +28,7 @@ public class WovenEffect extends EffectBase {
     protected Cue currentCue = null;
     protected CueEnum currentStep = null;
     protected WovenFrame frame = null;
+    protected boolean verbose = false;
 
     public WovenEffect() {
         cues = new LinkedHashMap<CueEnum, Cue>();
@@ -56,10 +57,10 @@ public class WovenEffect extends EffectBase {
     /** Jump directly to the specified step. If step is null, reset the scene. */
     protected void setStep(CueEnum step) {
         if(step == null) {
-            this.log("\n\n============================ reset woven scene");
+            if(this.verbose) this.log("\n\n============================ reset woven scene");
             this.reset();
         } else {
-            this.log("\n---------------------------- woven cue " + step);
+            if(this.verbose) this.log("\n---------------------------- woven cue " + step);
             Cue cue = cues.get(step);
             if(cue == null) {
                 throw new NullPointerException("Invalid cue: " + step);
@@ -113,7 +114,7 @@ public class WovenEffect extends EffectBase {
             cue.animate(timePoint);
         }
         // TEMP: ASCII placeholder animation
-        this.log(this.frame);
+        if(this.verbose) this.log(this.frame);
     }
 
 }

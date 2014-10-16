@@ -37,7 +37,6 @@ public abstract class MixableBase implements Mixable {
             level = 1.0f;
         }
         this.level=level;
-        System.err.println("level=" + level + " in " + this);
     }
 
 }

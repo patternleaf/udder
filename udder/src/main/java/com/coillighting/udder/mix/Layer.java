@@ -17,10 +17,12 @@ import com.coillighting.udder.TimePoint;
 public class Layer extends MixableBase implements Effect, Mixable {
 
     /** A human-readable display name for this Layer. (Keep it short.) */
-    private String name;
+    protected String name;
 
     /** Delegate animations to this plug-in effect. */
-    private Effect effect;
+    protected Effect effect;
+
+    protected boolean verbose = false;
 
     public Layer(String name, Effect effect) {
         if(effect == null) {
@@ -63,7 +65,7 @@ public class Layer extends MixableBase implements Effect, Mixable {
         // TEMP:
         String fg = myPixels[0].toString();
         String after = canvasPixels[0].toString();
-        System.err.println("mixWith: " + before + " + " + fg + " @" + this.level + " = " + after);
+        if(this.verbose) System.err.println("mixWith: " + before + " + " + fg + " @" + this.level + " = " + after);
     }
 
     public void patchDevices(List<Device> devices) {

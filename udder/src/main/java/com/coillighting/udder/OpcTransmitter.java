@@ -31,6 +31,7 @@ public class OpcTransmitter implements Runnable {
     private String serverAddress;
     private int serverPort;
     private int[] deviceAddressMap; // see PatchSheet.deviceAddressMap
+    private long previousFrameRealTimeMillis = 0;
 
     public OpcTransmitter(BlockingQueue<Frame> frameQueue, int[] deviceAddressMap) {
         if(frameQueue==null) {
@@ -38,7 +39,7 @@ public class OpcTransmitter implements Runnable {
                 "ShowRunner requires a queue that supplies frames.");
         }
         this.frameQueue = frameQueue;
-        this.maxDelayMillis = 5000; // TODO: tune this
+        this.maxDelayMillis = 15000; // TODO: tune this
 
         // TODO: pass in the user-configured properties as params
         this.serverAddress = "127.0.0.1";
@@ -77,7 +78,16 @@ public class OpcTransmitter implements Runnable {
                 try {
                     Frame frame = this.frameQueue.poll(this.maxDelayMillis,
                         TimeUnit.MILLISECONDS);
+
                     if(frame != null) {
+                        TimePoint timePoint = frame.getTimePoint();
+                        long currentFrameRealTimeMillis = timePoint.realTimeMillis();
+
+                        long time = frame.getTimePoint().realTimeMillis();
+                        long latency = time - previousFrameRealTimeMillis;
+                        this.log("OPC frame latency: " + latency + " ms");
+                        previousFrameRealTimeMillis = time;
+
                         Pixel[] pixels = frame.getPixels();
 
                         // count the opc pixels, which might be a superset of
@@ -121,7 +131,8 @@ public class OpcTransmitter implements Runnable {
                             i += 3;
                         }
                         this.sendBytes(message);
-                        this.log("Sent " + pixelLen + " OPC pixels for " + pixels.length + " devices: " + this.formatMessage(message) + '\n'); //TEMP
+                        // verbose logging: (TODO: add an ivar for verbose mode)
+                        // this.log("Sent " + pixelLen + " OPC pixels for " + pixels.length + " devices: " + this.formatMessage(message) + '\n'); //TEMP
                         // TODO recycle the frame datastructure?
                     } else {
                         // If there are no incoming frames, periodically retransmit
@@ -141,22 +152,13 @@ public class OpcTransmitter implements Runnable {
                 } catch(SocketException e) {
                     // FIXME: this catches the exception when the OPC server
                     // goes down, but it doesn't actually sleep.
-                    // might also look into this stuff from jdk 5:
-                    // ScheduledExecutorService es = Executors.newScheduledThreadPool(1);
-                    // es.schedule(new Runnable(){
-                    //     @Override
-                    //     public void run() {
-                    //         //RSS checking
-                    //     }
-                    // }, 10, TimeUnit.MINUTES);
                     this.log("\nERROR -----------------------------------------");
                     this.socket = null;
                     this.dataOutputStream = null;
                     int timeout = 10000;
                     this.log(e.toString());
-                    this.log("Waiting " + timeout + " milliseconds...");
+                    this.log("Waiting " + timeout + " milliseconds before attempting reconnection...");
                     Thread.currentThread().sleep(timeout);
-                    this.log("Will attempt to reconnect."); // upon next sendBytes()
                 } catch(IOException e) {
                     this.log("\nERROR -----------------------------------------");
                     this.log(e.toString());

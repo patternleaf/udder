@@ -24,6 +24,7 @@ public class Mixer extends MixableBase implements Mixable, Iterable<Mixable> {
     protected ArrayList<Mixable> layers;
     protected Pixel[] pixels; // the developing frame
     protected int deviceCount = 0;
+    protected boolean verbose = false;
 
     public Mixer(Collection<Mixable> layers) {
         this.layers = new ArrayList(layers);
@@ -90,7 +91,7 @@ public class Mixer extends MixableBase implements Mixable, Iterable<Mixable> {
                 }
             }
         }
-        System.err.println("mixWith: Mixer @" + this.getLevel() + " = " + this.pixels[0]); // TEMP
+        if(this.verbose) System.err.println("mixWith: Mixer @" + this.getLevel() + " = " + this.pixels[0]); // TEMP
     }
 
     public void patchDevices(List<Device> devices) {

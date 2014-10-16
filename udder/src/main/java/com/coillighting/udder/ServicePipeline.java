@@ -52,7 +52,6 @@ public class ServicePipeline {
 
         // TODO args or properties to set connection binding params,
         // framerate, runmode, log level, etc.
-        this.verbose = true;
         this.commandQueue = new ConcurrentLinkedQueue<Command>();
         this.frameQueue = new LinkedBlockingQueue(32); // TODO shrink buffer size
         this.showRunner = new ShowRunner(this.commandQueue, this.mixer,

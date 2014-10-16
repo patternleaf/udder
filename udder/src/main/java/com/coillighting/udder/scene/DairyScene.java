@@ -38,8 +38,12 @@ public abstract class DairyScene {
         Layer external = new Layer("External input", new RasterEffect(null));
         external.setBlendOp(max);
 
-        Layer chase = new Layer("Chase", new ChaseEffect(null));
-        chase.setBlendOp(max);
+        // Lots of chases, for load balancing.
+        Layer[] chases = new Layer[10];
+        for(int i=0; i<chases.length; i++) {
+            chases[i] = new Layer("Chase " + i, new ChaseEffect(null));
+            chases[i].setBlendOp(max);
+        }
 
         Layer gel = new Layer("Gel", new MonochromeEffect(Pixel.black()));
         gel.setBlendOp(mult);
@@ -50,7 +54,10 @@ public abstract class DairyScene {
         layers.add(background);
         layers.add(woven);
         layers.add(external);
-        layers.add(chase);
+
+        for(Layer c: chases) {
+            layers.add(c);
+        }
         layers.add(gel);
 
         Mixer mixer = new Mixer((Collection<Mixable>) layers);
@@ -62,7 +69,9 @@ public abstract class DairyScene {
             layer.setLevel(0.0f);
         }
         external.setLevel(1.0f);
-        chase.setLevel(1.0f);
+        for(Layer c: chases) {
+            c.setLevel(1.0f);
+        }
         mixer.setLevel(1.0f);
 
         return mixer;

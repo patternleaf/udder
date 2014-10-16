@@ -20,6 +20,7 @@ public class ShowRunner implements Runnable {
     protected Router router;
     protected Queue<Frame> frameQueue;
     protected int targetFrameRateMillis = 10;
+    protected long previousFrameRealTimeMillis = 0;
 
     public ShowRunner(Queue<Command> commandQueue, Mixer mixer,
         Router router, Queue<Frame> frameQueue)
@@ -65,6 +66,11 @@ public class ShowRunner implements Runnable {
                     }
 
                     timePoint = timePoint.next();
+                    long time = timePoint.realTimeMillis();
+                    long latency = time - previousFrameRealTimeMillis;
+                    this.log("Command latency: " + latency + " ms");
+                    previousFrameRealTimeMillis = time;
+
                     this.mixer.animate(timePoint);
 
                     // FIXME clarify ownership of pixels.. render() isn't quite threadsafe yet.
