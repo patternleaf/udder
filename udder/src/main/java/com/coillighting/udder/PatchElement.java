@@ -39,16 +39,31 @@ public class PatchElement {
         this.point = point;
         this.group = group;
         this.address = address;
+        this.getZ(); // validates point is between 1 and 3 dimensions
     }
 
-    // TEMP
+    /* A 1D layout is mandatory. 2D is optional. Return y=0 if unspecified. */
+    private double getY() {
+        double y=0.0;
+        if(this.point == null) {
+            throw new IllegalArgumentException(
+                "You must provide a point in space for each output device in the patch sheet.");
+        } else if(this.point.length >= 2) {
+            y = this.point[1];
+        } else {
+            throw new IllegalArgumentException("Udder does not support "
+                + this.point.length + "-dimensional shows.");
+        }
+        return y;
+    }
+
+    /* A 1D layout is mandatory. 3D is optional. Return z=0 if unspecified. */
     private double getZ() {
-        double z;
-        if(this.point != null && this.point.length == 2) {
-            // The Z-axis disappeared, so for now just set Z to a multiple of group.
-            // FIXME this 15' offset is hardcoded for the dairy, no good for other shows.
-            z = (15.0 * 12.0) * (double) group;
-        } else if(this.point != null && this.point.length == 3) {
+        double z=0.0;
+        if(this.point == null) {
+            throw new IllegalArgumentException(
+                "You must provide a point in space for each output device in the patch sheet.");
+        } else if(this.point.length == 3) {
             z = this.point[2];
         } else {
             throw new IllegalArgumentException("Udder does not support "
@@ -57,17 +72,21 @@ public class PatchElement {
         return z;
     }
 
-    /** Convert this intermediate representation into a full-fledged Udder Device.
+    /** Convert this intermediate representation into a full-fledged 3D Udder
+     *  Device.
      */
     public Device toDevice() {
-        double z = this.getZ(); // simultaneously validate point
-        return new Device(this.address, this.group, this.point[0], this.point[1], z);
+        double z = this.getZ();
+        double y = this.getY();
+        double x = point[0];
+        return new Device(this.address, this.group, x, y, z);
     }
 
     public String toString() {
-        double z = this.getZ(); // simultaneously validate point
-        return "PatchElement([" + point[0] + "," + point[1] + "," + z
-            + "], " + group + ")";
+        double z = this.getZ();
+        double y = this.getY();
+        double x = point[0];
+        return "PatchElement([" + x + "," + y + "," + z + "], " + group + ")";
     }
 
     public double[] getPoint() {
