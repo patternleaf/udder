@@ -9,7 +9,7 @@ import com.coillighting.udder.TimePoint;
 public class ChaseEffect extends ArrayEffectBase {
 
     protected int offset = 0; // current scrolling offset
-    protected int step = 10; // how fast to scroll
+    protected int step = 1; // how fast to scroll
     protected Integer[] rgbaTexture = null;
 
     public ChaseEffect(RgbaRaster raster) {
