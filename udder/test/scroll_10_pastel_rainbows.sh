@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # set up the blips (10 copies)
 texture=pastel_rainbow
-delay=0.25 # seconds
+delay=1 # seconds
 
 curl -X POST -d @level_full.json http://localhost:8080/mixer0
 curl -X POST -d @${texture}.json http://localhost:8080/mixer0/layer3/effect

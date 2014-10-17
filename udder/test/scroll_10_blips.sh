@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # set up the blips (10 copies)
 texture=blip
-delay=1.1 # seconds
+delay=1
 
 curl -X POST -d @level_full.json http://localhost:8080/mixer0
 curl -X POST -d @${texture}.json http://localhost:8080/mixer0/layer3/effect
