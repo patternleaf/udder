@@ -19,8 +19,13 @@ public class ShowRunner implements Runnable {
     protected Mixer mixer;
     protected Router router;
     protected Queue<Frame> frameQueue;
-    protected int targetFrameRateMillis = 10;
+
+    // Timing
+    // Normally (busyWait=false) fps roughly equals 1000/frameDelayMillis.
+    protected int frameDelayMillis = 10; // ignored if busywait
+    protected boolean busyWait = false;
     protected long previousFrameRealTimeMillis = 0;
+    protected long frameCounter = 0;
 
     public ShowRunner(Queue<Command> commandQueue, Mixer mixer,
         Router router, Queue<Frame> frameQueue)
@@ -48,28 +53,45 @@ public class ShowRunner implements Runnable {
         try {
             // Immutable timepoint, passed down the chain to frames.
             TimePoint timePoint = new TimePoint();
+            boolean sleepy=false;
+
             this.log("Starting show.");
+
             while(true) {
+
                 Command command = this.commandQueue.poll();
-                if(command != null) {
-                    this.log("Received command: " + command);
 
-                    // TODO - add routes for timer
-                    String path = command.getPath();
-                    Effect dest = this.router.get(path);
-                    // TODO check for null dest
-                    try {
-                        dest.setState(command.getValue());
-                    } catch(Exception e) {
-                        this.log("Failed to issue command to destination "
-                            + dest + " at " + path + ": " + e); // TEMP
+                if(command != null || !sleepy) {
+                    sleepy = true;
+                    if(command != null) {
+                        this.log("Received command: " + command); //TEMP
+
+                        // TODO - add routes for timer
+                        String path = command.getPath();
+                        Effect dest = this.router.get(path);
+                        // TODO check for null dest
+                        try {
+                            dest.setState(command.getValue());
+                        } catch(Exception e) {
+                            this.log("Failed to issue command to destination "
+                                + dest + " at " + path + ": " + e); // TEMP?
+                        }
                     }
-
                     timePoint = timePoint.next();
                     long time = timePoint.realTimeMillis();
                     long latency = time - previousFrameRealTimeMillis;
-                    this.log("Command latency: " + latency + " ms");
-                    previousFrameRealTimeMillis = time;
+
+                    // The JVM system time only comes in millis, but the nano
+                    // timers are a can of worms (and AFAIK system-dependent),
+                    // so we count frames until the clock changes in order to
+                    // estimate framerate.
+                    if(latency > 0) {
+                        this.log("Command latency <= " + latency + " ms (" + frameCounter + " frames / " + latency + " ms) = " + (1000 * frameCounter/latency) + " fps");
+                        previousFrameRealTimeMillis = time;
+                        frameCounter = 1;
+                    } else {
+                        ++frameCounter;
+                    }
 
                     this.mixer.animate(timePoint);
 
@@ -81,10 +103,18 @@ public class ShowRunner implements Runnable {
                     if(!frameQueue.offer(frame)) {
                         this.log("Frame queue overflow. Dropped frame " + timePoint);
                     }
+                } else if(busyWait) {
+                    // duration=10000 gave me 2000-5000 fps in a mix with
+                    // more than 10 layers * 2 Kpixels, 1 of them animated.
+                    // Performance degraded by roughly 20% when I animated 10 of
+                    // them instead.
+                    this.waitBusy(10000);
+                    sleepy = false;
                 } else {
                     // Our crude timing mechanism currently does not account for
                     // the cost of processing each command.
-                    Thread.sleep(this.targetFrameRateMillis);
+                    Thread.sleep(this.frameDelayMillis);
+                    sleepy = false;
                 }
             }
         } catch(InterruptedException e) {
@@ -94,5 +124,38 @@ public class ShowRunner implements Runnable {
 
     public void log(String msg) {
         System.err.println(msg);
+    }
+
+
+    //--------------------------------------------------------------------------
+    // TODO move timing utils
+
+    private static volatile long waitSeed = System.nanoTime();
+
+    /** Wait by forcing the CPU to spin for several cycles, correlated with
+     *  the specified duration, evading optimizations that might rewrite this
+     *  method into a no-op. An alternative to a quick thread sleep, which isn't
+     *  very quick at these scales. EXPERIMENTAL.
+     */
+    public static void waitBusy(long duration) {
+        // See research here:
+        //    http://shipilev.net/blog/2014/nanotrusting-nanotime/
+        // and benchmarking source here (formally GP2, but apparently derived
+        // prior research into e.g. random-number generators etc.):
+        //    (GPL2) http://hg.openjdk.java.net/code-tools/jmh/file/cde312963a3d/jmh-core/src/main/java/org/openjdk/jmh/logic/BlackHole.java#l400
+
+        // Randomize, then reuse, the seed to avoid optimizations.
+        long t = waitSeed;
+
+        // See the article re: this backwards-counting trick.
+        for (long i=duration; i>0; i--) {
+            // 48 bit linear congruential generator with prime addend.
+            t += (t * 0x5DEECE66DL + 0xBL + i) & (0xFFFFFFFFFFFFL);
+        }
+
+        // Memoization buster
+        if (t == 42) {
+            waitSeed += t;
+        }
     }
 }
