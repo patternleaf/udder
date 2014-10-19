@@ -38,6 +38,36 @@ stretch out the end somehow
 
 fast fade out while going back to highrez map?
 
+crossfade pseudo-sigmoidal:0.5*(1 + (sin((pi*(x-0.5)))))
+
+sin(x**2) accelerates smoothly from slow to fast oscillation
+
+this function (for details, solve "sin(x**2)=1" in wolframalpha) gives
+you the float x where peak number c+1 is, e.g. c=4 returns the 5th peak:
+
+  def peak(c):
+     return (2*pi*c + pi*0.5)**0.5
+
+This starts at maximum (1.0), dips down slowly halfway, dips up symmetrically to
+1.0, then starts accelerating over a sine. Results scaled and translated to
+[0.1..1.0]:
+
+     0.5 + 0.5*sin((x - 1.2533141373155001)**2) from 0 to 20
+     (try it in Alpha)
+     note: 1.2533... is the value of peak(0)
+
+In this case, peak(c) needs to change:
+
+  def peak2a(c):
+     return 1.2533141373155001 + (2*pi*(c) + pi*0.5)**0.5
+
+a.k.a.
+
+  def peak2b(c):
+     return 1.2533141373155001 + peak(c)
+
+peak2b(3) returns the 4th peak, counting from 0 at x=0.0, in the
+scaled and translated version of this function.
 
 
 Fade to black.

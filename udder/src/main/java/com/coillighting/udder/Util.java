@@ -7,6 +7,7 @@ import java.util.List;
 
 // TODO see whether using the 32 bit vs 64 bit versions are really any different
 // on the Raspi.
+// TODO Split up into multiple classes.
 public class Util {
 
     // TODO see if there are already Boon equivalents for these - there likely are.
