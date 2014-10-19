@@ -39,6 +39,28 @@ public class Util {
         return list;
     }
 
+    /** Draw an ASCII slider representing the value of x in range [0..1.0]. */
+    public static final String plot1D(double x) {
+        if(x < 0.0) {
+            return "[< MIN ERR ----------------------------------------] " + x;
+        } else if(x > 1.0) {
+            return "[---------------------------------------- ERR MAX >] " + x;
+        } else {
+            int xi = (int)(x * 50.999999999);
+            StringBuffer sb = new StringBuffer(80);
+            sb.append('[');
+            for(int i=0; i<xi; i++) {
+                sb.append('-');
+            }
+            sb.append('|');
+            for(int i=xi+1; i<=50; i++) {
+                sb.append('-');
+            }
+            sb.append(']').append(' ').append(x);
+            return sb.toString();
+        }
+    }
+
     /** Linearly interpolate x, a value between 0 and 1, between two points,
      *  (0, y0) and (1, y1). If you supply an x that is out of range, the
      *  result will likewise be out of range.
