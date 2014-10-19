@@ -42,7 +42,7 @@ public class WeftCue extends CueBase {
             return;
         }
 
-        double elapsed = this.computeFractionElapsed(timePoint,
+        double elapsed = CueBase.computeFractionElapsed(timePoint,
             stepStartTime, stepDuration);
         if(elapsed >= 1.0) {
             if(weftX == 0) {

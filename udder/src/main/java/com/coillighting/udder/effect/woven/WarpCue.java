@@ -35,7 +35,7 @@ public class WarpCue extends CueBase {
             this.stopTimer();
             return;
         } else {
-            double elapsed = this.computeFractionElapsed(timePoint,
+            double elapsed = CueBase.computeFractionElapsed(timePoint,
                 stepStartTime, stepDuration);
             if(elapsed >= 1.0) {
                 if(warpIndex + 1 >= frame.warp.length) {

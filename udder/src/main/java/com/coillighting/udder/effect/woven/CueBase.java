@@ -53,7 +53,8 @@ public class CueBase implements Cue {
 
     /** Return [0.0... 1.0] for 0% to 100% elapsed at the given time. */
     public double getFractionElapsed(TimePoint timePoint) {
-        return this.computeFractionElapsed(timePoint, this.startTime, this.duration);
+        return CueBase.computeFractionElapsed(timePoint, this.startTime,
+            this.duration);
     }
 
     public long getStartTime() {

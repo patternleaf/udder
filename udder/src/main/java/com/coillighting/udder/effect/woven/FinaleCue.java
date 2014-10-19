@@ -19,4 +19,5 @@ public class FinaleCue extends CueBase {
             this.stopTimer();
         }
     }
+
 }

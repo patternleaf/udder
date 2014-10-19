@@ -1,0 +1,14 @@
+transport notifications - layer % 0 / nonzero transition
+(eventually play/stop/fwd/ffwd/step+/step-/tempo? etc)
+
+external LFO registered (in mixer? or totally separate command generator?) 
+programmed to turn down everything else and then turn up Woven, at which point
+it should receive a transport notification, reset(), and fire up.
+
+how does external LFO know when Woven is all done?
+Woven runs in the mixer thread, does this mean that external LFO should run as
+a mixer event -- registered as if it were a layer, served animate() before the
+rest of it? probably so... Woven could just have an extra ivar for the LFO
+notification.
+
+
