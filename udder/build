@@ -1,3 +1,8 @@
 #!/usr/bin/env bash
+
+# Clobber misplaced source files left behind by sublimelinter-javac.
+# TODO: figure out how to give it a different working directory.
+find src/main/java/com/coillighting/ -name "*.class"|xargs rm
+
 # -q hides INFO messages
 mvn -q package
