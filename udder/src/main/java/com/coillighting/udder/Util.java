@@ -46,6 +46,11 @@ public class Util {
         } else if(x > 1.0) {
             return "[---------------------------------------- ERR MAX >] " + x;
         } else {
+            if(x <= 0.01) {
+                x = 0.0;
+            } else if(x >= 0.99) {
+                x = 1.0;
+            }
             int xi = (int)(x * 50.999999999);
             StringBuffer sb = new StringBuffer(80);
             sb.append('[');
