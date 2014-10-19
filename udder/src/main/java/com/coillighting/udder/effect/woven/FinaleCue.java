@@ -13,9 +13,7 @@ public class FinaleCue extends CueBase {
     public double accelerate(double x) {
         // see woven_scene.txt docs
         // idea: try raising y to the power of 2 or 3 to rectify it?
-        double y = 0.5 + 0.5 * Math.sin(Math.pow(x - 1.2533141373155001, 2));
-        System.err.println(Util.plot1D(y));
-        return y;
+        return 0.5 + 0.5 * Math.sin(Math.pow(x - 1.2533141373155001, 2));
     }
 
     // for 4 lumps (after the starting value, a half-peak at x=0.0), cycle
@@ -23,9 +21,13 @@ public class FinaleCue extends CueBase {
     public double plateau(double x) {
         double shape = 0.25; // also worth trying 1.0 and 0.5
         double y = Math.abs(Math.sin(x - 0.5 * Math.PI));
-        y = Math.pow(y, shape);
-        System.err.println(Util.plot1D(y));
-        return y;
+        return Math.pow(y, shape);
+    }
+
+    // x in range [0.0..1.0]
+    public double fadeOut(double x) {
+        // might also try powers of 2.0, 4.0, 5.0
+        return Util.reshapeExponential(1.0 - x, 3.0);
     }
 
     public void animate(TimePoint timePoint) {
@@ -39,19 +41,25 @@ public class FinaleCue extends CueBase {
 
         long elapsedMillis = timePoint.sceneTimeMillis() - startTime;
         double elapsedSeconds = elapsedMillis / 1000.0;
+        float y;
         if(false) {
-            // STEP A
+            // STEP A - accelerating oscillation
             // TODO - involve all the colors in all the layers - maybe add
             // a scaling factor to WovenFrame itself?
-            float y = (float) this.accelerate(elapsedSeconds / 2.0);
-            this.frame.background.setColor(y, y, y); // TEMP. TODO - scale instead
+            y = (float) this.accelerate(elapsedSeconds / 2.0);
             // TODO fit number of peaks to the scheduled cue duration
         }
-        if(true) {
-            // STEP B
-            float y = (float) this.plateau(elapsedSeconds);
-            this.frame.background.setColor(y, y, y); // TEMP. TODO - scale instead
+        if(false) {
+            // STEP B - pulses
+            y = (float) this.plateau(elapsedSeconds);
         }
+        if(true) {
+            // FIXME - move this to the fadeoutcue
+            // STEP C - sudden release envelope, tapering out at the end
+            y = (float) this.fadeOut(this.getFractionElapsed(timePoint));
+        }
+        this.frame.background.setColor(y, y, y); // TEMP. TODO - scale instead
+        System.err.println(Util.plot1D(y));
     }
 
 }
