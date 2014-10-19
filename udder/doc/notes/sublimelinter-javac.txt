@@ -1,0 +1,25 @@
+It took me half an hour to figure out how to send a sourcepath to sublimelinter-javac.
+Here it is:
+
+        "linters": {
+            "javac": {
+                "@disable": false,
+                "args": ["-sourcepath", "/Users/YOUR_NAME_HERE/src/udder/udder/src/main/java/"],
+                "excludes": [],
+                "lint": ""
+            },
+            "pyflakes": {
+                "@disable": false,
+                "args": [],
+                "excludes": []
+            }
+        },
+
+It lives under args, as an array of strings.
+-cp or -classpath should also be options.
+
+I believe the "lint" setting just parameterizes the -Xlint setting, like -Xlint:path.
+Docs:
+
+http://www.javaworld.com/article/2073587/javac-s--xlint-options.html
+
