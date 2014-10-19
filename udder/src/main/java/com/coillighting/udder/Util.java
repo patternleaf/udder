@@ -82,6 +82,14 @@ public class Util {
     /** A version of crossfadeExponential optimized for normalized scenarios
      *  where y0=0, y1=1, and x is between 0 and 1 inclusive. Reduces to
      *  x^exponent.
+     *
+     *  WolframAlpha query for reshapeExponential(x, 2.0):
+     *      (x**2) from 0 to 1
+     *      http://www.wolframalpha.com/input/?i=%28x**2%29+from+0+to+1
+     *
+     *  WolframAlpha query for reshapeExponential(x, 0.5):
+     *      (x**0.25) from 0 to 1
+     *      http://www.wolframalpha.com/input/?i=%28x**0.25%29+from+0+to+1
      */
     public static final double reshapeExponential(double x, double exponent) {
         return Math.pow(x, exponent);
@@ -110,6 +118,10 @@ public class Util {
 
     /** Like crossfadeSinusoidal, but optimized for normalized input scenarios
      *  where y0=0, y1=1, and is is between 0 and 1 inclusive.
+     *
+     *  WolframAlpha query for reshapeSinusoidal(x):
+     *      0.5 * (1 + sin((x-0.5)*pi)) from 0 to 1
+     *      http://www.wolframalpha.com/input/?i=0.5+*+%281+%2B+sin%28%28x-0.5%29*pi%29%29+from+0+to+1
      */
     public static final double reshapeSinusoidal(double x) {
         // Map an x in range 0..1 to an xx in range -pi..0.
