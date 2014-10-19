@@ -29,6 +29,17 @@ Between each hotspot is a gap where the warp shows through.
 Cue 4: Finale
 -------------
 Visually punctuate the completion of the figure (to taste).
+
+perhaps transform the mapping on an LFO -- rotate and scale on a sine
+lfo whose frequency is modulated by a second sine lfo?
+ooze into the finale, maybe getting brightness from the scaling (=more pixels), maybe modulating brightness as well?
+
+stretch out the end somehow
+
+fast fade out while going back to highrez map?
+
+
+
 Fade to black.
 
 Cue 5: Return to default state
