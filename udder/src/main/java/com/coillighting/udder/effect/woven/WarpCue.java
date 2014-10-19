@@ -2,6 +2,8 @@ package com.coillighting.udder.effect.woven;
 
 import com.coillighting.udder.Pixel;
 import com.coillighting.udder.TimePoint;
+import com.coillighting.udder.blend.BlendOp;
+import com.coillighting.udder.blend.MaxBlendOp;
 
 public class WarpCue extends CueBase {
 
@@ -10,8 +12,20 @@ public class WarpCue extends CueBase {
     protected long stepDuration = 0;
     protected long stepStartTime = 0;
 
+    protected Pixel threadColor = null;
+    protected Pixel cursorColor = null;
+    protected Pixel backgroundColor = null;
+
+    protected BlendOp blendOp = null;
+
     public WarpCue(long duration, WovenFrame frame) {
         super(duration, frame);
+
+        // TODO variable colors
+        this.threadColor = new Pixel(0.0f, 0.00f, 1.0f);
+        this.cursorColor = Pixel.white();
+        this.backgroundColor = Pixel.black();
+        this.blendOp = new MaxBlendOp();
     }
 
     public void startStepTimer(TimePoint timePoint) {
@@ -25,13 +39,14 @@ public class WarpCue extends CueBase {
             this.startTimer(timePoint);
             this.startStepTimer(timePoint);
 
+            // Clear the canvas
             for(Pixel p: frame.warp) {
-                p.setColor(0.0f, 0.0f, 0.0f);
+                p.setColor(backgroundColor);
             }
         } else if(this.isElapsed(timePoint)) {
             // Finish this step, move on to the next cue.
             Pixel p = frame.warp[frame.warp.length - 1];
-            p.setColor(1.0f, 1.0f, 1.0f); // TODO color selection
+            p.setColor(threadColor);
             this.stopTimer();
             return;
         } else {
@@ -44,17 +59,28 @@ public class WarpCue extends CueBase {
                 } else {
                     // Finish this step, move to the next step.
                     Pixel p = frame.warp[warpIndex];
-                    p.setColor(1.0f, 1.0f, 1.0f); // TODO color selection
+                    p.setColor(threadColor);
 
+                    // TODO: blank lines between threads
+                    // TODO: variable ratio of thread width to blank line width?
                     warpIndex += 1;
                     this.startStepTimer(timePoint);
                     elapsed = 0.0;
                 }
             }
-            float f = (float) elapsed;
-            Pixel p = frame.warp[warpIndex];
-            // TODO nonlinear fade in
-            p.setColor(f, f, f); // TODO color selection
+            // TODO nonlinear fade-in, poss. nonlinear cursor fade
+            float brightness = (float) elapsed;
+
+            // TODO reuse objects?
+            Pixel color = new Pixel(threadColor);
+
+            // Fade from white to threadColor as we fade in.
+            color.blendWith(cursorColor, 1.0f - brightness, blendOp);
+
+            // Fade in from black
+            color.scale(brightness);
+
+            frame.warp[warpIndex].setColor(color);
         }
     }
 

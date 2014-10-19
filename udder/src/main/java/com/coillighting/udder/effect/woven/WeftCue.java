@@ -2,6 +2,8 @@ package com.coillighting.udder.effect.woven;
 
 import com.coillighting.udder.Pixel;
 import com.coillighting.udder.TimePoint;
+import com.coillighting.udder.blend.BlendOp;
+import com.coillighting.udder.blend.MaxBlendOp;
 
 public class WeftCue extends CueBase {
 
@@ -11,8 +13,21 @@ public class WeftCue extends CueBase {
     protected long stepDuration = 0;
     protected long stepStartTime = 0;
 
+    protected Pixel threadColor = null;
+    protected Pixel cursorColor = null;
+    protected Pixel backgroundColor = null;
+
+    protected BlendOp blendOp = null;
+
+
     public WeftCue(long duration, WovenFrame frame) {
         super(duration, frame);
+
+        // TODO variable colors
+        this.threadColor = new Pixel(1.0f, 0.0f, 0.0f);
+        this.cursorColor = Pixel.white();
+        this.backgroundColor = Pixel.black();
+        this.blendOp = new MaxBlendOp();
     }
 
     public void startStepTimer(TimePoint timePoint) {
@@ -28,16 +43,16 @@ public class WeftCue extends CueBase {
             this.startTimer(timePoint);
             this.startStepTimer(timePoint);
 
-            // Placeholder: light up the entire weft blue
+            // Clear the canvas
             for(int x=0; x<2; x++) {
                 for(Pixel p: frame.weft[x]) {
-                    p.setColor(0.0f, 0.0f, 1.0f);
+                    p.setColor(backgroundColor);
                 }
             }
         } else if(this.isElapsed(timePoint)) {
-            // Finish this step, move on to the next cue.
+            // Finish the last step in this cue, prepare to move to the next cue.
             Pixel p = frame.weft[1][frame.weft[1].length - 1];
-            p.setColor(1.0f, 1.0f, 1.0f); // TODO color selection
+            p.setColor(threadColor);
             this.stopTimer();
             return;
         }
@@ -53,20 +68,31 @@ public class WeftCue extends CueBase {
             } else if(weftY + 1 >= frame.weft[0].length) {
                 return;
             } else {
-                // Finish this step, move up to the next step.
+                // Finish this step, move up to the next step in this cue.
                 Pixel p = frame.weft[weftX][weftY];
-                p.setColor(1.0f, 1.0f, 1.0f); // TODO color selection
+                p.setColor(threadColor); // TODO color selection
 
+                // TODO: blank lines between threads
+                // TODO: variable ratio of thread width to blank line width?
                 weftY += 1;
                 weftX = 0;
             }
             this.startStepTimer(timePoint);
         }
+        // TODO nonlinear fade-in, poss. nonlinear cursor fade
+        float brightness = (float) elapsed;
 
-        float f = (float) elapsed;
-        Pixel p = frame.weft[weftX][weftY];
+        // TODO reuse objects?
+        Pixel color = new Pixel(threadColor);
+
+        // Fade from white to threadColor as we fade in.
+        color.blendWith(cursorColor, 1.0f - brightness, blendOp);
+
+        // Fade in from black
+        color.scale(brightness);
+
         // TODO nonlinear fade in
-        p.setColor(f, f, f); // TODO color selection
+        frame.weft[weftX][weftY].setColor(color);
     }
 
 }

@@ -58,11 +58,16 @@ public class Pixel {
         }
     }
 
+    /** FIXME REF - premultiplying level will not work for every blendop!
+     *  Either the blendop itself needs to be supplied with level, or
+     *  the result of blending should be averaged with the background
+     *  value here.
+     */
     public void blendWith(Pixel foreground, float level, BlendOp blendOp) {
         if(blendOp == null) {
             throw new NullPointerException("BlendOp is required.");
         } else if(foreground != null && level > 0.0) {
-            level = this.clipChannel(level);
+            level = Pixel.clipChannel(level);
             this.setColor(
                 blendOp.blend(this.r, level * foreground.r),
                 blendOp.blend(this.g, level * foreground.g),
@@ -80,9 +85,9 @@ public class Pixel {
     }
 
     public void clip() {
-        this.r = this.clipChannel(this.r);
-        this.g = this.clipChannel(this.g);
-        this.b = this.clipChannel(this.b);
+        this.r = Pixel.clipChannel(this.r);
+        this.g = Pixel.clipChannel(this.g);
+        this.b = Pixel.clipChannel(this.b);
     }
 
     protected static final float clipChannel(float value) {
