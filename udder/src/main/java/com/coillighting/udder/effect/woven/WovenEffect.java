@@ -28,17 +28,17 @@ public class WovenEffect extends EffectBase {
     protected Cue currentCue = null;
     protected CueEnum currentStep = null;
     protected WovenFrame frame = null;
-    protected boolean verbose = false;
+    protected boolean verbose = true;
 
     public WovenEffect() {
         cues = new LinkedHashMap<CueEnum, Cue>();
         frame = new WovenFrame();
         cues.put(BLACKOUT, new BlackoutCue(1000, frame));
-        cues.put(CURTAIN, new CurtainCue(1000, frame));
-        cues.put(WARP, new WarpCue(2000, frame));
-        cues.put(WEFT, new WeftCue(3000, frame));
-        cues.put(FINALE, new FinaleCue(2000, frame));
-        cues.put(FADEOUT, new FadeOutCue(1000, frame));
+        cues.put(CURTAIN, new CurtainCue(4000, frame));
+        cues.put(WARP, new WarpCue(14000, frame));
+        cues.put(WEFT, new WeftCue(14000, frame));
+        cues.put(FINALE, new FinaleCue(1000, frame));
+        cues.put(FADEOUT, new FadeOutCue(4000, frame));
         this.reset();
     }
 
@@ -65,9 +65,10 @@ public class WovenEffect extends EffectBase {
             if(cue == null) {
                 throw new NullPointerException("Invalid cue: " + step);
             } else {
-                cue.setFadeState(CueFadeStateEnum.FADE_IN);
+                // TODO refactor, no need to keep track of this two different ways
                 currentCue = cue;
                 currentStep = step;
+                cue.reset();
             }
         }
     }
@@ -109,12 +110,15 @@ public class WovenEffect extends EffectBase {
     }
 
     public void animate(TimePoint timePoint) {
-        this.nextCue();
-        for(Cue cue: this.cues.values()) {
-            cue.animate(timePoint);
+        if(currentCue == null) {
+            this.nextCue();
+        }
+        currentCue.animate(timePoint);
+        if(currentCue.getFadeState() == CueFadeStateEnum.END) {
+            this.nextCue();
+            if(this.verbose) this.log("Next cue: " + currentCue); // TEMP
         }
         // TEMP: ASCII placeholder animation
         if(this.verbose) this.log(this.frame);
     }
-
 }

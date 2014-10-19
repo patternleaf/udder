@@ -10,17 +10,19 @@ public class FadeOutCue extends CueBase {
     }
 
     public void animate(TimePoint timePoint) {
-        if(this.fadeState != CueFadeStateEnum.INVISIBLE) {
-            // Placeholder: light up the entire warp a cold grey
-            for(Pixel p: this.frame.warp) {
-                p.setColor(0.44f, 0.55f, 0.66f);
-            }
+        if(this.fadeState == CueFadeStateEnum.START) {
+            this.startTimer(timePoint);
 
-            // Placeholder: light up the entire weft a warm grey
-            for(Pixel[] pixels: this.frame.weft) {
-                for(Pixel p: pixels) {
-                    p.setColor(0.33f, 0.22f, 0.11f);
-                }
+            // Placeholder. TODO: scale everything layer down to black by 100%-cue%
+            this.frame.background.setColor(0.111f, 0.111f, 0.111f);
+        } else {
+            double elapsed = this.getFractionElapsed(timePoint);
+            // TODO: color selection.
+            // TODO: apply some shaping to this envelope, which currently will
+            // accel as it tapers into black because it is compounding.
+            frame.scaleColor(1.0 - elapsed);
+            if(elapsed >= 1.0) {
+                this.stopTimer();
             }
         }
     }

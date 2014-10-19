@@ -2,10 +2,9 @@ package com.coillighting.udder.effect.woven;
 
 public enum CueFadeStateEnum {
 
-    // TODO: rename invisible to start?
-    INVISIBLE("invisible"),
-    FADE_IN("fade_in"),
-    FULL("full");
+    START("start"),
+    RUNNING("running"),
+    END("end");
 
     private String value;
 

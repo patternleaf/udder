@@ -20,10 +20,12 @@ public class ShowRunner implements Runnable {
     protected Router router;
     protected Queue<Frame> frameQueue;
 
-    // Timing
+    protected boolean verbose = false;
+
+    // Timing measurements.
     // Normally (busyWait=false) fps roughly equals 1000/frameDelayMillis.
     protected int frameDelayMillis = 10; // ignored if busywait
-    protected boolean busyWait = false;
+    protected boolean busyWait = false; // wait in a hot idle loop, not thread sleep
     protected long previousFrameRealTimeMillis = 0;
     protected long frameCounter = 0;
 
@@ -78,19 +80,22 @@ public class ShowRunner implements Runnable {
                         }
                     }
                     timePoint = timePoint.next();
-                    long time = timePoint.realTimeMillis();
-                    long latency = time - previousFrameRealTimeMillis;
 
-                    // The JVM system time only comes in millis, but the nano
-                    // timers are a can of worms (and AFAIK system-dependent),
-                    // so we count frames until the clock changes in order to
-                    // estimate framerate.
-                    if(latency > 0) {
-                        this.log("Command latency <= " + latency + " ms (" + frameCounter + " frames / " + latency + " ms) = " + (1000 * frameCounter/latency) + " fps");
-                        previousFrameRealTimeMillis = time;
-                        frameCounter = 1;
-                    } else {
-                        ++frameCounter;
+                    if(verbose) {
+                        long time = timePoint.realTimeMillis();
+                        long latency = time - previousFrameRealTimeMillis;
+
+                        // The JVM system time only comes in millis, but the nano
+                        // timers are a can of worms (and AFAIK system-dependent),
+                        // so we count frames until the clock changes in order to
+                        // estimate framerate.
+                        if(latency > 0) {
+                            this.log("Command latency <= " + latency + " ms (" + frameCounter + " frames / " + latency + " ms) = " + (1000 * frameCounter/latency) + " fps");
+                            previousFrameRealTimeMillis = time;
+                            frameCounter = 1;
+                        } else {
+                            ++frameCounter;
+                        }
                     }
 
                     this.mixer.animate(timePoint);

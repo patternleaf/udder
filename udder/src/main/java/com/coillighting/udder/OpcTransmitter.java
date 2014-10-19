@@ -24,14 +24,15 @@ import com.coillighting.udder.mix.Frame;
  */
 public class OpcTransmitter implements Runnable {
 
-    private BlockingQueue<Frame> frameQueue;
-    private int maxDelayMillis;
-    private Socket socket;
-    private DataOutputStream dataOutputStream;
-    private String serverAddress;
-    private int serverPort;
-    private int[] deviceAddressMap; // see PatchSheet.deviceAddressMap
-    private long previousFrameRealTimeMillis = 0;
+    protected BlockingQueue<Frame> frameQueue;
+    protected int maxDelayMillis;
+    protected Socket socket;
+    protected DataOutputStream dataOutputStream;
+    protected String serverAddress;
+    protected int serverPort;
+    protected int[] deviceAddressMap; // see PatchSheet.deviceAddressMap
+    protected long previousFrameRealTimeMillis = 0;
+    protected boolean verbose = false;
 
     public OpcTransmitter(BlockingQueue<Frame> frameQueue, int[] deviceAddressMap) {
         if(frameQueue==null) {
@@ -80,13 +81,16 @@ public class OpcTransmitter implements Runnable {
                         TimeUnit.MILLISECONDS);
 
                     if(frame != null) {
-                        TimePoint timePoint = frame.getTimePoint();
-                        long currentFrameRealTimeMillis = timePoint.realTimeMillis();
 
-                        long time = frame.getTimePoint().realTimeMillis();
-                        long latency = time - previousFrameRealTimeMillis;
-                        this.log("OPC frame latency: " + latency + " ms");
-                        previousFrameRealTimeMillis = time;
+                        if(verbose) {
+                            // Roughly clock frame timing.
+                            TimePoint timePoint = frame.getTimePoint();
+                            long currentFrameRealTimeMillis = timePoint.realTimeMillis();
+                            long time = frame.getTimePoint().realTimeMillis();
+                            long latency = time - previousFrameRealTimeMillis;
+                            this.log("OPC frame latency: " + latency + " ms");
+                            previousFrameRealTimeMillis = time;
+                        }
 
                         Pixel[] pixels = frame.getPixels();
 

@@ -23,6 +23,20 @@ public class WovenFrame {
         this.reset();
     }
 
+    public void scaleColor(double scale) {
+        // TODO: decide whether we can move to 64 bpc pixels without hurting 32 bit raspis
+        float f = (float) scale;
+        background.scale(f);
+        for(Pixel p: warp) {
+            p.scale(f);
+        }
+        for(int x=0; x<2; x++) {
+            for(Pixel p: weft[x]) {
+                p.scale(f);
+            }
+        }
+    }
+
     /** Without reallocating pixels, set their colors a uniform value. */
     public void setColor(Pixel color) {
         background.setColor(color);

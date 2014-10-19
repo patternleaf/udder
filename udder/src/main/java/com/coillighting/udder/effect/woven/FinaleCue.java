@@ -10,19 +10,13 @@ public class FinaleCue extends CueBase {
     }
 
     public void animate(TimePoint timePoint) {
-        if(this.fadeState != CueFadeStateEnum.INVISIBLE) {
-            // Placeholder: light up the entire warp a cold grey
-            for(Pixel p: this.frame.warp) {
-                p.setColor(0.77f, 0.88f, 0.99f);
-            }
+        if(this.fadeState == CueFadeStateEnum.START) {
+            this.startTimer(timePoint);
 
-            // Placeholder: light up the entire weft a warm grey
-            for(Pixel[] pixels: this.frame.weft) {
-                for(Pixel p: pixels) {
-                    p.setColor(0.66f, 0.55f, 0.44f);
-                }
-            }
+            // Placeholder. TODO: some kind of animation. maybe woven sinewaves.
+            this.frame.background.setColor(0.222f, 0.333f, 0.444f);
+        } else if(this.isElapsed(timePoint)) {
+            this.stopTimer();
         }
     }
-
 }
