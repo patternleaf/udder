@@ -32,8 +32,9 @@ public class WeftCue extends CueBase {
 
     public void startStepTimer(TimePoint timePoint) {
         stepStartTime = timePoint.sceneTimeMillis();
-        stepDuration = (long)(this.getDuration()
-            / (2.0 * (double)frame.weft[0].length));
+
+        // Just one step per row, zigzagging.
+        stepDuration = (long)(this.getDuration() / (double)frame.weft[0].length);
     }
 
     public void animate(TimePoint timePoint) {
@@ -59,26 +60,32 @@ public class WeftCue extends CueBase {
 
         double elapsed = CueBase.computeFractionElapsed(timePoint,
             stepStartTime, stepDuration);
-        if(elapsed >= 1.0) {
-            if(weftX == 0) {
-                // Finish this step, move right to the next step.
-                Pixel p = frame.weft[weftX][weftY];
-                p.setColor(1.0f, 1.0f, 1.0f); // TODO color selection
-                weftX = 1;
-            } else if(weftY + 1 >= frame.weft[0].length) {
-                return;
-            } else {
-                // Finish this step, move up to the next step in this cue.
-                Pixel p = frame.weft[weftX][weftY];
-                p.setColor(threadColor); // TODO color selection
 
-                // TODO: blank lines between threads
-                // TODO: variable ratio of thread width to blank line width?
-                weftY += 1;
+        if(elapsed >= 1.0) {
+            if(weftY >= frame.weft[0].length) {
+                // Nothing left to do.
+                return;
+            }
+            // Finish this step, zigzag up to the next step.
+            Pixel p = frame.weft[weftX][weftY];
+            p.setColor(threadColor);
+
+            weftY += 1;
+
+            if(weftY >= frame.weft[0].length) {
+                // Done with this cue.
+                return;
+            }
+
+            if(weftX == 0) {
+                weftX = 1;
+            } else {
                 weftX = 0;
             }
+
             this.startStepTimer(timePoint);
         }
+
         // TODO nonlinear fade-in, poss. nonlinear cursor fade
         float brightness = (float) elapsed;
 
@@ -91,7 +98,6 @@ public class WeftCue extends CueBase {
         // Fade in from black
         color.scale(brightness);
 
-        // TODO nonlinear fade in
         frame.weft[weftX][weftY].setColor(color);
     }
 

@@ -7,8 +7,8 @@ import com.coillighting.udder.Pixel;
  */
 public class WovenFrame {
 
-    protected int warp_width = 7;
-    protected int weft_height = 7;
+    protected int warpThreadcount = 7; // width is approx. double this
+    protected int weftThreadcount = 14;
 
     /** A single pixel maps onto the whole background. */
     public Pixel background = null;
@@ -50,18 +50,22 @@ public class WovenFrame {
         }
     }
 
-    /** Reallocate all pixels and set them to black. If you change warp_width
-     *  or weft_height, this is where it will take effect.
+    /** Reallocate all pixels and set them to black. If you change warpThreadcount
+     *  or weftThreadcount, this is where it will take effect.
      */
     public void reset() {
         background = Pixel.black();
 
-        warp = new Pixel[warp_width];
+        // There is a blank (warp background color) color between each pair
+        // of warp threads, so multiply by 2. Make sure the edges are filled,
+        // so subtract 1 at the end.
+        warp = new Pixel[(2 * warpThreadcount) - 1];
         for(int x=0; x<warp.length; x++) {
             warp[x] = Pixel.black();
         }
 
-        weft = new Pixel[2][weft_height];
+        // Ditto for the weft threads.
+        weft = new Pixel[2][weftThreadcount];
         for(int x=0; x<weft.length; x++) {
             for(int y=0; y<weft[x].length; y++) {
                 weft[x][y] = Pixel.black();

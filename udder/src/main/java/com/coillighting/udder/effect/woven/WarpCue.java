@@ -30,7 +30,10 @@ public class WarpCue extends CueBase {
 
     public void startStepTimer(TimePoint timePoint) {
         stepStartTime = timePoint.sceneTimeMillis();
-        stepDuration = (long)(this.getDuration() / (double)frame.warp.length);
+
+        // Multiply by 2 because we skip every other pixel each step.
+        stepDuration = (long)(2.0 * (double)this.getDuration()
+            / (double)(1 + frame.warp.length));
     }
 
     public void animate(TimePoint timePoint) {
@@ -52,6 +55,7 @@ public class WarpCue extends CueBase {
         } else {
             double elapsed = CueBase.computeFractionElapsed(timePoint,
                 stepStartTime, stepDuration);
+
             if(elapsed >= 1.0) {
                 if(warpIndex + 1 >= frame.warp.length) {
                     // Already done with this cue.
@@ -61,9 +65,10 @@ public class WarpCue extends CueBase {
                     Pixel p = frame.warp[warpIndex];
                     p.setColor(threadColor);
 
-                    // TODO: blank lines between threads
                     // TODO: variable ratio of thread width to blank line width?
-                    warpIndex += 1;
+                    // Skip every other column, so that it looks like a bunch of
+                    // threads (lines) instead of a solid fill.
+                    warpIndex += 2;
                     this.startStepTimer(timePoint);
                     elapsed = 0.0;
                 }
