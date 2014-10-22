@@ -22,7 +22,7 @@ public class WarpCue extends CueBase {
         super(duration, frame);
 
         // TODO variable colors
-        this.threadColor = new Pixel(0.0f, 0.00f, 1.0f);
+        this.threadColor = new Pixel(0.0f, 0.0f, 1.0f);
         this.cursorColor = Pixel.white();
         this.backgroundColor = Pixel.black();
         this.blendOp = new MaxBlendOp();

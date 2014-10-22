@@ -122,4 +122,9 @@ public class WovenEffect extends EffectBase {
         // TEMP: ASCII placeholder animation
         if(this.verbose) this.log(this.frame);
     }
+
+    public Pixel[] render() {
+        frame.render(pixels, devices);
+        return pixels;
+    }
 }

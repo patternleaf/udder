@@ -1,5 +1,9 @@
 package com.coillighting.udder.effect.woven;
 
+import javafx.geometry.BoundingBox;
+import javafx.geometry.Point3D;
+
+import com.coillighting.udder.Device;
 import com.coillighting.udder.Pixel;
 
 /** A simple, public data structure by which a WovenEffect communicates pixels
@@ -94,4 +98,44 @@ public class WovenFrame {
         return sb.toString();
      }
 
+    public void render(Pixel[] pixels, Device[] devices) {
+        BoundingBox box = Device.getDeviceBoundingBox(devices);
+        double wScale = 1.0 / box.getWidth();
+        double hScale = 1.0 / box.getHeight();
+        double xOff = -box.getMinX();
+        double yOff = -box.getMinY();
+
+        for(int i=0; i<devices.length; i++) {
+            // Scale this pixel's device coordinates into the unit square.
+            Point3D pt = devices[i].getPoint3D();
+
+            double px = wScale * (pt.getX() + xOff);
+            double py = hScale * (pt.getY() + yOff);
+            // TODO account for z or group?
+
+            // System.err.println("px " + px + " = wScale " + wScale + " * (pt.getX() " + pt.getX() + " + xOff " + xOff + ")");
+
+            // Draw the warp for this pixel.
+            double warpScale = 0.9999999 + (double) warp.length;
+            int xWarp = (int)(px * warpScale);
+            pixels[i].setColor(warp[xWarp]);
+
+            // System.err.println("" + px + " * " + warpScale + " = " + (px * warpScale) + " => " + xWarp);
+
+            // System.err.println("set pixels[" + i + "] (warp " + xWarp
+            //     + " warpScale=" + warpScale + " warpLen=" + warp.length
+            //     + " px=" + px + " py=" + py
+            //     + " pt.getX=" + pt.getX() + " pt.getY=" + pt.getY()
+            //     + " boxw=" + box.getWidth() + " wScale=" + wScale
+            //     + " boxh=" + box.getHeight() + " hScale=" + hScale
+            //     + " minX=" + box.getMinX() + " xOff=" + xOff
+            //     + " minY=" + box.getMinY() + " yOff=" + yOff + ") = "
+            //     + pixels[i]);
+
+            double weftScale = 0.9999999 + (double) warp.length;
+            // int xWeft = ...
+            int yWeft = (int)(py * weftScale);
+            // TODO blend [x][y]
+        }
+    }
 }

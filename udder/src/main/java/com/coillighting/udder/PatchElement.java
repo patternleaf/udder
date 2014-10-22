@@ -79,7 +79,10 @@ public class PatchElement {
         double z = this.getZ();
         double y = this.getY();
         double x = point[0];
-        return new Device(this.address, this.group, x, y, z);
+        // FIXME the patch sheet is arriving Z, X, Y (or maybe Z, Y, X) - investigate!
+        // switching them around for now
+        // return new Device(this.address, this.group, x, y, z);
+        return new Device(this.address, this.group, z, x, y);
     }
 
     public String toString() {

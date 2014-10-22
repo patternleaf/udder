@@ -2,37 +2,71 @@ package com.coillighting.udder;
 
 import java.awt.geom.Point2D;
 
-// Float impl for 32 bit processors. TODO: 64 bit double support when needed.
+/** Distort 2D coordinates using a 4-point quad control polygon.
+ *  So far this has been tested only with 2D inputs limited to the unit
+ *  square. TODO: test with inputs greater than 1 or less than 0.
+ */
 public class Stretch {
 
-    /** n: normalized to [0..1.0] */
-    public static float stretch1d(float n, float nmin, float nmax) {
+    /** n: normalized to [0..1.0]. Stretch a normalized value into the range
+     *  bounded by [nmin..nmax].
+     */
+    public static double stretch1D(double n, double nmin, double nmax) {
+        return nmin + n * (nmax - nmin);
+    }
+
+    /** 32-bit version of stretch1d. */
+    public static float stretch1D(float n, float nmin, float nmax) {
         return nmin + n * (nmax - nmin);
     }
 
     /** b and a: orthogonal coordinates, normalize [0..1.0].
      *  Return a new b given a and b coordinates and high and low stretcher bars
-     *  for the b dimension.
+     *  for the b dimension. To stretch x, call this method with a=y and b=x,
+     *  and stretcher bars for the x dimension (see stretchxy for example).
+     *  To stretch y, call thi method with a=x and b=y, with stretcher bars for
+     *  y (the second call in stretchxy).
      */
-    public static float stretch2d(float a, float b,
+    public static double stretch2D(double a, double b,
+            double low_bmin, double low_bmax,
+            double high_bmin, double high_bmax)
+    {
+        // Balance out the influence of the low and the high stretches on dim b.
+        return a * stretch1D(b, high_bmin, high_bmax)
+            + (1.0 - a) * stretch1D(b, low_bmin, low_bmax);
+    }
+
+    /** 32-bit version of stretch2d. */
+    public static float stretch2D(float a, float b,
             float low_bmin, float low_bmax,
             float high_bmin, float high_bmax)
     {
         // Balance out the influence of the low and the high stretches on dim b.
-        return a * stretch1d(b, high_bmin, high_bmax)
-            + (1.0f - a) * stretch1d(b, low_bmin, low_bmax);
+        return a * stretch1D(b, high_bmin, high_bmax)
+            + (1.0f - a) * stretch1D(b, low_bmin, low_bmax);
     }
 
     /** Distort xy given the control polygon consisting of the points sw, nw,
      *  etc. Assume xy is normalized to ([0..1.0], [0..1.0]). For no distortion,
      *  specify the unit square as the control polygon.
      */
+    public static Point2D.Double stretchXY(Point2D.Double xy,
+            Point2D.Double sw, Point2D.Double se,
+            Point2D.Double nw, Point2D.Double ne)
+    {
+        double x = stretch2D(xy.y, xy.x, sw.x, se.x, nw.x, ne.x);
+        double y = stretch2D(xy.x, xy.y, sw.y, nw.y, se.y, ne.y);
+        return new Point2D.Double(x, y);
+    }
+
+    /** 32-bit version of stretchXY. */
     public static Point2D.Float stretchxy(Point2D.Float xy,
             Point2D.Float sw, Point2D.Float se,
             Point2D.Float nw, Point2D.Float ne)
     {
-        return new Point2D.Float(stretch2d(xy.y, xy.x, sw.x, se.x, nw.x, ne.x),
-                                 stretch2d(xy.x, xy.y, sw.y, nw.y, se.y, ne.y));
+        float x = stretch2D(xy.y, xy.x, sw.x, se.x, nw.x, ne.x);
+        float y = stretch2D(xy.x, xy.y, sw.y, nw.y, se.y, ne.y);
+        return new Point2D.Float(x, y);
     }
 
 }
