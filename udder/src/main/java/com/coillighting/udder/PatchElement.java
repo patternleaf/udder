@@ -79,10 +79,11 @@ public class PatchElement {
         double z = this.getZ();
         double y = this.getY();
         double x = point[0];
-        // FIXME the patch sheet is arriving Z, X, Y (or maybe Z, Y, X) - investigate!
-        // switching them around for now
-        // return new Device(this.address, this.group, x, y, z);
-        return new Device(this.address, this.group, z, x, y);
+        // FIXME the patch sheet is arriving Z, Y, X - investigate!
+        // switching them around for now, and reflecting across the Z-axis to
+        // adapt to the glserver's space.
+        return new Device(this.address, this.group, z, y, x);
+        // WAS return new Device(this.address, this.group, x, y, z);
     }
 
     public String toString() {

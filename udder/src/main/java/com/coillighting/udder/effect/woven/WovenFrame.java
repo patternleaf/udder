@@ -109,8 +109,8 @@ public class WovenFrame {
             // Scale this pixel's device coordinates into the unit square.
             Point3D pt = devices[i].getPoint3D();
 
-            double px = wScale * (pt.getX() + xOff);
-            double py = hScale * (pt.getY() + yOff);
+            double px = wScale * (pt.getX() + xOff); // normalized 0..1
+            double py = hScale * (pt.getY() + yOff); // ditto
             // TODO account for z or group?
 
             // System.err.println("px " + px + " = wScale " + wScale + " * (pt.getX() " + pt.getX() + " + xOff " + xOff + ")");
@@ -118,7 +118,7 @@ public class WovenFrame {
             // Draw the warp for this pixel.
             double warpScale = 0.9999999 + (double) warp.length;
             int xWarp = (int)(px * warpScale);
-            pixels[i].setColor(warp[xWarp]);
+            // pixels[i].setColor(warp[xWarp]);
 
             // System.err.println("" + px + " * " + warpScale + " = " + (px * warpScale) + " => " + xWarp);
 
@@ -132,10 +132,37 @@ public class WovenFrame {
             //     + " minY=" + box.getMinY() + " yOff=" + yOff + ") = "
             //     + pixels[i]);
 
-            double weftScale = 0.9999999 + (double) warp.length;
-            // int xWeft = ...
+            double weftScale = 0.9999999 + (double) weft[0].length;
+            int xWeft = px < 0.5 ? 0 : 1; // TODO fine-tune this
             int yWeft = (int)(py * weftScale);
-            // TODO blend [x][y]
+            // pixels[i].setColor(weft[xWeft][yWeft]);
+
+            // blue is x in the gl server?
+            // low half of model is in the high half of px
+            // high half of model is the low half of px
+            // looks like i've shifted the whole model into the a positive quadrant, crossing the red line (hopefully the z-axis)
+
+            // TEMP:
+            // double c = px;
+            // double d = pt.getX();
+
+
+            // The high (yellow) end of the range is the high side of the rig
+            // double c = py;
+            // double d = pt.getY();
+            // if(c < 0.5 && d < 0.0) pixels[i].setColor(0.0f,1.0f,0.0f);
+            // else if(c >= 0.5 && d < 0.0) pixels[i].setColor(0.0f,1.0f,1.0f);
+            // else if(c < 0.5 && d >= 0.0) pixels[i].setColor(1.0f,0.0f,0.0f);
+            // else if(c >= 0.5 && d >= 0.0) pixels[i].setColor(1.0f,1.0f,0.0f);
+
+            // the high (blue) end of the range is the smaller (front) gate in the rig, and closer to the red (x) axis
+            // if(pt.getZ() - 5.0 < box.getMinZ()) pixels[i].setColor(1.0f,0.0f,0.0f);
+            // if(pt.getZ() + 5.0 > box.getMaxZ()) pixels[i].setColor(0.0f,0.0f,1.0f);
+
+            // The high (blue) end of the range is the low end of the rig, near the red (z) axis
+            if(pt.getX() - 3.0 < box.getMinX()) pixels[i].setColor(1.0f,0.0f,1.0f);
+            if(pt.getX() + 3.0 > box.getMaxX()) pixels[i].setColor(0.0f,0.5f,1.0f);
+
         }
     }
 }

@@ -61,12 +61,15 @@ public class Device extends Object {
         if(devices==null) {
             return null;
         } else {
-            double minx=Double.MAX_VALUE;
-            double maxx=Double.MIN_VALUE;
-            double miny=Double.MAX_VALUE;
-            double maxy=Double.MIN_VALUE;
-            double minz=Double.MAX_VALUE;
-            double maxz=Double.MIN_VALUE;
+            double MAX_VALUE = 999999999.0; // A seed value of Double.MAX_VALUE did not work with all comparisons here. WTF?
+            double MIN_VALUE = -999999999.0; // Ditto for DOuble.MIN_VALUE
+
+            double minx=MAX_VALUE;
+            double maxx=MIN_VALUE;
+            double miny=MAX_VALUE;
+            double maxy=MIN_VALUE;
+            double minz=MAX_VALUE;
+            double maxz=MIN_VALUE;
 
             for(Device d: devices) {
                 Point3D pt = d.getPoint3D();

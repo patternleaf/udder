@@ -113,7 +113,7 @@ public class ShowRunner implements Runnable {
                     // more than 10 layers * 2 Kpixels, 1 of them animated.
                     // Performance degraded by roughly 20% when I animated 10 of
                     // them instead.
-                    this.waitBusy(10000);
+                    ShowRunner.waitBusy(10000);
                     sleepy = false;
                 } else {
                     // Our crude timing mechanism currently does not account for

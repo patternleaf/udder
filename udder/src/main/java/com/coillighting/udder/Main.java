@@ -120,7 +120,7 @@ public class Main {
             Main.fileToString(configPath), PatchElement.class);
 
         // TODO REF? Why Arraylist instead of array? (Same below.)
-        List<Device> devices = new ArrayList(patchElements.size());
+        List<Device> devices = new ArrayList<Device>(patchElements.size());
         for(PatchElement pe: patchElements) {
             Device device = pe.toDevice();
             System.err.println(device); //TEMP
@@ -147,8 +147,8 @@ public class Main {
                 // address's pixel on the origin where it won't cause trouble.
                 p = origin.clone();
             } else {
-                // TODO scale everything down to what'll fit in the gl server
                 p = devices.get(index).getPoint().clone();
+                p[2] -= 1; // reflect along to z-axis to match the Dairy show's model space
             }
             points.add(new OpcLayoutPoint(p));
         }
