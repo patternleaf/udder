@@ -45,7 +45,7 @@ public abstract class DairyScene {
             chases[i].setBlendOp(max);
         }
 
-        Layer gel = new Layer("Gel", new MonochromeEffect(Pixel.black()));
+        Layer gel = new Layer("Gel", new MonochromeEffect(Pixel.white()));
         gel.setBlendOp(mult);
 
         // Add layers from bottom (background) to top (foreground), i.e. in
