@@ -148,7 +148,7 @@ public class Main {
                 p = origin.clone();
             } else {
                 p = devices.get(index).getPoint().clone();
-                p[2] -= 1; // reflect along to z-axis to match the Dairy show's model space
+                p[2] *= -1; // reflect along to z-axis to match the Dairy show's model space
             }
             points.add(new OpcLayoutPoint(p));
         }

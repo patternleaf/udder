@@ -82,7 +82,9 @@ public class PatchElement {
         // FIXME the patch sheet is arriving Z, Y, X - investigate!
         // switching them around for now, and reflecting across the Z-axis to
         // adapt to the glserver's space.
-        return new Device(this.address, this.group, z, y, x);
+        // Also flipped X so that low numbers would be on the left from the
+        // audience perspective.
+        return new Device(this.address, this.group, -z, y, -x);
         // WAS return new Device(this.address, this.group, x, y, z);
     }
 
