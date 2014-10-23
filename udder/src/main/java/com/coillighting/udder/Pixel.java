@@ -58,12 +58,7 @@ public class Pixel {
         }
     }
 
-    /** FIXME REF - premultiplying level will not work for every blendop!
-     *  Either the blendop itself needs to be supplied with level, or
-     *  the result of blending should be averaged with the returned
-     *  value here. Probably the latter.
-     *
-     *  If you don't know what blendOp to use, just use MaxBlendOp until you
+    /** If you don't know what blendOp to use, just use MaxBlendOp until you
      *  have time to experiment with other options.
      *
      *  TODO A variant that takes an RGB BlendMode (per-channel blendops).
@@ -71,16 +66,23 @@ public class Pixel {
     public void blendWith(Pixel foreground, float level, BlendOp blendOp) {
         if(blendOp == null) {
             throw new NullPointerException("BlendOp is required.");
-        } else if(foreground != null && level > 0.0) {
-            level = Pixel.clipChannel(level);
-            this.setColor(
-                blendOp.blend(this.r, level * foreground.r),
-                blendOp.blend(this.g, level * foreground.g),
-                blendOp.blend(this.b, level * foreground.b)
-            );
-        }
-        else if(foreground == null) { // TEMP- DEBUG
-            System.err.println("Warning: null foreground");
+        } else if(foreground != null) {
+            if(level > 0.0) {
+                float rr = blendOp.blend(this.r, foreground.r);
+                float gg = blendOp.blend(this.g, foreground.g);
+                float bb = blendOp.blend(this.b, foreground.b);
+                if(level < 1.0) {
+                    // If level isn't 100%, merge the background with the
+                    // blended color according the balance prescribed by level.
+                    final float blendedScale = Pixel.clipChannel(level);
+                    final float bgScale = 1.0f - blendedScale;
+
+                    rr = blendedScale * rr + bgScale * this.r;
+                    gg = blendedScale * gg + bgScale * this.g;
+                    bb = blendedScale * bb + bgScale * this.b;
+                }
+                this.setColor(rr, gg, bb);
+            }
         }
     }
 

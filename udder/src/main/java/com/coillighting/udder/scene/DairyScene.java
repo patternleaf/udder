@@ -46,6 +46,8 @@ public abstract class DairyScene {
         }
 
         Layer gel = new Layer("Gel", new MonochromeEffect(Pixel.white()));
+        // TEMP To test a medium amber gel:
+        // Layer gel = new Layer("Gel", new MonochromeEffect(new Pixel(0.66f, 0.50f, 0.15f)));
         gel.setBlendOp(mult);
 
         // Add layers from bottom (background) to top (foreground), i.e. in
