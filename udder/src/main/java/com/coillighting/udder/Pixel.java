@@ -125,13 +125,11 @@ public class Pixel {
      *  Skip alpha.
      */
     public int toRGB() {
-        // TODO: ask Eric whether to switch this to ARGB so it aligns with toRGB.
         return this.toRGBA() >> 8;
     }
 
     /** Return an int approximation of this pixel value, encoded 0xRRGGBBAA.
      *  Include alpha.
-     *  TODO: switch to ARGB?
      */
     public int toRGBA() {
         float conv = 255.99f;
@@ -142,9 +140,7 @@ public class Pixel {
         return 0x00000000 | (rr << 24) | (gg << 16) | (bb << 8) | aa;
     }
 
-    /** Ignore alpha for now. (TODO)
-     *  TODO: switch to ARGB?
-     */
+    /** Ignore alpha for now. (TODO) */
     public void setColor(int rgba) {
         float conv = 255.0f;
         int rr = (rgba >> 24) & 0xFF;
@@ -155,9 +151,7 @@ public class Pixel {
         this.b = (float)bb / conv;
     }
 
-    /** Ignore alpha for now. (TODO).
-     *  TODO: switch to ARGB?
-     */
+    /** Ignore alpha for now. (TODO). */
     public static Pixel fromRGBA(int rgba) {
         float conv = 255.0f;
         int rr = (rgba >> 24) & 0xFF;
