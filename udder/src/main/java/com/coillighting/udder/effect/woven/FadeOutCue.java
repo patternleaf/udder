@@ -15,7 +15,8 @@ public class FadeOutCue extends CueBase {
 
             // Placeholder. TODO: scale everything layer down to black by 100%-cue%
             this.frame.background.setColor(0.111f, 0.111f, 0.111f);
-        } else {
+
+        } else if(this.fadeState == CueFadeStateEnum.RUNNING) {
             double elapsed = this.getFractionElapsed(timePoint);
             // TODO: color selection.
             // TODO: apply some shaping to this envelope, which currently will

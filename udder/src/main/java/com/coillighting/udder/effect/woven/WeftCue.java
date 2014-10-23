@@ -50,55 +50,59 @@ public class WeftCue extends CueBase {
                     p.setColor(backgroundColor);
                 }
             }
-        } else if(this.isElapsed(timePoint)) {
-            // Finish the last step in this cue, prepare to move to the next cue.
-            Pixel p = frame.weft[1][frame.weft[1].length - 1];
-            p.setColor(threadColor);
-            this.stopTimer();
-            return;
-        }
 
-        double elapsed = CueBase.computeFractionElapsed(timePoint,
-            stepStartTime, stepDuration);
+        } else if(fadeState == CueFadeStateEnum.RUNNING) {
 
-        if(elapsed >= 1.0) {
-            if(weftY >= frame.weft[0].length) {
-                // Nothing left to do.
-                return;
-            }
-            // Finish this step, zigzag up to the next step.
-            Pixel p = frame.weft[weftX][weftY];
-            p.setColor(threadColor);
-
-            weftY += 1;
-
-            if(weftY >= frame.weft[0].length) {
-                // Done with this cue.
+            if(this.isElapsed(timePoint)) {
+                // Finish the last step in this cue, prepare to move to the next cue.
+                Pixel p = frame.weft[1][frame.weft[1].length - 1];
+                p.setColor(threadColor);
+                this.stopTimer();
                 return;
             }
 
-            if(weftX == 0) {
-                weftX = 1;
-            } else {
-                weftX = 0;
+            double elapsed = CueBase.computeFractionElapsed(timePoint,
+                stepStartTime, stepDuration);
+
+            if(elapsed >= 1.0) {
+                if(weftY >= frame.weft[0].length) {
+                    // Nothing left to do.
+                    return;
+                }
+                // Finish this step, zigzag up to the next step.
+                Pixel p = frame.weft[weftX][weftY];
+                p.setColor(threadColor);
+
+                weftY += 1;
+
+                if(weftY >= frame.weft[0].length) {
+                    // Done with this cue.
+                    return;
+                }
+
+                if(weftX == 0) {
+                    weftX = 1;
+                } else {
+                    weftX = 0;
+                }
+
+                this.startStepTimer(timePoint);
             }
 
-            this.startStepTimer(timePoint);
+            // TODO nonlinear fade-in, poss. nonlinear cursor fade
+            float brightness = (float) elapsed;
+
+            // TODO reuse objects?
+            Pixel color = new Pixel(threadColor);
+
+            // Fade from white to threadColor as we fade in.
+            color.blendWith(cursorColor, 1.0f - brightness, blendOp);
+
+            // Fade in from black
+            color.scale(brightness);
+
+            frame.weft[weftX][weftY].setColor(color);
         }
-
-        // TODO nonlinear fade-in, poss. nonlinear cursor fade
-        float brightness = (float) elapsed;
-
-        // TODO reuse objects?
-        Pixel color = new Pixel(threadColor);
-
-        // Fade from white to threadColor as we fade in.
-        color.blendWith(cursorColor, 1.0f - brightness, blendOp);
-
-        // Fade in from black
-        color.scale(brightness);
-
-        frame.weft[weftX][weftY].setColor(color);
     }
 
 }

@@ -5,14 +5,17 @@ import javafx.geometry.Point3D;
 
 import com.coillighting.udder.Device;
 import com.coillighting.udder.Pixel;
+import com.coillighting.udder.blend.BlendOp;
+import com.coillighting.udder.blend.MaxBlendOp;
 
 /** A simple, public data structure by which a WovenEffect communicates pixels
  *  to its Cues.
  */
 public class WovenFrame {
 
-    protected int warpThreadcount = 7; // width is approx. double this
+    protected int warpThreadcount = 32; // width is approx. double this
     protected int weftThreadcount = 32;
+    protected BlendOp blendOp = null;
 
     /** A single pixel maps onto the whole background. */
     public Pixel background = null;
@@ -25,6 +28,7 @@ public class WovenFrame {
 
     public WovenFrame() {
         this.reset();
+        this.blendOp = new MaxBlendOp();
     }
 
     public void scaleColor(double scale) {
@@ -106,8 +110,12 @@ public class WovenFrame {
         double yOff = -box.getMinY();
 
         for(int i=0; i<devices.length; i++) {
+            Pixel pixel = pixels[i];
+            Device device = devices[i];
+            int group = device.getGroup();
+
             // Scale this pixel's device coordinates into the unit square.
-            Point3D pt = devices[i].getPoint3D();
+            Point3D pt = device.getPoint3D();
 
             double px = wScale * (pt.getX() + xOff); // normalized 0..1
             double py = hScale * (pt.getY() + yOff); // ditto
@@ -117,8 +125,30 @@ public class WovenFrame {
 
             // Draw the nearest neighbor in the warp for this pixel.
             double warpScale = -0.000000001 + (double) warp.length;
-            int xWarp = (int)(px * warpScale);
-            pixels[i].setColor(warp[xWarp]);
+
+            // Fill from right to left.
+            int xWarp = warp.length - 1 - (int)(px * warpScale);
+
+            pixel.setColor(background);
+
+            // Crop out some unsightly areas.
+
+            //northeast overhang:
+            // y .9-.98
+            // x .97-.98
+
+            // TODO ask becky whether she actually wants to crop the ascenders
+            // Crop right edge ascenders out of the warp:
+            // if(!(px > 0.88 && px < 0.95 && py > 0.5 && py < 0.8)) {
+            if(!(px > 0.83 && px < 0.995 && py > 0.36 && py < 0.997)) {
+
+                // crop southwest ascenders
+                if(((px > 0.13 || py > 0.39) && group == 0) // front gate
+                    || ((px > 0.07 || py > 0.4) && group == 1)) // back gate
+                {
+                    pixel.blendWith(warp[xWarp], 1.0f, blendOp);
+                }
+            }
 
             // System.err.println("" + px + " * " + warpScale + " = " + (px * warpScale) + " => " + xWarp);
 
@@ -135,9 +165,13 @@ public class WovenFrame {
             // Draw the nearest neighbor in the weft for this pixel.
             // TODO: blend
             double weftScale =-0.000000001 + (double) weft[0].length;
-            int xWeft = px < 0.5 ? 0 : 1; // TODO fine-tune this breakpoint, poss. crop
+            double center = 0.125;
+            int xWeft = px < center ? 0 : 1; // TODO fine-tune this breakpoint, poss. crop
             int yWeft = (int)(py * weftScale);
-            pixels[i].setColor(weft[xWeft][yWeft]);
+
+            pixel.blendWith(weft[xWeft][yWeft], 1.0f, blendOp);
+            pixel.blendWith(background, 1.0f, blendOp);
+
 
             // The high (yellow) end of the range is the high side of the rig
             // double c = py;

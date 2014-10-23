@@ -28,17 +28,18 @@ public class WovenEffect extends EffectBase {
     protected Cue currentCue = null;
     protected CueEnum currentStep = null;
     protected WovenFrame frame = null;
-    protected boolean verbose = true;
+    protected boolean verbose = false;
 
     public WovenEffect() {
         cues = new LinkedHashMap<CueEnum, Cue>();
         frame = new WovenFrame();
-        cues.put(BLACKOUT, new BlackoutCue(100, frame));
-        cues.put(CURTAIN, new CurtainCue(100, frame));
-        cues.put(WARP, new WarpCue(1000, frame));
-        cues.put(WEFT, new WeftCue(1000, frame));
-        // TODO - fit # of peaks to the scheduled duration
-        cues.put(FINALE, new FinaleCue(29022 * 2, frame)); // peak2b(50) - see docs
+        cues.put(BLACKOUT, new BlackoutCue(1000, frame));
+        cues.put(CURTAIN, new CurtainCue(3000, frame));
+        cues.put(WARP, new WarpCue(5000, frame));
+        cues.put(WEFT, new WeftCue(10000, frame));
+        // TODO - fit # of peaks to the scheduled duration of finale
+        // cues.put(FINALE, new FinaleCue(29022 * 2, frame)); // peak2b(50) - see docs
+        cues.put(FINALE, new FinaleCue(3000, frame)); // peak2b(50) - see docs
         cues.put(FADEOUT, new FadeOutCue(100, frame));
         this.reset();
     }
@@ -117,7 +118,6 @@ public class WovenEffect extends EffectBase {
         currentCue.animate(timePoint);
         if(currentCue.getFadeState() == CueFadeStateEnum.END) {
             this.nextCue();
-            if(this.verbose) this.log("Next cue: " + currentCue); // TEMP
         }
         // TEMP: ASCII placeholder animation
         if(this.verbose) this.log(this.frame);

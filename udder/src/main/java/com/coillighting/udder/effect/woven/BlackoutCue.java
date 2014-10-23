@@ -13,8 +13,10 @@ public class BlackoutCue extends CueBase {
         if(this.fadeState == CueFadeStateEnum.START) {
             this.startTimer(timePoint);
             frame.setColor(Pixel.black()); // only redraw once
-        } else if(this.isElapsed(timePoint)) {
-            this.stopTimer();
+        } else if(this.fadeState == CueFadeStateEnum.RUNNING) {
+            if(this.isElapsed(timePoint)) {
+                this.stopTimer();
+            }
         }
     }
 

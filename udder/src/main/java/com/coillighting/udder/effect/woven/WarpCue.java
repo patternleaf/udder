@@ -46,46 +46,50 @@ public class WarpCue extends CueBase {
             for(Pixel p: frame.warp) {
                 p.setColor(backgroundColor);
             }
-        } else if(this.isElapsed(timePoint)) {
-            // Finish this step, move on to the next cue.
-            Pixel p = frame.warp[frame.warp.length - 1];
-            p.setColor(threadColor);
-            this.stopTimer();
-            return;
-        } else {
-            double elapsed = CueBase.computeFractionElapsed(timePoint,
-                stepStartTime, stepDuration);
 
-            if(elapsed >= 1.0) {
-                if(warpIndex + 1 >= frame.warp.length) {
-                    // Already done with this cue.
-                    return;
-                } else {
-                    // Finish this step, move to the next step.
-                    Pixel p = frame.warp[warpIndex];
-                    p.setColor(threadColor);
+        } else if(fadeState == CueFadeStateEnum.RUNNING) {
 
-                    // TODO: variable ratio of thread width to blank line width?
-                    // Skip every other column, so that it looks like a bunch of
-                    // threads (lines) instead of a solid fill.
-                    warpIndex += 2;
-                    this.startStepTimer(timePoint);
-                    elapsed = 0.0;
+            if(this.isElapsed(timePoint)) {
+                // Finish this step, move on to the next cue.
+                Pixel p = frame.warp[frame.warp.length - 1];
+                p.setColor(threadColor);
+                this.stopTimer();
+                return;
+            } else {
+                double elapsed = CueBase.computeFractionElapsed(timePoint,
+                    stepStartTime, stepDuration);
+
+                if(elapsed >= 1.0) {
+                    if(warpIndex + 1 >= frame.warp.length) {
+                        // Already done with this cue.
+                        return;
+                    } else {
+                        // Finish this step, move to the next step.
+                        Pixel p = frame.warp[warpIndex];
+                        p.setColor(threadColor);
+
+                        // TODO: variable ratio of thread width to blank line width?
+                        // Skip every other column, so that it looks like a bunch of
+                        // threads (lines) instead of a solid fill.
+                        warpIndex += 2;
+                        this.startStepTimer(timePoint);
+                        elapsed = 0.0;
+                    }
                 }
+                // TODO nonlinear fade-in, poss. nonlinear cursor fade
+                float brightness = (float) elapsed;
+
+                // TODO reuse objects?
+                Pixel color = new Pixel(threadColor);
+
+                // Fade from white to threadColor as we fade in.
+                color.blendWith(cursorColor, 1.0f - brightness, blendOp);
+
+                // Fade in from black
+                color.scale(brightness);
+
+                frame.warp[warpIndex].setColor(color);
             }
-            // TODO nonlinear fade-in, poss. nonlinear cursor fade
-            float brightness = (float) elapsed;
-
-            // TODO reuse objects?
-            Pixel color = new Pixel(threadColor);
-
-            // Fade from white to threadColor as we fade in.
-            color.blendWith(cursorColor, 1.0f - brightness, blendOp);
-
-            // Fade in from black
-            color.scale(brightness);
-
-            frame.warp[warpIndex].setColor(color);
         }
     }
 

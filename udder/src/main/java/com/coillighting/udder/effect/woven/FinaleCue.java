@@ -35,31 +35,35 @@ public class FinaleCue extends CueBase {
             this.startTimer(timePoint);
             // Placeholder. TODO: some kind of animation. maybe woven sinewaves.
             this.frame.background.setColor(0.222f, 0.333f, 0.444f);
-        } else if(this.isElapsed(timePoint)) {
-            this.stopTimer();
-        }
 
-        long elapsedMillis = timePoint.sceneTimeMillis() - startTime;
-        double elapsedSeconds = elapsedMillis / 1000.0;
-        float y;
-        if(false) {
-            // STEP A - accelerating oscillation
-            // TODO - involve all the colors in all the layers - maybe add
-            // a scaling factor to WovenFrame itself?
-            y = (float) this.accelerate(elapsedSeconds / 2.0);
-            // TODO fit number of peaks to the scheduled cue duration
+        } else if(this.fadeState == CueFadeStateEnum.RUNNING) {
+
+            if(this.isElapsed(timePoint)) {
+                this.stopTimer();
+            }
+
+            long elapsedMillis = timePoint.sceneTimeMillis() - startTime;
+            double elapsedSeconds = elapsedMillis / 1000.0;
+            float y;
+            if(false) {
+                // STEP A - accelerating oscillation
+                // TODO - involve all the colors in all the layers - maybe add
+                // a scaling factor to WovenFrame itself?
+                y = (float) this.accelerate(elapsedSeconds / 2.0);
+                // TODO fit number of peaks to the scheduled cue duration
+            }
+            if(false) {
+                // STEP B - pulses
+                y = (float) this.plateau(elapsedSeconds);
+            }
+            if(true) {
+                // FIXME - move this to the fadeoutcue
+                // STEP C - sudden release envelope, tapering out at the end
+                y = (float) this.fadeOut(this.getFractionElapsed(timePoint));
+            }
+            this.frame.background.setColor(y, y, y); // TEMP. TODO - scale instead
+            System.err.println(Util.plot1D(y));
         }
-        if(false) {
-            // STEP B - pulses
-            y = (float) this.plateau(elapsedSeconds);
-        }
-        if(true) {
-            // FIXME - move this to the fadeoutcue
-            // STEP C - sudden release envelope, tapering out at the end
-            y = (float) this.fadeOut(this.getFractionElapsed(timePoint));
-        }
-        this.frame.background.setColor(y, y, y); // TEMP. TODO - scale instead
-        System.err.println(Util.plot1D(y));
     }
 
 }
