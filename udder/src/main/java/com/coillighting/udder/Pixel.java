@@ -62,6 +62,11 @@ public class Pixel {
      *  Either the blendop itself needs to be supplied with level, or
      *  the result of blending should be averaged with the background
      *  value here.
+     *
+     *  If you don't know what blendOp to use, just use MaxBlendOp until you
+     *  have time to experiment with other options.
+     *
+     *  TODO A variant that takes an RGB BlendMode (per-channel blendops).
      */
     public void blendWith(Pixel foreground, float level, BlendOp blendOp) {
         if(blendOp == null) {
