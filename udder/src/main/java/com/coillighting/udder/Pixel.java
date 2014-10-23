@@ -60,8 +60,8 @@ public class Pixel {
 
     /** FIXME REF - premultiplying level will not work for every blendop!
      *  Either the blendop itself needs to be supplied with level, or
-     *  the result of blending should be averaged with the background
-     *  value here.
+     *  the result of blending should be averaged with the returned
+     *  value here. Probably the latter.
      *
      *  If you don't know what blendOp to use, just use MaxBlendOp until you
      *  have time to experiment with other options.
