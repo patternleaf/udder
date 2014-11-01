@@ -129,19 +129,27 @@ public class WovenFrame {
             // Fill from right to left.
             int xWarp = warp.length - 1 - (int)(px * warpScale);
 
-            pixel.setColor(background);
+            // TEMP background colors to indicate px and group# (green=front)
+            // these actually look pretty good as the background for a high sat
+            // blue warp and a high sat red weft:
+            // if(group == 0) pixel.setColor(0.0f, 0.7f * (float) px, 0.0f);
+            // else if(group == 1) pixel.setColor(0.7f * (float) px, 0.0f, 0.0f);
+
+            // Draw the nearest neighbor in the weft for this pixel.
+            double weftScale =-0.000000001 + (double) weft[0].length;
+            double center = 0.125;
+            int xWeft = px < center ? 0 : 1; // TODO fine-tune this breakpoint, poss. crop
+            int yWeft = (int)(py * weftScale);
 
             // Mask out some unsightly areas.
-
-            //northeast overhang:
-            // y .9-.98
-            // x .97-.98
+            // Northeast overhang: x .97-.98, y .9-.98
 
             boolean drawWarp = true;
-
-            // Crop right edge ascenders out of the warp (both front and back gates).
-            if(px > 0.83 && px < 0.995 && py > 0.33 && py < 0.997) {
-                drawWarp = false;
+            if(px > 0.83 && py > 0.33 && py < 0.996) {
+                if(!(px <0.95 && py >0.99)) { // don't omit the peak of the top hump, rearbgate
+                    // Crop right edge ascenders out of the warp (both front and rear gates).
+                    drawWarp = false;
+                }
             } else if(group == 0) {
                 // Crop southwest ascenders for the front gate
                 if(px < 0.268 && py < 0.39) { // FYI 0.23 is the top of the right SW ascender
@@ -154,52 +162,19 @@ public class WovenFrame {
                 } else if(px > 0.25 && px < 0.365 && py < 0.42) { // right ascender
                     drawWarp = false;
                 }
+            } else {
+                // Group isn't currently defined, but somebody might add one.
+                // Restrict drawing to the two target groups.
+                drawWarp = false;
             }
 
-            // TEMP background colors to indicate px and group# (green=front)
-            if(group == 0) pixel.setColor(0.0f, 0.7f * (float) px, 0.0f);
-            else if(group == 1) pixel.setColor(0.7f * (float) px, 0.0f, 0.0f);
+            pixel.setColor(background);
 
             if(drawWarp) {
                 pixel.blendWith(warp[xWarp], 1.0f, blendOp);
+            } else {
+                pixel.blendWith(weft[xWeft][yWeft], 1.0f, blendOp);
             }
-            // System.err.println("" + px + " * " + warpScale + " = " + (px * warpScale) + " => " + xWarp);
-
-            // System.err.println("set pixels[" + i + "] (warp " + xWarp
-            //     + " warpScale=" + warpScale + " warpLen=" + warp.length
-            //     + " px=" + px + " py=" + py
-            //     + " pt.getX=" + pt.getX() + " pt.getY=" + pt.getY()
-            //     + " boxw=" + box.getWidth() + " wScale=" + wScale
-            //     + " boxh=" + box.getHeight() + " hScale=" + hScale
-            //     + " minX=" + box.getMinX() + " xOff=" + xOff
-            //     + " minY=" + box.getMinY() + " yOff=" + yOff + ") = "
-            //     + pixels[i]);
-
-            // Draw the nearest neighbor in the weft for this pixel.
-            double weftScale =-0.000000001 + (double) weft[0].length;
-            double center = 0.125;
-            int xWeft = px < center ? 0 : 1; // TODO fine-tune this breakpoint, poss. crop
-            int yWeft = (int)(py * weftScale);
-
-            pixel.blendWith(weft[xWeft][yWeft], 1.0f, blendOp);
-            pixel.blendWith(background, 1.0f, blendOp);
-
-
-            // The high (yellow) end of the range is the high side of the rig
-            // double c = py;
-            // double d = pt.getY();
-            // if(c < 0.5 && d < 0.0) pixels[i].setColor(0.0f,1.0f,0.0f);
-            // else if(c >= 0.5 && d < 0.0) pixels[i].setColor(0.0f,1.0f,1.0f);
-            // else if(c < 0.5 && d >= 0.0) pixels[i].setColor(1.0f,0.0f,0.0f);
-            // else if(c >= 0.5 && d >= 0.0) pixels[i].setColor(1.0f,1.0f,0.0f);
-
-            // the high (blue) end of the range is the larger (rear) gate in the rig
-            // if(pt.getZ() - 5.0 < box.getMinZ()) pixels[i].setColor(1.0f,0.0f,0.0f); // front
-            // if(pt.getZ() + 5.0 > box.getMaxZ()) pixels[i].setColor(0.0f,0.0f,1.0f); // back
-
-            // The low (pink) end of the range is audience left
-            // if(pt.getX() - 3.0 < box.getMinX()) pixels[i].setColor(1.0f,0.0f,1.0f); // left
-            // if(pt.getX() + 3.0 > box.getMaxX()) pixels[i].setColor(0.0f,0.5f,1.0f); // right
 
         }
     }

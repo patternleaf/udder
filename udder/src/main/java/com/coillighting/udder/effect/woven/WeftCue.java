@@ -19,7 +19,6 @@ public class WeftCue extends CueBase {
 
     protected BlendOp blendOp = null;
 
-
     public WeftCue(long duration, WovenFrame frame) {
         super(duration, frame);
 
@@ -45,8 +44,8 @@ public class WeftCue extends CueBase {
             this.startStepTimer(timePoint);
 
             // Clear the canvas
-            for(int x=0; x<2; x++) {
-                for(Pixel p: frame.weft[x]) {
+            for(Pixel[] column: frame.weft) {
+                for(Pixel p: column) {
                     p.setColor(backgroundColor);
                 }
             }
@@ -54,54 +53,55 @@ public class WeftCue extends CueBase {
         } else if(fadeState == CueFadeStateEnum.RUNNING) {
 
             if(this.isElapsed(timePoint)) {
-                // Finish the last step in this cue, prepare to move to the next cue.
-                Pixel p = frame.weft[1][frame.weft[1].length - 1];
-                p.setColor(threadColor);
+                // Finish the outgoing step as well as any remaining
+                // steps, then move on to the next cue. Timing is never
+                // perfect, so a few milliseconds are lost with each
+                // step, so for extremely fast cue durations,
+                // we need to draw the remainder before finishing.
+                for (; weftY < frame.weft[0].length; weftY++) {
+                    frame.weft[weftX][weftY].setColor(threadColor);
+                    weftX = (weftX == 0 ? 1 : 0);
+                }
                 this.stopTimer();
                 return;
-            }
+            } else {
+                double elapsed = CueBase.computeFractionElapsed(timePoint,
+                        stepStartTime, stepDuration);
 
-            double elapsed = CueBase.computeFractionElapsed(timePoint,
-                stepStartTime, stepDuration);
+                if (elapsed >= 1.0) {
+                    if (weftY >= frame.weft[0].length) {
+                        // Already done with this cue.
+                        return;
+                    }
+                    // Finish this step, zigzag up to the next step.
+                    Pixel p = frame.weft[weftX][weftY];
+                    p.setColor(threadColor);
 
-            if(elapsed >= 1.0) {
-                if(weftY >= frame.weft[0].length) {
-                    // Nothing left to do.
+                    weftY += 1;
+
+                    if (weftY >= frame.weft[0].length) {
+                        // Done with this cue.
+                        return;
+                    }
+
+                    weftX = (weftX == 0 ? 1 : 0);
+                    this.startStepTimer(timePoint);
                     return;
                 }
-                // Finish this step, zigzag up to the next step.
-                Pixel p = frame.weft[weftX][weftY];
-                p.setColor(threadColor);
 
-                weftY += 1;
+                // TODO nonlinear fade-in, poss. nonlinear cursor fade
+                float brightness = (float) elapsed;
 
-                if(weftY >= frame.weft[0].length) {
-                    // Done with this cue.
-                    return;
-                }
+                Pixel color = new Pixel(threadColor); // could reuse this tmp obj
 
-                if(weftX == 0) {
-                    weftX = 1;
-                } else {
-                    weftX = 0;
-                }
+                // Fade from white to threadColor as we fade in.
+                color.blendWith(cursorColor, 1.0f - brightness, blendOp);
 
-                this.startStepTimer(timePoint);
+                // Fade in from black
+                color.scale(brightness);
+
+                frame.weft[weftX][weftY].setColor(color);
             }
-
-            // TODO nonlinear fade-in, poss. nonlinear cursor fade
-            float brightness = (float) elapsed;
-
-            // TODO reuse objects?
-            Pixel color = new Pixel(threadColor);
-
-            // Fade from white to threadColor as we fade in.
-            color.blendWith(cursorColor, 1.0f - brightness, blendOp);
-
-            // Fade in from black
-            color.scale(brightness);
-
-            frame.weft[weftX][weftY].setColor(color);
         }
     }
 

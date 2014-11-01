@@ -8,6 +8,7 @@ import com.coillighting.udder.blend.MaxBlendOp;
 public class WarpCue extends CueBase {
 
     protected int warpIndex = 0;
+
     protected long stepDuration = 0;
     protected long stepStartTime = 0;
 
@@ -48,9 +49,10 @@ public class WarpCue extends CueBase {
 
             if(this.isElapsed(timePoint)) {
                 // Finish the outgoing step as well as any remaining
-                // steps, move on to the next cue. Time is lost with
-                // each step, so for extremely fast cue durations,
-                // we need to make up the remainder before finishing.
+                // steps, then move on to the next cue. Timing is never
+                // perfect, so a few milliseconds are lost with each
+                // step, so for extremely fast cue durations,
+                // we need to draw the remainder before finishing.
                 for(;warpIndex < frame.warp.length; warpIndex +=2) {
                     frame.warp[warpIndex].setColor(threadColor);
                 }
@@ -78,8 +80,7 @@ public class WarpCue extends CueBase {
                 // TODO nonlinear fade-in, poss. nonlinear cursor fade
                 float brightness = (float) elapsed;
 
-                // TODO reuse objects?
-                Pixel color = new Pixel(threadColor);
+                Pixel color = new Pixel(threadColor); // could reuse this tmp obj
 
                 // Fade from white to threadColor as we fade in.
                 color.blendWith(cursorColor, 1.0f - brightness, blendOp);
