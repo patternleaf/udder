@@ -38,7 +38,7 @@ public abstract class DairyScene {
         Layer external = new Layer("External input", new RasterEffect(null));
         external.setBlendOp(max);
 
-        // Lots of chases, for load balancing.
+        // Lots of chases, for load testing.
         Layer[] chases = new Layer[10];
         for(int i=0; i<chases.length; i++) {
             chases[i] = new Layer("Chase " + i, new ChaseEffect(null));
@@ -70,9 +70,10 @@ public abstract class DairyScene {
         for(Mixable layer: mixer) {
             layer.setLevel(0.0f);
         }
-        external.setLevel(1.0f);
+        woven.setLevel(1.0f); // TEMP
+        external.setLevel(1.0f); // TEMP
         for(Layer c: chases) {
-            c.setLevel(1.0f);
+            c.setLevel(1.0f); // TEMP
         }
         mixer.setLevel(1.0f);
 

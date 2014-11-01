@@ -8,7 +8,6 @@ import com.coillighting.udder.blend.MaxBlendOp;
 public class WarpCue extends CueBase {
 
     protected int warpIndex = 0;
-
     protected long stepDuration = 0;
     protected long stepStartTime = 0;
 
@@ -30,10 +29,8 @@ public class WarpCue extends CueBase {
 
     public void startStepTimer(TimePoint timePoint) {
         stepStartTime = timePoint.sceneTimeMillis();
-
-        // Multiply by 2 because we skip every other pixel each step.
-        stepDuration = (long)(2.0 * (double)this.getDuration()
-            / (double)(1 + frame.warp.length));
+        long steps = (1 + frame.warp.length) / 2;
+        stepDuration = this.getDuration() / steps;
     }
 
     public void animate(TimePoint timePoint) {
@@ -68,12 +65,11 @@ public class WarpCue extends CueBase {
                         Pixel p = frame.warp[warpIndex];
                         p.setColor(threadColor);
 
-                        // TODO: variable ratio of thread width to blank line width?
                         // Skip every other column, so that it looks like a bunch of
                         // threads (lines) instead of a solid fill.
                         warpIndex += 2;
                         this.startStepTimer(timePoint);
-                        elapsed = 0.0;
+                        return;
                     }
                 }
                 // TODO nonlinear fade-in, poss. nonlinear cursor fade

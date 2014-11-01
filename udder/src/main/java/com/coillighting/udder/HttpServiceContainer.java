@@ -94,6 +94,9 @@ public class HttpServiceContainer implements Container {
                 if(json == null) {
                     this.log("Failed to URL-decode a raw JSON string for " + route);
                 }
+
+                // FIXME This works, but the JsonFactory for some reason wants a
+                // Class<T>, not a plain class. Causes an unchecked conversion warning.
                 Object state = JsonFactory.fromJson(json, stateClass);
                 if(state == null) {
                     this.log("Failed to deserialize a JSON command of length "
@@ -111,7 +114,6 @@ public class HttpServiceContainer implements Container {
     }
 
     public void handle(Request request, Response response) {
-
         // To see what is happening:
         // this.log(this.formatRequest(request));
 

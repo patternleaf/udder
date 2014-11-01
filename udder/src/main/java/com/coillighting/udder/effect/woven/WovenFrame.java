@@ -48,12 +48,12 @@ public class WovenFrame {
     /** Without reallocating pixels, set their colors a uniform value. */
     public void setColor(Pixel color) {
         background.setColor(color);
-        for(int x=0; x<warp.length; x++) {
-            warp[x].setColor(color);
+        for(Pixel p: warp) {
+            p.setColor(color);
         }
-        for(int x=0; x<weft.length; x++) {
-            for(int y=0; y<weft[x].length; y++) {
-                weft[x][y].setColor(color);
+        for(Pixel[] column: weft) {
+            for(Pixel p: column) {
+                p.setColor(color);
             }
         }
     }
@@ -85,8 +85,8 @@ public class WovenFrame {
         StringBuffer sb = new StringBuffer("background " + background.toHexRGB()
             + "\nwarp       ");
 
-        for(int x=0; x<warp.length; x++) {
-            sb.append(warp[x].toHexRGB()).append(' ');
+        for(Pixel p: warp) {
+            sb.append(p.toHexRGB()).append(' ');
         }
         sb.append("\nweft       ");
 
@@ -137,19 +137,31 @@ public class WovenFrame {
             // y .9-.98
             // x .97-.98
 
-            // TODO ask becky whether she actually wants to crop the ascenders
-            // Crop right edge ascenders out of the warp:
-            // if(!(px > 0.88 && px < 0.95 && py > 0.5 && py < 0.8)) {
-            if(!(px > 0.83 && px < 0.995 && py > 0.36 && py < 0.997)) {
+            boolean drawWarp = true;
 
-                // crop southwest ascenders
-                if(((px > 0.13 || py > 0.39) && group == 0) // front gate
-                    || ((px > 0.07 || py > 0.4) && group == 1)) // back gate
-                {
-                    pixel.blendWith(warp[xWarp], 1.0f, blendOp);
+            // Crop right edge ascenders out of the warp (both front and back gates).
+            if(px > 0.83 && px < 0.995 && py > 0.36 && py < 0.997) {
+                drawWarp = false;
+            } else if(group == 0) {
+                // Crop southwest ascenders for the front gate
+//                if(px < 0.01 /*&& py < 0.39*/) {
+//                    drawWarp = false;
+//                }
+            } else if(group == 1) {
+                drawWarp = false;
+                // Crop southwest ascenders for the rear gate
+                if(px < 0.07 && py < 0.4) {
+                    drawWarp = false;
                 }
             }
 
+            // TEMP background colors to indicate px and group# (green=front)
+            if(group == 0) pixel.setColor(0.0f, 0.7f * (float) px, 0.0f);
+            else if(group == 1) pixel.setColor(0.7f * (float) px, 0.0f, 0.0f);
+
+            if(drawWarp) {
+                pixel.blendWith(warp[xWarp], 1.0f, blendOp);
+            }
             // System.err.println("" + px + " * " + warpScale + " = " + (px * warpScale) + " => " + xWarp);
 
             // System.err.println("set pixels[" + i + "] (warp " + xWarp
@@ -163,7 +175,6 @@ public class WovenFrame {
             //     + pixels[i]);
 
             // Draw the nearest neighbor in the weft for this pixel.
-            // TODO: blend
             double weftScale =-0.000000001 + (double) weft[0].length;
             double center = 0.125;
             int xWeft = px < center ? 0 : 1; // TODO fine-tune this breakpoint, poss. crop
