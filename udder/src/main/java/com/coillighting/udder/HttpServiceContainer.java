@@ -1,6 +1,7 @@
 package com.coillighting.udder;
 
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
@@ -74,7 +75,7 @@ public class HttpServiceContainer implements Container {
      *  Example command-line test query:
      *  curl --data "state={\"r\":1.0,\"g\":0.5,\"b\":0.25}" localhost:8080/mixer0/layer0
      */
-    public Command createCommand(Request request) {
+    public Command createCommand(Request request) throws UnsupportedEncodingException {
         Command command = null;
         Query query = request.getQuery();
         Path path = request.getPath();
@@ -89,11 +90,10 @@ public class HttpServiceContainer implements Container {
             if(rawState == null) {
                 this.log("The 'state' request param is required for " + route);
             } else {
-                String json = URLDecoder.decode(rawState);
+                String json = URLDecoder.decode(rawState, "UTF-8");
                 if(json == null) {
                     this.log("Failed to URL-decode a raw JSON string for " + route);
                 }
-
                 Object state = JsonFactory.fromJson(json, stateClass);
                 if(state == null) {
                     this.log("Failed to deserialize a JSON command of length "

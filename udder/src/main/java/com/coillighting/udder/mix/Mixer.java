@@ -27,7 +27,7 @@ public class Mixer extends MixableBase implements Mixable, Iterable<Mixable> {
     protected boolean verbose = false;
 
     public Mixer(Collection<Mixable> layers) {
-        this.layers = new ArrayList(layers);
+        this.layers = new ArrayList<Mixable>(layers);
         this.setBlendOp(new MaxBlendOp());
     }
 

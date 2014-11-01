@@ -20,3 +20,8 @@ code
 
 udder.sublime-*
 *.OLD
+
+# IntelliJ IDEA project files
+*.iml
+.idea
+out
