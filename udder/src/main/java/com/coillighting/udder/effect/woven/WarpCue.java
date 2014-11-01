@@ -47,9 +47,13 @@ public class WarpCue extends CueBase {
         } else if(fadeState == CueFadeStateEnum.RUNNING) {
 
             if(this.isElapsed(timePoint)) {
-                // Finish this step, move on to the next cue.
-                Pixel p = frame.warp[frame.warp.length - 1];
-                p.setColor(threadColor);
+                // Finish the outgoing step as well as any remaining
+                // steps, move on to the next cue. Time is lost with
+                // each step, so for extremely fast cue durations,
+                // we need to make up the remainder before finishing.
+                for(;warpIndex < frame.warp.length; warpIndex +=2) {
+                    frame.warp[warpIndex].setColor(threadColor);
+                }
                 this.stopTimer();
                 return;
             } else {
@@ -62,8 +66,7 @@ public class WarpCue extends CueBase {
                         return;
                     } else {
                         // Finish this step, move to the next step.
-                        Pixel p = frame.warp[warpIndex];
-                        p.setColor(threadColor);
+                        frame.warp[warpIndex].setColor(threadColor);
 
                         // Skip every other column, so that it looks like a bunch of
                         // threads (lines) instead of a solid fill.

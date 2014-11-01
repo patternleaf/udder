@@ -131,7 +131,7 @@ public class WovenFrame {
 
             pixel.setColor(background);
 
-            // Crop out some unsightly areas.
+            // Mask out some unsightly areas.
 
             //northeast overhang:
             // y .9-.98
@@ -140,17 +140,18 @@ public class WovenFrame {
             boolean drawWarp = true;
 
             // Crop right edge ascenders out of the warp (both front and back gates).
-            if(px > 0.83 && px < 0.995 && py > 0.36 && py < 0.997) {
+            if(px > 0.83 && px < 0.995 && py > 0.33 && py < 0.997) {
                 drawWarp = false;
             } else if(group == 0) {
                 // Crop southwest ascenders for the front gate
-//                if(px < 0.01 /*&& py < 0.39*/) {
-//                    drawWarp = false;
-//                }
+                if(px < 0.268 && py < 0.39) { // FYI 0.23 is the top of the right SW ascender
+                    drawWarp = false;
+                }
             } else if(group == 1) {
-                drawWarp = false;
                 // Crop southwest ascenders for the rear gate
-                if(px < 0.07 && py < 0.4) {
+                if(px < 0.7 && py < 0.4) { // left ascender
+                    drawWarp = false;
+                } else if(px > 0.25 && px < 0.365 && py < 0.42) { // right ascender
                     drawWarp = false;
                 }
             }

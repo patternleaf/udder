@@ -42,7 +42,7 @@ public class CueBase implements Cue {
             long startTime, long duration) {
         long time = timePoint.sceneTimeMillis();
         long end = startTime + duration;
-        if(time >= end || duration <= 0.0) {
+        if(time >= end || duration <= 0) {
             return 1.0;
         } else if(time <= startTime) {
             return 0.0;
