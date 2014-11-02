@@ -2,6 +2,7 @@ package com.coillighting.udder.effect.woven;
 
 import com.coillighting.udder.Pixel;
 import com.coillighting.udder.TimePoint;
+import com.coillighting.udder.Util;
 import com.coillighting.udder.blend.BlendOp;
 import com.coillighting.udder.blend.MaxBlendOp;
 
@@ -89,16 +90,13 @@ public class WeftCue extends CueBase {
                     return;
                 }
 
-                // TODO nonlinear fade-in, poss. nonlinear cursor fade
-                float brightness = (float) elapsed;
-
-                Pixel color = new Pixel(threadColor); // could reuse this tmp obj
-
                 // Fade from white to threadColor as we fade in.
+                Pixel color = new Pixel(threadColor); // could reuse this tmp obj
+                float brightness = Util.reshapeExponential((float) elapsed, 2.0f);
                 color.blendWith(cursorColor, 1.0f - brightness, blendOp);
 
-                // Fade in from black
-                color.scale(brightness);
+                // Fade in from black, a little jumpier than warp because the shuttle is snappy.
+                color.scale(Util.reshapeExponential(brightness, 0.25f));
 
                 frame.weft[weftX][weftY].setColor(color);
             }

@@ -33,14 +33,16 @@ public class WovenEffect extends EffectBase {
     public WovenEffect() {
         cues = new LinkedHashMap<CueEnum, Cue>();
         frame = new WovenFrame();
+
         cues.put(BLACKOUT, new BlackoutCue(100, frame));
         cues.put(CURTAIN, new CurtainCue(300, frame));
-        cues.put(WARP, new WarpCue(100, frame));
-        cues.put(WEFT, new WeftCue(100, frame));
+
+        cues.put(WARP, new WarpCue(300, frame));
+        cues.put(WEFT, new WeftCue(300, frame));
 
         // TODO - fit # of peaks to the scheduled duration of finale?
         // cues.put(FINALE, new FinaleCue(29022 * 2, frame)); // peak2b(50) - see docs
-        cues.put(FINALE, new FinaleCue(3000, frame)); // peak2b(50) - see docs
+        cues.put(FINALE, new FinaleCue(29022 * 2, frame)); // peak2b(50) - see docs
         cues.put(FADEOUT, new FadeOutCue(100, frame));
         this.reset();
     }
@@ -80,7 +82,6 @@ public class WovenEffect extends EffectBase {
      *  When finished, reset the scene.
      */
     public void nextCue() {
-        if(currentCue == cues.get(WEFT)) { return; }  // TEMP-DEBUG
         if(currentCue == null) {
             this.setStep(BLACKOUT);
         } else {
