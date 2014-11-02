@@ -59,7 +59,7 @@ This starts at maximum (1.0), dips down slowly halfway, dips up symmetrically to
 In this case, peak(c) needs to change:
 
   def peak2a(c):
-     return 1.2533141373155001 + (2*pi*(c) + pi*0.5)**0.5
+     return 1.2533141373155001 + (2*pi*c + pi*0.5)**0.5
 
 a.k.a.
 

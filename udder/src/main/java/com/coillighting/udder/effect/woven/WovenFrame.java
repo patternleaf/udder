@@ -16,6 +16,7 @@ public class WovenFrame {
     protected int warpThreadcount = 32; // width is approx. double this
     protected int weftThreadcount = 32;
     protected BlendOp blendOp = null;
+    protected double brightness = 1.0;
 
     /** A single pixel maps onto the whole background. */
     public Pixel background = null;
@@ -31,21 +32,11 @@ public class WovenFrame {
         this.blendOp = new MaxBlendOp();
     }
 
-    public void scaleColor(double scale) {
-        // TODO: decide whether we can move to 64 bpc pixels without hurting 32 bit raspis
-        float f = (float) scale;
-        background.scale(f);
-        for(Pixel p: warp) {
-            p.scale(f);
-        }
-        for(int x=0; x<2; x++) {
-            for(Pixel p: weft[x]) {
-                p.scale(f);
-            }
-        }
+    public void setBrightness(double brightness) {
+        this.brightness = brightness;
     }
 
-    /** Without reallocating pixels, set their colors a uniform value. */
+    /** Without reallocating pixels, set all colors to a uniform value. */
     public void setColor(Pixel color) {
         background.setColor(color);
         for(Pixel p: warp) {
@@ -176,6 +167,7 @@ public class WovenFrame {
                 pixel.blendWith(weft[xWeft][yWeft], 1.0f, blendOp);
             }
 
+            pixel.scale((float)brightness);
         }
     }
 }
