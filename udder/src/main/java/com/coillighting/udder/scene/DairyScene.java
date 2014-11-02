@@ -70,7 +70,7 @@ public abstract class DairyScene {
         for(Mixable layer: mixer) {
             layer.setLevel(0.0f);
         }
-        woven.setLevel(1.0f); // TEMP
+        woven.setLevel(0.0f); // TEMP
         external.setLevel(1.0f); // TEMP
         for(Layer c: chases) {
             c.setLevel(1.0f); // TEMP
