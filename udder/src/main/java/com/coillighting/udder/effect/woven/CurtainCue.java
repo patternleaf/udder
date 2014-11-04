@@ -13,12 +13,12 @@ public class CurtainCue extends CueBase {
         if(this.fadeState == CueFadeStateEnum.START) {
             this.startTimer(timePoint);
             frame.setBrightness(0.0);
-            frame.background.setColor(1.0f, 0.5f, 0.0f);
+            float bgScale = 0.5f;
+            frame.background.setColor(bgScale * 1.0f, bgScale * 0.5f, bgScale * 0.0f);
         } else if(this.fadeState == CueFadeStateEnum.RUNNING) {
             double elapsed = this.getFractionElapsed(timePoint);
             if(elapsed >= 1.0) {
                 this.stopTimer();
-                frame.background.setColor(0.0f, 0.0f, 0.0f) ; // TEMP - TODO: blend with warp
             } else {
                 // TODO: color selection, nonlinear fade-in. for now linear amber.
                 frame.setBrightness(Util.reshapeExponential(elapsed,0.5));

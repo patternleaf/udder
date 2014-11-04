@@ -37,9 +37,9 @@ public class WovenEffect extends EffectBase {
         cues.put(BLACKOUT, new BlackoutCue(4000, frame));
         cues.put(CURTAIN, new CurtainCue(4000, frame));
 
-        cues.put(WARP, new WarpCue(300, frame));
-        cues.put(WEFT, new WeftCue(300, frame));
-        cues.put(FINALE, new FinaleCue(4000, frame)); // peak2a(6) - see docs
+        cues.put(WARP, new WarpCue(30000, frame));
+        cues.put(WEFT, new WeftCue(30000, frame));
+        cues.put(FINALE, new FinaleCue(16000, frame));
         cues.put(FADEOUT, new FadeOutCue(3000, frame));
         this.reset();
     }

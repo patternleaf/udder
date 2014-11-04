@@ -88,6 +88,10 @@ public class WarpCue extends CueBase {
                 color.scale(Util.reshapeExponential(brightness, 0.36f));
 
                 frame.warp[warpIndex].setColor(color);
+
+                float bgScale = 0.5f * (float) Util.reshapeExponential(
+                    1.0 - this.getFractionElapsed(timePoint), 3.0);
+                frame.background.setColor(bgScale * 1.0f, bgScale * 0.5f, bgScale * 0.0f);
             }
         }
     }

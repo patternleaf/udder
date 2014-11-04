@@ -21,7 +21,7 @@ public class FinaleCue extends CueBase {
         approxPulseCount = 12; // keep this an even number for no glitches
         alignment = FinaleCue.computeAlignment(approxPulseCount);
         contrast = 0.75; // out of 1.0 max = 100% contrast
-        brightness = 0.7f; // allow some warp and weft to shine through
+        brightness = 0.75f; // allow some warp and weft to shine through
     }
 
     protected static double computeAlignment(int pulseCount) {
@@ -98,7 +98,10 @@ public class FinaleCue extends CueBase {
                     }
                 }
                 // maybe separate backgrounds for front and rear gate?
-                this.frame.background.setColor(0.0f, y * (float)scale, 0.0f); // TEMP. TODO - scale instead
+
+                float bgScale = y * (float)scale;
+                // TODO variable color here
+                this.frame.background.setColor(bgScale * 0.20f, bgScale * 0.0f, bgScale * 1.0f);
             }
         }
     }
