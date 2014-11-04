@@ -13,11 +13,13 @@ To help bootstrap development, this repository currently comes with a copy of Ma
 
 Once Maven and the JDK are installed in your current environment (see `env.sh` for examples), `cd udder` and run either the `build` script or `build_clean`.
 
-After the build script succeeds, you may start the server using the `serve` script in the same directory. By default the server listens on [http://localhost:8080](http://localhost:8080) and attempts to render at 100fps max.
+After the build script succeeds, you may start the server using the `serve_from_build` script in the same directory. By default the server listens on [http://localhost:8080](http://localhost:8080) and attempts to render at 100fps max.
+
+Alternately, you should be able to serve from the dist jar using the neighboring `serve_from_dist` script, if your environment is set up. (More on this in a few days.)
 
 
-Udder Architecture in a Nutshell
---------------------------------
+Udder Service Architecture in a Nutshell
+----------------------------------------
 
 The class com.coillighting.udder.ServicePipeline assembles the application components into a webserver capable of driving OPC RGB pixel lighting instruments. The coarse grained pipeline has three stages, with network IO:
 
@@ -42,6 +44,30 @@ Important points:
 * Data flows down **one** non-branching path, through the three linked stages of the pipeline.
 * The ShowRunner processes commands and renders frames **asynchronously** with respect to incoming requests.
 * The OpcTransmitter broadcasts frames **asynchronously** with respect to the renderer.
+
+
+Udder Animation Architecture in a Nutshell
+------------------------------------------
+
+The class com.coillighting.mix.Mixer implements the root of a scene. Everything creative is the responsibility of your Mixer and its children, including animation, compositing (blending), cross-fading, oscillation, step sequencing, and looping.
+
+Details:
+* You may run multiple, independent scenes. Just implement more than one unrelated Mixer. A scene is effectively just a root Mixer and its directed, acyclic subgraph of children.
+* Each Mixer holds a tree Mixable objects.
+* The most common Mixable object is a Layer. A typical Mixer blends together several Layers.
+* Layers are adapters for Effects. The Layer class works with the Mixer class to supply essential services like blending, brightness control, and timing signal propagation. This leaves your Effects free to focus on the graphical details specific to each Effect.
+* An Effect is plugged into each Layer.
+* In theory, a Mixer is Mixable, and so you can compose multiple Mixers with multiple layers into a tree of submixers and sublayers. This feature is still unstable.
+* In theory, an Effect is efficiently reusable in multiple layers, and even in multiple (otherwise independent) scenes. This feature likewise remains unstable.
+* Eventually we plan to support cyclical scenes, for efficient feedback (with 1 frame delay over reentrant paths). This feature is still a pipe dream.
+
+Important points:
+* Udder's design philosophy is to assume responsibility for all of the generic aspects of scene construction so that you can just focus on the art.
+* Udder is a modular toolkit, not a monolithic application. Virtually everything in Udder is written without global variables. Dependencies are always "injected," normally as constructor arguments. This means you can construct very complex spaghetti scenes by connecting prefab Udder components like Legos.
+
+In short, if you want to make Udder draw something new, just write an Effect. The rest is provided. Every once in a while you'll want a new crossfade contour, or a new LFO waveform, or perhaps a new blend mode, and then you'll need to contribute to the core classes.
+
+A good way to quickly build a complex scene is to make one Effect with a few variables, then load your Effect (with variations) into many Layers belonging to your scene's root Mixer.
 
 
 Dependency Links
@@ -72,6 +98,27 @@ The official API Javadocs for certain "special sauce" coupler components:
 * [java.util.concurrent.LinkedBlockingQueue](http://docs.oracle.com/javase/7/docs/api/index.html?java/util/concurrent/LinkedBlockingQueue.html)
 
 3rd party libraries are covered by their own licenses (mostly Apache 2.0, MIT, or equivalent). Everything else in this repository is released under the following license:
+
+
+Wishlist
+--------
+* Udder is a Java port of LD50, a circa 2005 Objective-C app by the same author. We need to port certain useful Effects from LD50 -- at least the Color Organism and Mister Stroboto.
+* Continue to expand docs.
+* 100% coverage Junit tests.
+* Separate the Boulder Dairy scene into its own app. Document this example with photos when available.
+* For the Dairy scene, document the connection with Eric's in-browser visualizer.
+* MIDI input for Mixer control (easy port from LD50).
+* MIDI input for Effect modulation.
+* MIDI output.
+* DMX input for high-level Mixer control.
+* DMX input for Effect modulation.
+* DMX output (easy port from LD50 or Libsinuous).
+* OSC input for Mixer control.
+* OSC input for Effect modulation.
+* OSC output.
+* MIDI and OSC Motorboard / LEDboard control for Mixer trees (not easy to be generic, but there is a reference impl in LD50).
+* Bspline, NURBS, and Catmull-Rom spline signal generators, envelopes, and corssfaders (easy port from LD50).
+* A self-assembling web UI for Mixer control and Effect modulation.
 
 
 Apache License, v2.0

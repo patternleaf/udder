@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# We build these all-in-one lib-bundled jars in IntelliJ. They should be easier
+# for beginners to run with. TODO: make Maven do this, too.
+# Uncomment the patch the opc_layout.json to regenerate the opc gl server conf.
+# If the gl server segfaults, it probably just can't find the conf file.
+java -cp "dist/udder-0.4.jar" com.coillighting.udder.Main conf/patch_sheet.json # conf/opc_layout.json

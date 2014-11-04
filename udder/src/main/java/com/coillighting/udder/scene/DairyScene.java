@@ -1,4 +1,4 @@
-    package com.coillighting.udder.scene;
+package com.coillighting.udder.scene;
 
 import java.util.ArrayList;
 import java.util.Collection;

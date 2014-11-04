@@ -1,7 +1,7 @@
 package com.coillighting.udder.effect.woven;
 
-import javafx.geometry.BoundingBox;
-import javafx.geometry.Point3D;
+import com.coillighting.udder.geometry.BoundingCube;
+import com.coillighting.udder.geometry.Point3D;
 
 import com.coillighting.udder.Device;
 import com.coillighting.udder.Pixel;
@@ -72,6 +72,9 @@ public class WovenFrame {
         }
     }
 
+    /** Render this frame as ASCII art.
+     *  Downsample and hex-encode color values.
+     */
     public String toString() {
         StringBuffer sb = new StringBuffer("background " + background.toHexRGB()
             + "\nwarp       ");
@@ -94,7 +97,7 @@ public class WovenFrame {
      }
 
     public void render(Pixel[] pixels, Device[] devices) {
-        BoundingBox box = Device.getDeviceBoundingBox(devices);
+        BoundingCube box = Device.getDeviceBoundingCube(devices);
         double wScale = 1.0 / box.getWidth();
         double hScale = 1.0 / box.getHeight();
         double xOff = -box.getMinX();
@@ -134,6 +137,8 @@ public class WovenFrame {
 
             // Mask out some unsightly areas.
             // Northeast overhang: x .97-.98, y .9-.98
+
+            // TODO Refactor to encode masks as BoundingCubes for clarity.
 
             boolean drawWarp = true;
             if(px > 0.83 && py > 0.33 && py < 0.996) {

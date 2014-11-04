@@ -1,7 +1,7 @@
 package com.coillighting.udder;
 
-import javafx.geometry.BoundingBox;
-import javafx.geometry.Point3D;
+import com.coillighting.udder.geometry.BoundingCube;
+import com.coillighting.udder.geometry.Point3D;
 
 /** A logical Device such as a cluster of LEDs that are animated as a single
  *  pixel. See also notes in Patchable.java.
@@ -57,12 +57,15 @@ public class Device extends Object {
     }
 
     /** Return the 3D bounding box for the given devices. */
-    public static BoundingBox getDeviceBoundingBox(Device[] devices) {
+    public static BoundingCube getDeviceBoundingCube(Device[] devices) {
         if(devices==null) {
             return null;
         } else {
-            double MAX_VALUE = 999999999.0; // A seed value of Double.MAX_VALUE did not work with all comparisons here. WTF?
-            double MIN_VALUE = -999999999.0; // Ditto for DOuble.MIN_VALUE
+            // FIXME: determine the real min and max values that will compare properly.
+            // A seed value of Double.MAX_VALUE did not work with all comparisons here. WTF?
+            // For now you must place your devices within this cube, sorry:
+            double MAX_VALUE = 999999999.0;
+            double MIN_VALUE = -999999999.0;
 
             double minx=MAX_VALUE;
             double maxx=MIN_VALUE;
@@ -83,7 +86,7 @@ public class Device extends Object {
                 if(z < minz) minz = z;
                 if(z > maxz) maxz = z;
             }
-            return new BoundingBox(minx, miny, minz,
+            return new BoundingCube(minx, miny, minz,
                 maxx-minx, maxy-miny, maxz-minz);
         }
     }

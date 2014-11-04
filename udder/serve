@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-# Uncomment the patch the opc_layout.json to regenerate the opc gl server conf.
-# If the gl server segfaults, it probably just can't find the conf file.
-java -cp "target/udder-1.0-SNAPSHOT.jar:lib/simple-5.1.5.jar:lib/boon-0.23.jar:/Library/Java/JavaVirtualMachines/jdk1.7.0_65.jdk/Contents/Home/jre/lib/jfxrt.jar" com.coillighting.udder.Main conf/patch_sheet.json # conf/opc_layout.json
-
