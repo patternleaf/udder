@@ -13,7 +13,7 @@ import com.coillighting.udder.blend.MaxBlendOp;
  */
 public class WovenFrame {
 
-    protected int warpThreadcount = 32; // width is approx. double this
+    protected int warpThreadcount = 16; // width is approx. double this
     protected int weftThreadcount = 32;
     protected BlendOp blendOp = null;
     protected double brightness = 1.0;
