@@ -32,7 +32,10 @@ public class OpcTransmitter implements Runnable {
     protected int serverPort;
     protected int[] deviceAddressMap; // see PatchSheet.deviceAddressMap
     protected long previousFrameRealTimeMillis = 0;
-    protected boolean verbose = false;
+
+    // TODO reorganize logging levels
+    protected final boolean verbose =false;
+    protected final boolean debug = true;
 
     public OpcTransmitter(BlockingQueue<Frame> frameQueue, int[] deviceAddressMap) {
         if(frameQueue==null) {
@@ -68,6 +71,9 @@ public class OpcTransmitter implements Runnable {
             this.connect();
         }
         this.dataOutputStream.write(bytes, 0, bytes.length);
+        if(verbose) {
+            this.log(this.formatMessage(bytes));
+        }
     }
 
     public void run() {
@@ -82,7 +88,7 @@ public class OpcTransmitter implements Runnable {
 
                     if(frame != null) {
 
-                        if(verbose) {
+                        if(verbose && debug) {
                             // Roughly clock frame timing.
                             TimePoint timePoint = frame.getTimePoint();
                             long currentFrameRealTimeMillis = timePoint.realTimeMillis();
@@ -137,9 +143,7 @@ public class OpcTransmitter implements Runnable {
                             i += 3;
                         }
                         this.sendBytes(message);
-                        // verbose logging: (TODO: add an ivar for verbose mode)
-                        // this.log("Sent " + pixelLen + " OPC pixels for " + pixels.length + " devices: " + this.formatMessage(message) + '\n'); //TEMP
-                        // TODO recycle the frame datastructure?
+                        // TODO recycle the frame datastructure
                     } else {
                         // If there are no incoming frames, periodically retransmit
                         // the last frame, in case the remote OPC server process was
@@ -176,26 +180,58 @@ public class OpcTransmitter implements Runnable {
     }
 
     public String formatMessage(byte[] message) throws IOException {
+
         // Note: ((int) foo & 0xFF) causes a byte to be printed as if it were
         // an unsigned value. This is a regrettable Java idiom.
         if(message.length < 7) {
             throw new IOException("Each OPC message must be at least 7 bytes long.");
         }
+
         int i = 0;
-        return "[ " + message.length + " bytes:"
+        StringBuffer log = new StringBuffer("[ " + message.length + " bytes:"
             // OPC header
-            + " chan=" + ((int) message[i++] & 0xFF)
-            + " command=" + ((int) message[i++] & 0xFF)
-            + " lenmsb=" + ((int) message[i++] & 0xFF)
-            + " lenlsb=" + ((int) message[i++] & 0xFF)
+            + " chan=" + (0xFF & (int) message[i++])
+            + " command=" + (0xFF & (int) message[i++])
+            + " lenmsb=" + (0xFF & (int) message[i++])
+            + " lenlsb=" + (0xFF & (int) message[i++])
 
             // Print the first 3 subpixels
             + " message:"
-            + " R" + message[i] + "=" + (((int) message[i++]) & 0xFF)
-            + " G" + message[i] + "=" + (((int) message[i++]) & 0xFF)
-            + " B" + message[i] + "=" + (((int) message[i++]) & 0xFF)
+            + " R" + message[i] + "=" + (0xFF & (int) message[i++])
+            + " G" + message[i] + "=" + (0xFF & (int) message[i++])
+            + " B" + message[i] + "=" + (0xFF & (int) message[i++])
             + (message.length > 7 ? " ..." : "")
-            + " ]";
+            + " ]");
+
+        if(debug) {
+            log.append('\n');
+
+            // csv header
+            log.append("buffer_index,subpixel_offset,component,value\n");
+
+            for(int j=0; j<message.length; j++) {
+                int subpixelOffset = j - 4;
+                String component = "";
+                if(subpixelOffset >= 0) {
+                    int componentIdx = subpixelOffset % 3;
+                    if(componentIdx == 0) {
+                        component = "R";
+                    } else if(componentIdx == 1) {
+                        component = "G";
+                    } else  {
+                        component = "B";
+                    }
+                }
+
+                log.append("" + j + ',' + subpixelOffset + ',' + component + ','
+                    + (0xFF & (int) message[j]) + '\n');
+
+                // To break off the output after you reach a certain device:
+                // if(subpixelOffset > 3 * 60) break;
+            }
+            log.append('\n');
+        }
+        return log.toString();
     }
 
     public void log(String msg) {
