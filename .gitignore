@@ -25,3 +25,5 @@ udder.sublime-*
 *.iml
 .idea
 out
+*.diff
+*SWITCHEROO
