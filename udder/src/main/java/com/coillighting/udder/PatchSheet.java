@@ -6,6 +6,9 @@ import java.util.Iterator;
 
 import com.coillighting.udder.Device;
 
+/** Organize devices so that we can traverse them either in OPC address order
+ *  or in patch sheet order.
+ */
 public class PatchSheet {
 
     // TODO: convert this to an array. No need for a list anymore.
@@ -31,6 +34,9 @@ public class PatchSheet {
 
         deviceAddressMap = new int[maxAddr + 1];
         Arrays.fill(deviceAddressMap, -1);
+
+        // Sort modelSpaceDevices by OPC address, filling in gaps with the -1
+        // placeholder. Store the reordered list by index in deviceAddressMap.
         int i=0;
         for(Iterator<Device> it = modelSpaceDevices.iterator(); it.hasNext(); i++) {
             int addr = it.next().getAddr();
