@@ -92,6 +92,8 @@ public class OpcTransmitter implements Runnable {
                             previousFrameRealTimeMillis = time;
                         }
 
+                        // Pixels per Device, listed in device order, i.e. in
+                        // the order of PatchSheet.modelSpaceDevices.
                         Pixel[] pixels = frame.getPixels();
 
                         // count the opc pixels, which might be a superset of
@@ -122,12 +124,12 @@ public class OpcTransmitter implements Runnable {
 
                         // TODO consider relocating this into Frame
                         int i=SUBPIXEL_START;
-                        for(int opcAddr: deviceAddressMap) {
+                        for(int deviceIndex: deviceAddressMap) {
                             Pixel pixel;
-                            if(opcAddr < 0 || opcAddr >= pixels.length) {
+                            if(deviceIndex < 0 || deviceIndex >= pixels.length) {
                                 pixel = black;
                             } else {
-                                pixel = pixels[opcAddr];
+                                pixel = pixels[deviceIndex];
                             }
                             message[i] = (byte)(0xFF & (int)(255.99999f * pixel.r));
                             message[i+1] = (byte) (0xFF & (int)(255.99999f * pixel.g));
