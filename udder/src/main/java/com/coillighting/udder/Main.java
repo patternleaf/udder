@@ -129,6 +129,12 @@ public class Main {
         return new PatchSheet(devices);
     }
 
+    /** Return a list associating OPC address with spatial coordinates.
+     *  The Open Pixel Control's gl_server consumes this list and presents
+     *  a very simple 3D view of your show, which you can use as a monitor.
+     *  See https://github.com/patternleaf/archway for a fine example of how to
+     *  create a much snazzier 3D monitor in your browser.
+     */
     protected static List<OpcLayoutPoint> createOpcLayoutPointsFromDevices(PatchSheet patchSheet) {
         boolean autoscale = true; // to debug we sometimes want to skip scaling
 

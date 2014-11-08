@@ -8,21 +8,21 @@ import com.coillighting.udder.Device;
 
 public class PatchSheet {
 
-    // TODO: shouldn't this just be an array, too?
+    // TODO: convert this to an array. No need for a list anymore.
     protected List<Device> modelSpaceDevices;
 
-    // Encode {opc_addr: device_index} as an array. -1 means "not patched."
+    /** Encode {opc_addr: device_index} as an array. Index (key) is OPC address,
+     *  value is index in modelSpaceDevices, if any. A value of -1 means "not
+     *  patched." Otherwise the value must be >= 0.
+     */
     protected int[] deviceAddressMap;
 
-    // TODO: custom exception?
     public PatchSheet(List<Device> modelSpaceDevices) throws IllegalArgumentException {
-        // TODO: convert to an array?
         this.modelSpaceDevices = modelSpaceDevices;
 
         // Establish the range and mapping of OPC addresses
         int maxAddr = Integer.MIN_VALUE;
         for(Device device: modelSpaceDevices) {
-            // TODO: shouldn't device just use int for addr?
             int addr = device.getAddr();
             if(addr > maxAddr) {
                 maxAddr = addr;
@@ -35,14 +35,12 @@ public class PatchSheet {
         for(Iterator<Device> it = modelSpaceDevices.iterator(); it.hasNext(); i++) {
             int addr = it.next().getAddr();
             if(deviceAddressMap[addr] != -1) {
+                // TODO: custom exception
                 throw new IllegalArgumentException("Address " + addr
                     + " appears more than once in the patch sheet.");
             }
-            // My kingdom for a list comprehension!
             deviceAddressMap[addr] = i;
         }
-
-        // TODO write a self-test here
     }
 
     /** Return a list of devices in the order originally specified by the user.
