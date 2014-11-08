@@ -24,9 +24,11 @@ package com.coillighting.udder;
  *
  *      $ path/to/bin/gl_server path/to/udder/udder/conf/opc_layout.json
  *
- *  For the dairy project, we recommend using Eric's visualizer:
+ *  For the Dairy project, we recommend using Eric's visualizer:
  *
  *      https://github.com/patternleaf/archway
+ *
+ *  TODO: move point serialization here.
  */
 public class OpcLayoutPoint {
 

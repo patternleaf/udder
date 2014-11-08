@@ -136,37 +136,51 @@ public class Main {
      *  create a much snazzier 3D monitor in your browser.
      */
     protected static List<OpcLayoutPoint> createOpcLayoutPointsFromDevices(PatchSheet patchSheet) {
-        boolean autoscale = true; // to debug we sometimes want to skip scaling
+        // We occasionally skip scaling when debugging.
+        final boolean autoscale = true;
 
         // Shrink the layout, which at the Dairy arrived in inches, to fit the
         // limited viewport of the OPC gl model.
-        double glViewportScale = 3.0;
-        List<Device> devices = patchSheet.getModelSpaceDevices();
-        int[] addrMap = patchSheet.getDeviceAddressMap();
+        final double glViewportScale = 3.0;
+
+        final double [] origin = {0.0, 0.0, 0.0};
+
+        final List<Device> devices = patchSheet.getModelSpaceDevices();
+        final int[] addrMap = patchSheet.getDeviceAddressMap();
         ArrayList<OpcLayoutPoint> points = new ArrayList<OpcLayoutPoint>(addrMap.length);
-        double [] origin = {0.0, 0.0, 0.0};
-        double modelScale = 0.0;
-        for(int index: addrMap) {
-            double[] p;
-            if(index < 0) {
+
+        // Walk the devices in OPC address order. Position a point per address.
+        for(int deviceIndex: addrMap) {
+            double[] pt;
+            if(deviceIndex < 0) {
                 // If a device for an OPC address is not patched, just put that
                 // address's pixel on the origin where it won't cause trouble.
-                p = origin.clone();
+                pt = origin.clone();
             } else {
-                p = devices.get(index).getPoint().clone();
-                p[2] *= -1; // reflect along to z-axis to match the Dairy show's model space
+                pt = devices.get(deviceIndex).getPoint().clone();
+
+                // Flip the z-axis to match the Dairy show's model space to
+                // openpixelcontrol's gl_server window.
+                pt[2] *= -1;
             }
-            points.add(new OpcLayoutPoint(p));
+            points.add(new OpcLayoutPoint(pt));
         }
-        for(OpcLayoutPoint opcPoint: points) {
-            double[] p = opcPoint.getPoint();
-            for(int i=0; i<p.length; i++) {
-                if(Math.abs(p[i]) > Math.abs(modelScale)) {
-                    modelScale = p[i];
+
+        if(autoscale) {
+            double modelScale = 0.0;
+
+            // Compute how far we need to scale down the gl_server model to
+            // fit the unit cube.
+            for(OpcLayoutPoint opcPoint: points) {
+                double[] pt = opcPoint.getPoint();
+                for(int i=0; i<pt.length; i++) {
+                    if(Math.abs(pt[i]) > Math.abs(modelScale)) {
+                        modelScale = pt[i];
+                    }
                 }
             }
-        }
-        if(autoscale) {
+
+            // Scale the output OPC layout to fit the model onscreen.
             for(OpcLayoutPoint opcPoint: points) {
                 opcPoint.scale(glViewportScale / modelScale);
             }
