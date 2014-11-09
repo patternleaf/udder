@@ -58,6 +58,10 @@ public class WovenEffect extends EffectBase {
 
     /** Jump directly to the specified step. If step is null, reset the scene. */
     protected void setStep(CueEnum step) {
+        // To stop after a certain cue for debugging without freezing the show
+        // with a breakpoint, use this technique:
+        // if(currentStep == WEFT) return; // TEMP-DEBUG
+
         if(step == null) {
             if(this.verbose) this.log("\n\n============================ reset woven scene");
             this.reset();

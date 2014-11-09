@@ -141,26 +141,39 @@ public class WovenFrame {
             // TODO Refactor to encode masks as BoundingCubes for clarity.
 
             boolean drawWarp = true;
+
             if(px > 0.83 && py > 0.33 && py < 0.996) {
-                if(!(px <0.95 && py >0.99)) { // don't omit the peak of the top hump, rearbgate
-                    // Crop right edge ascenders out of the warp (both front and rear gates).
-                    drawWarp = false;
+                // Crop right edge ascenders out of the warp...
+                if(group == 1) {
+                    // ...but don't omit the rear gate's northeast peak.
+                    if(!(px <0.95 && py >0.99)) {
+                        drawWarp = false;
+                    }
+                } else if(py < 0.8) { // group 0
+                    // ...and watch out for the tight corner in the front gate's
+                    // northeastern region. (There is a second, small ascender.)
+                    if (px < 0.89 || px > 0.91) {
+                        drawWarp = false;
+                    }
                 }
             } else if(group == 0) {
                 // Crop southwest ascenders for the front gate
-                if(px < 0.268 && py < 0.39) { // FYI 0.23 is the top of the right SW ascender
+                if(px < 0.268 && py < 0.39) {
+                    // FYI 0.23 is the top of the right SW ascender
                     drawWarp = false;
                 }
             } else if(group == 1) {
                 // Crop southwest ascenders for the rear gate
-                if(px < 0.7 && py < 0.4) { // left ascender
+                if(px < 0.7 && py < 0.4) {
+                    // left ascender
                     drawWarp = false;
-                } else if(px > 0.25 && px < 0.365 && py < 0.42) { // right ascender
+                } else if(px > 0.25 && px < 0.365 && py < 0.42) {
+                    // right ascender
                     drawWarp = false;
                 }
             } else {
-                // Group isn't currently defined, but somebody might add one.
-                // Restrict drawing to the two target groups.
+                // Group > 1 isn't currently defined, but somebody might add it.
+                // Restrict Woven's drawing to the two target groups.
                 drawWarp = false;
             }
 
