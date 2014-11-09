@@ -37,7 +37,9 @@ public class OpcTransmitter implements Runnable {
     protected final boolean verbose =false;
     protected final boolean debug = true;
 
-    public OpcTransmitter(BlockingQueue<Frame> frameQueue, int[] deviceAddressMap) {
+    public OpcTransmitter(String opcServerAddress, int opcServerPort,
+            BlockingQueue<Frame> frameQueue, int[] deviceAddressMap)
+    {
         if(frameQueue==null) {
             throw new NullPointerException(
                 "ShowRunner requires a queue that supplies frames.");
@@ -46,8 +48,8 @@ public class OpcTransmitter implements Runnable {
         this.maxDelayMillis = 15000; // TODO: tune this
 
         // TODO: pass in the user-configured properties as params
-        this.serverAddress = "127.0.0.1";
-        this.serverPort = 7890;
+        this.serverAddress = opcServerAddress;
+        this.serverPort = opcServerPort;
         this.deviceAddressMap = deviceAddressMap;
     }
 
@@ -167,7 +169,7 @@ public class OpcTransmitter implements Runnable {
                     this.dataOutputStream = null;
                     int timeout = 10000;
                     this.log(e.toString());
-                    this.log("Waiting " + timeout + " milliseconds before attempting reconnection...");
+                    this.log("Waiting " + timeout + " milliseconds before attempting reconnection to OPC server...");
                     Thread.currentThread().sleep(timeout);
                 } catch(IOException e) {
                     this.log("\nERROR -----------------------------------------");

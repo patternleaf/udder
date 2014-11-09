@@ -56,6 +56,8 @@ public class ShowRunner implements Runnable {
             // Immutable timepoint, passed down the chain to frames.
             TimePoint timePoint = new TimePoint();
             boolean sleepy=false;
+            int droppedFrameCount = -1;
+            final int droppedFrameLogInterval = 500;
 
             this.log("Starting show.");
 
@@ -106,7 +108,19 @@ public class ShowRunner implements Runnable {
                     Frame frame = new Frame(timePoint, pixels);
 
                     if(!frameQueue.offer(frame)) {
-                        this.log("Frame queue overflow. Dropped frame " + timePoint);
+                        if(droppedFrameCount == -1) {
+                            this.log("Frame queue overflow. Dropped frame " + timePoint);
+                            droppedFrameCount = 1;
+                        } else {
+                            if(droppedFrameCount + 1 >= droppedFrameLogInterval) {
+                                this.log("Frame queue overflow on frame "
+                                    + timePoint + ". Dropped " + droppedFrameCount
+                                    + " frames since the previous message like this.");
+                                droppedFrameCount = 0;
+                            } else {
+                                ++droppedFrameCount;
+                            }
+                        }
                     }
                 } else if(busyWait) {
                     // duration=10000 gave me 2000-5000 fps in a mix with

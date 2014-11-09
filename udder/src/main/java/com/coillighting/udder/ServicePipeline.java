@@ -1,5 +1,6 @@
 package com.coillighting.udder;
 
+import java.net.BindException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.io.IOException;
@@ -57,7 +58,12 @@ public class ServicePipeline {
         this.showRunner = new ShowRunner(this.commandQueue, this.mixer,
             this.router, this.frameQueue);
         this.showThread = new Thread(this.showRunner);
-        this.opcTransmitter = new OpcTransmitter(this.frameQueue, deviceAddressMap.clone());
+
+        int glServerDefaultPort = 7890;
+        int chromeServerDefaultPort = 8888;
+
+        this.opcTransmitter = new OpcTransmitter("127.0.0.1", glServerDefaultPort,
+            this.frameQueue, deviceAddressMap.clone());
         this.transmitterThread = new Thread(this.opcTransmitter);
 
         // TODO rename to HttpServiceContainer or something
@@ -73,11 +79,17 @@ public class ServicePipeline {
     }
 
     public void start() throws IOException {
-        this.transmitterThread.start();
-        this.showThread.start();
-        this.serverConnection.connect(this.listenAddress);
-        this.log("Listening on http://localhost:" + this.listenPort + '/');
-        this.log("ListenAddress: " + this.listenAddress);
+        try {
+            this.transmitterThread.start();
+            this.showThread.start();
+            this.serverConnection.connect(this.listenAddress);
+            this.log("Listening on http://localhost:" + this.listenPort + '/');
+            this.log("ListenAddress: " + this.listenAddress);
+        } catch(BindException be) {
+            this.log(be);
+            this.log("Another process is already listening on " + this.listenAddress + ".");
+            System.exit(1);
+        }
     }
 
     public void log(Object message) {
