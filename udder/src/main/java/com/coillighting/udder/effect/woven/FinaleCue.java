@@ -62,7 +62,7 @@ public class FinaleCue extends CueBase {
     public void animate(TimePoint timePoint) {
         if(this.fadeState == CueFadeStateEnum.START) {
             this.startTimer(timePoint);
-            this.frame.background.setColor(0.0f, 0.0f, 0.0f);
+            this.frame.background.setBlack();
 
         } else if(this.fadeState == CueFadeStateEnum.RUNNING) {
             double elapsed = this.getFractionElapsed(timePoint);

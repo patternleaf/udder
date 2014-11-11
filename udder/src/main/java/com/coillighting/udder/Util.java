@@ -159,4 +159,5 @@ public class Util {
         return crossfadeLinear(balance, y0, y1);
     }
 
+    // TODO logarithmic mode
 }

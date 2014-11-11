@@ -182,4 +182,25 @@ public class Pixel {
                 (float)gg / conv,
                 (float)bb / conv);
     }
+
+    public void setBlack() {
+        this.setColor(0.0f, 0.0f, 0.0f);
+    }
+
+    public void setWhite() {
+        this.setColor(1.0f, 1.0f, 1.0f);
+    }
+
+    public void setRed() {
+        this.setColor(1.0f, 0.0f, 0.0f);
+    }
+
+    public void setGreen() {
+        this.setColor(0.0f, 1.0f, 0.0f);
+    }
+
+    public void setBlue() {
+        this.setColor(0.0f, 0.0f, 1.0f);
+    }
+
 }
