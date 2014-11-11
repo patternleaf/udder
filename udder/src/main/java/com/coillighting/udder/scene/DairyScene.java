@@ -10,6 +10,7 @@ import com.coillighting.udder.blend.MultiplyBlendOp;
 import com.coillighting.udder.effect.MonochromeEffect;
 import com.coillighting.udder.effect.ChaseEffect;
 import com.coillighting.udder.effect.RasterEffect;
+import com.coillighting.udder.effect.TextureEffect;
 import com.coillighting.udder.effect.woven.WovenEffect;
 import com.coillighting.udder.Device;
 import com.coillighting.udder.mix.*;
@@ -27,40 +28,49 @@ public abstract class DairyScene {
         BlendOp max = new MaxBlendOp();
         BlendOp mult = new MultiplyBlendOp();
 
+        // Add layers from bottom (background) to top (foreground), i.e. in
+        // order of composition.
+        ArrayList<Mixable> layers = new ArrayList<Mixable>();
+
+        /*
         // A basic three-layer look to get started.
         Layer background = new Layer("Background",
             new MonochromeEffect(Pixel.black()));
         background.setBlendOp(max);
+        layers.add(background);
+        */
 
         Layer woven = new Layer("Woven", new WovenEffect());
         woven.setBlendOp(max);
+        layers.add(woven);
 
+        /*
         Layer external = new Layer("External input", new RasterEffect(null));
         external.setBlendOp(max);
+        layers.add(external);
+        */
 
+        /*
         // Lots of chases, for load testing.
         Layer[] chases = new Layer[10];
         for(int i=0; i<chases.length; i++) {
             chases[i] = new Layer("Chase " + i, new ChaseEffect(null));
             chases[i].setBlendOp(max);
         }
-
-        Layer gel = new Layer("Gel", new MonochromeEffect(Pixel.white()));
-        // TEMP To test a medium amber gel:
-        // Layer gel = new Layer("Gel", new MonochromeEffect(new Pixel(0.66f, 0.50f, 0.15f)));
-        gel.setBlendOp(mult);
-
-        // Add layers from bottom (background) to top (foreground), i.e. in
-        // order of composition.
-        ArrayList<Mixable> layers = new ArrayList<Mixable>(3);
-        layers.add(background);
-        layers.add(woven);
-        layers.add(external);
-
         for(Layer c: chases) {
             layers.add(c);
         }
+        */
+
+        Layer texture = new Layer("Texture", new TextureEffect("images/test_pattern.png"));
+        texture.setBlendOp(max);
+        layers.add(texture);
+
+        /*
+        Layer gel = new Layer("Gel", new MonochromeEffect(Pixel.white()));
+        gel.setBlendOp(mult);
         layers.add(gel);
+        */
 
         Mixer mixer = new Mixer((Collection<Mixable>) layers);
         mixer.patchDevices(devices);
@@ -70,13 +80,15 @@ public abstract class DairyScene {
         for(Mixable layer: mixer) {
             layer.setLevel(0.0f);
         }
+        /*
         woven.setLevel(0.0f); // TEMP
         external.setLevel(1.0f); // TEMP
         for(Layer c: chases) {
             c.setLevel(1.0f); // TEMP
         }
+        */
+        texture.setLevel(1.0f);
         mixer.setLevel(1.0f);
-
         return mixer;
     }
 

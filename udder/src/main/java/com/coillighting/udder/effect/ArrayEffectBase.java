@@ -46,5 +46,4 @@ public abstract class ArrayEffectBase extends EffectBase {
 
     public abstract void setPixels(Integer [] rgbaPixels);
 
-
 }

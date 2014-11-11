@@ -23,9 +23,9 @@ public class Stretch {
     /** b and a: orthogonal coordinates, normalize [0..1.0].
      *  Return a new b given a and b coordinates and high and low stretcher bars
      *  for the b dimension. To stretch x, call this method with a=y and b=x,
-     *  and stretcher bars for the x dimension (see stretchxy for example).
+     *  and stretcher bars for the x dimension (see stretchXY for example).
      *  To stretch y, call thi method with a=x and b=y, with stretcher bars for
-     *  y (the second call in stretchxy).
+     *  y (the second call in stretchXY).
      */
     public static double stretch2D(double a, double b,
             double low_bmin, double low_bmax,
@@ -60,7 +60,7 @@ public class Stretch {
     }
 
     /** 32-bit version of stretchXY. */
-    public static Point2D.Float stretchxy(Point2D.Float xy,
+    public static Point2D.Float stretchXY(Point2D.Float xy,
             Point2D.Float sw, Point2D.Float se,
             Point2D.Float nw, Point2D.Float ne)
     {

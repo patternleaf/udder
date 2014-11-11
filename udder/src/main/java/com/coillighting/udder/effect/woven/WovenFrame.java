@@ -140,6 +140,7 @@ public class WovenFrame {
      }
 
     public void render(Pixel[] pixels, Device[] devices) {
+        // OPTIMIZATION CANDIDATE: compute these only when the device list changes
         final BoundingCube box = Device.getDeviceBoundingCube(devices);
         final double wScale = 1.0 / box.getWidth();
         final double hScale = 1.0 / box.getHeight();

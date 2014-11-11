@@ -22,7 +22,7 @@ public class ChaseEffect extends ArrayEffectBase {
         if(rgbaTexture != null && pixels != null) {
             for(int t=0; t<rgbaTexture.length; t++) {
                 int p = (t + offset) % pixels.length;
-                pixels[p].setColor(rgbaTexture[t]);
+                pixels[p].setRGBAColor(rgbaTexture[t]);
             }
             offset += step;
         }

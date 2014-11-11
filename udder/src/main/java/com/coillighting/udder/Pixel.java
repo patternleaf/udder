@@ -86,11 +86,13 @@ public class Pixel {
         }
     }
 
+    /** Compare this Pixel to another by value. */
     public boolean equals(Pixel pixel) {
         return pixel != null && pixel.r == this.r && pixel.g == this.g
             && pixel.b == this.b;
     }
 
+    /** Clip each component to the range 0.0..1.0, inclusive. */
     public void clip() {
         this.r = Pixel.clipChannel(this.r);
         this.g = Pixel.clipChannel(this.g);
@@ -121,45 +123,63 @@ public class Pixel {
         return String.format("%06X", this.toRGB() & 0xFFFFFF);
     }
 
-    /** Return an int approximation of this pixel value, encoded 0xRRGGBB.
-     *  Skip alpha.
+    /** Return an int approximation of this pixel value, encoded 0x00RRGGBB.
+     *  Skip alpha. If you interpret this pixel as ARGB, alpha will read as 0.
      */
     public int toRGB() {
-        return this.toRGBA() >> 8;
-    }
-
-    /** Return an int approximation of this pixel value, encoded 0xRRGGBBAA.
-     *  Include alpha.
-     */
-    public int toRGBA() {
         float conv = 255.99f;
         int rr = (int)(this.r * conv);
         int gg = (int)(this.g * conv);
         int bb = (int)(this.b * conv);
+        return 0x00000000 | (rr << 16) | (gg << 8) | bb;
+    }
+
+    /** Return an int approximation of this pixel value, encoded 0xRRGGBBAA.
+     *  Set alpha to 100% (255).
+     */
+    public int toRGBA() {
         int aa = 0xFF; // placeholder
-        return 0x00000000 | (rr << 24) | (gg << 16) | (bb << 8) | aa;
+        return (this.toRGB() << 8) | aa;
+    }
+
+    /** Return an int approximation of this pixel value, encoded 0xAARRGGBB.
+     *  Set alpha to 100% (255).
+     */
+    public int toARGB() {
+        int aa = 0xFF; // placeholder
+        return this.toRGB() | (aa << 24);
     }
 
     /** Ignore alpha for now. (TODO) */
-    public void setColor(int rgba) {
+    public void setRGBAColor(int rgba) {
+        this.setRGBColor(rgba >> 8);
+    }
+
+    /** Also works with argb, since alpha is ignored. */
+    public void setRGBColor(int rgb) {
         float conv = 255.0f;
-        int rr = (rgba >> 24) & 0xFF;
-        int gg = (rgba >> 16) & 0xFF;
-        int bb = (rgba >> 8) & 0xFF;
+        int rr = (rgb >> 16) & 0xFF;
+        int gg = (rgb >> 8) & 0xFF;
+        int bb = rgb & 0xFF;
         this.r = (float)rr / conv;
         this.g = (float)gg / conv;
         this.b = (float)bb / conv;
     }
 
-    /** Ignore alpha for now. (TODO). */
+    /** Ignore alpha for now (see above). */
     public static Pixel fromRGBA(int rgba) {
+        return Pixel.fromRGB(rgba >> 8);
+    }
+
+    /** Also works for ARGB, since alpha is ignored. */
+    public static Pixel fromRGB(int rgb) {
         float conv = 255.0f;
-        int rr = (rgba >> 24) & 0xFF;
-        int gg = (rgba >> 16) & 0xFF;
-        int bb = (rgba >> 8) & 0xFF;
+        int rr = (rgb >> 16) & 0xFF;
+        int gg = (rgb >> 8) & 0xFF;
+        int bb = rgb & 0xFF;
         return new Pixel(
-            (float)rr / conv,
-            (float)gg / conv,
-            (float)bb / conv);
+                (float)rr / conv,
+                (float)gg / conv,
+                (float)bb / conv);
     }
 }

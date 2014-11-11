@@ -115,4 +115,11 @@ public class BoundingCube {
         this.depth = depth;
     }
 
+    public double getMaxX() {
+        return minX + width;
+    }
+
+    public double getMaxY() {
+        return minY + height;
+    }
 }

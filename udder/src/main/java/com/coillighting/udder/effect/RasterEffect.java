@@ -19,7 +19,7 @@ public class RasterEffect extends ArrayEffectBase {
         }
         if(pixels != null) {
             for(int i=0; i<rgbaPixels.length && i<pixels.length; i++) {
-                pixels[i].setColor(rgbaPixels[i]);
+                pixels[i].setRGBAColor(rgbaPixels[i]);
             }
         }
     }
