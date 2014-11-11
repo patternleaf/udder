@@ -15,7 +15,6 @@ import com.coillighting.udder.TimePoint;
 import com.coillighting.udder.Util;
 import com.coillighting.udder.geometry.BoundingCube;
 
-// TODO: LFO state for controlQuads
 
 public class TextureEffect extends EffectBase {
 
@@ -40,6 +39,10 @@ public class TextureEffect extends EffectBase {
     protected Interpolation[] interpolations = null;
     protected boolean automatic = true;
 
+    // Temp variables that we shouldn't reallocate on every
+    // trip through the animation loop:
+    private Pixel p, p11, p12, p21, p22;
+
     /** The longest it will take for one corner to complete
      *  a single transit.
      */
@@ -57,6 +60,14 @@ public class TextureEffect extends EffectBase {
                                                Interpolation.SINUSOIDAL,
                                                Interpolation.SINUSOIDAL,
                                                Interpolation.SINUSOIDAL };
+
+        // Initialize temps
+        p = Pixel.black();
+        p11 = Pixel.black();
+        p12 = Pixel.black();
+        p21 = Pixel.black();
+        p22 = Pixel.black();
+
         this.reloadImage();
     }
 
@@ -193,7 +204,6 @@ public class TextureEffect extends EffectBase {
 
     private void advance(int corner, long now) {
         Waypoints pts = this.getWaypoints(corner);
-        // TODO: nonlinear interpo
         long began = transitTimesMillis[corner][0];
         long eta = transitTimesMillis[corner][1];
         long duration = eta - began;
@@ -252,7 +262,6 @@ public class TextureEffect extends EffectBase {
     }
 
     public void animate(TimePoint timePoint) {
-        // TODO set .pixels given .devices' locations and contents of image file
         if(image == null) {
             for(Pixel px: pixels) {
                 px.setBlack();
@@ -286,15 +295,67 @@ public class TextureEffect extends EffectBase {
                 // Distort the image by stretching the flattened rig over it.
                 Point2D.Double xyStretched = controlQuad.stretchXY(xyNorm);
 
-                // TODO: bilinear interpolation instead of truncating coordinates here
-                int imgX = (int)(xyStretched.x * imageWidth);
-                int imgY = (int) (xyStretched.y * imageHeight);
-
-                if(imgX < 0 || imgX >= imageWidth || imgY < 0 || imgY >= imageHeight) {
-                    pixels[i].setBlack();
+                if(false) {
+                    // Truncate mode:
+                    int imgX = ((int) (xyStretched.x * imageWidth) - 1);
+                    int imgY = ((int) (xyStretched.y * imageHeight) - 1);
+                    if(imgX < 0 || imgX >= imageWidth || imgY < 0 || imgY >= imageHeight) {
+                        pixels[i].setBlack();
+                    } else {
+                        int color = image.getRGB(imgX, imgY);
+                        pixels[i].setRGBColor(color);
+                    }
                 } else {
-                    int color = image.getRGB(imgX, imgY);
-                    pixels[i].setRGBColor(color);
+                    // Bilinear (quadratic) interpolation mode:
+                    double x = (xyStretched.x * imageWidth) - 1;
+                    if(x < 0.0) {
+                        x = 0.0;
+                    }
+                    int x1 = (int) Math.floor(x);
+                    int x2 = (int) Math.ceil(x);
+                    if(x2 >= imageWidth) {
+                        x2 = imageWidth - 1;
+                    }
+
+                    double y = (xyStretched.y * imageHeight) - 1;
+                    if(y < 0.0) {
+                        y = 0.0;
+                    }
+                    int y1 = (int) Math.floor(y);
+                    int y2 = (int) Math.ceil(y);
+                    if(y2 >= imageHeight) {
+                        y2 = imageHeight - 1;
+                    }
+
+                    // Sample colors from the four surrounding pixels.
+                    p11.setRGBColor(image.getRGB(x1, y1));
+                    p21.setRGBColor(image.getRGB(x2, y1));
+                    p12.setRGBColor(image.getRGB(x1, y2));
+                    p22.setRGBColor(image.getRGB(x2, y2));
+
+                    // First we do two linear interpolations, R1 and R2,
+                    // in the x direction.
+                    final double right = (x1 == x2 ? 0.0 : (x2 - x) / (x2 - x1));
+                    final double left  = (x1 == x2 ? 1.0 : (x - x1) / (x2 - x1));
+
+                    final double rR1 = p11.r * right + p21.r * left;
+                    final double gR1 = p11.g * right + p21.g * left;
+                    final double bR1 = p11.b * right + p21.b * left;
+
+                    final double rR2 = p12.r * right + p22.r * left;
+                    final double gR2 = p12.g * right + p22.g * left;
+                    final double bR2 = p12.b * right + p22.b * left;
+
+                    // Next interpolate R1 and R2 in the Y direction.
+                    final double high = (y1 == y2 ? 0.0 : (y2 - y) / (y2 - y1));
+                    final double low  = (y1 == y2 ? 1.0 : (y - y1) / (y2 - y1));
+                    p.r = (float)(rR1 * high + rR2 * low);
+                    p.g = (float)(gR1 * high + gR2 * low);
+                    p.b = (float)(bR1 * high + bR2 * low);
+
+                    pixels[i].setColor(p);
+                    // Of course, this whole time we have falsely assumed
+                    // linear gamma.
                 }
             }
         }
