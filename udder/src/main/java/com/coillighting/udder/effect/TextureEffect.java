@@ -77,7 +77,7 @@ public class TextureEffect extends EffectBase {
     }
 
     public Class getStateClass() {
-        return TextureEffectCommand.class;
+        return TextureEffectState.class;
     }
 
     public Object getState() {
@@ -85,7 +85,7 @@ public class TextureEffect extends EffectBase {
     }
 
     public void setState(Object state) throws ClassCastException {
-        TextureEffectCommand command = (TextureEffectCommand) state;
+        TextureEffectState command = (TextureEffectState) state;
 
         automatic = command.getAutomatic();
 

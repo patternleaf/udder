@@ -2,8 +2,7 @@ package com.coillighting.udder.effect;
 
 import com.coillighting.udder.ControlQuad;
 
-// TODO rename to TextureEffectState perhaps
-public class TextureEffectCommand {
+public class TextureEffectState {
 
     /** Map this texture onto the rig. Normally we store these in
      * udder/udder/images, so a typical fileName looks like
@@ -38,7 +37,7 @@ public class TextureEffectCommand {
      */
     protected ControlQuad controlQuad = null;
 
-    public TextureEffectCommand(String fileName, boolean automatic,
+    public TextureEffectState(String fileName, boolean automatic,
                                 int maxTempoMillis, ControlQuad controlQuad)
     {
         this.filename = filename;
@@ -81,7 +80,7 @@ public class TextureEffectCommand {
     }
 
     public String toString() {
-        return "TextureEffectCommand(\"" + filename + "\", automatic="
+        return "TextureEffectState(\"" + filename + "\", automatic="
             + automatic + ", maxTempoMillis=" + maxTempoMillis + ", "
             + controlQuad + ")";
     }

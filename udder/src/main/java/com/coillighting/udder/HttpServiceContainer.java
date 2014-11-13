@@ -22,6 +22,7 @@ public class HttpServiceContainer implements Container {
     protected Queue<Command> queue; // feed requests to this queue
     protected Map<String, Class> commandMap; // translate JSON to command object
     protected int requestIndex = 0; // Count requests to assist debugging (for now)
+    protected boolean verbose = false;
 
     public HttpServiceContainer(Queue<Command> queue, Map<String, Class> commandMap) {
         if(queue==null) {
@@ -40,7 +41,7 @@ public class HttpServiceContainer implements Container {
     }
 
     public boolean getVerbose() {
-        return this.verbose;
+        return verbose;
     }
 
     /** Format the HTTP request path as a multiline string. */
