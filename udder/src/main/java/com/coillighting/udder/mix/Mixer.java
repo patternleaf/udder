@@ -24,7 +24,6 @@ public class Mixer extends MixableBase implements Mixable, Iterable<Mixable> {
     protected ArrayList<Mixable> layers;
     protected Pixel[] pixels; // the developing frame
     protected int deviceCount = 0;
-    protected boolean verbose = false;
 
     public Mixer(Collection<Mixable> layers) {
         this.layers = new ArrayList<Mixable>(layers);
@@ -32,7 +31,6 @@ public class Mixer extends MixableBase implements Mixable, Iterable<Mixable> {
     }
 
     public Class getStateClass() {
-        // TODO - let users set all levels for all layers at once
         return LayerState.class;
     }
 
@@ -45,18 +43,18 @@ public class Mixer extends MixableBase implements Mixable, Iterable<Mixable> {
     }
 
     public Mixable getLayer(int index) throws IndexOutOfBoundsException {
-        return this.layers.get(index);
+        return layers.get(index);
     }
 
     public Iterator<Mixable> iterator() {
-        return this.layers.iterator();
+        return layers.iterator();
     }
 
     public int size() {
-        if(this.layers == null) {
+        if(layers == null) {
             return 0;
         } else {
-            return this.layers.size();
+            return layers.size();
         }
     }
 
@@ -75,40 +73,50 @@ public class Mixer extends MixableBase implements Mixable, Iterable<Mixable> {
      *  ending with the foreground.
      */
     public void mixWith(Pixel[] otherPixels) {
-        this.pixels = new Pixel[this.deviceCount]; // canvas
+        pixels = new Pixel[deviceCount]; // canvas
 
-        for(int i=0; i<this.pixels.length; i++) {
-            this.pixels[i] = new Pixel(0.0f, 0.0f, 0.0f);
+        for(int i=0; i<pixels.length; i++) {
+            pixels[i] = new Pixel(0.0f, 0.0f, 0.0f);
         }
 
-        if(this.level > 0.0) {
+        if(level > 0.0) {
             for(Mixable layer : this) {
-                layer.mixWith(this.pixels);
+                layer.mixWith(pixels);
             }
-            if(this.level < 1.0) {
-                for(Pixel p: this.pixels) {
-                    p.scale(this.level);
+            if(level < 1.0) {
+                for(Pixel p: pixels) {
+                    p.scale(level);
                 }
             }
         }
-        if(this.verbose) System.err.println("mixWith: Mixer @" + this.getLevel() + " = " + this.pixels[0]); // TEMP
     }
 
     public void patchDevices(List<Device> devices) {
-        this.deviceCount = devices.size();
+        deviceCount = devices.size();
         for(Mixable layer : layers) {
             layer.patchDevices(devices);
         }
     }
 
     public Pixel[] render() {
-        // FIXME make a whole new frame? or copy the developed frame before giving it away? clarify ownership.
-        this.mixWith(this.pixels);
-        return this.pixels;
+        // TODO make a whole new frame? or copy the developed frame before giving it away? clarify ownership.
+        this.mixWith(pixels);
+        return pixels;
     }
 
     public String toString() {
         return "Mixer";
+    }
+
+    public String getDescription() {
+        StringBuffer sb = new StringBuffer();
+        for(int i=0; i<layers.size(); i++) {
+            Mixable layer = layers.get(i);
+            sb.append("layer" + i + ": " + layer
+                    + " @" + layer.getLevel()
+                    + " (" + layer.getBlendOp() + " blend mode)\n");
+        }
+        return sb.toString();
     }
 
 }

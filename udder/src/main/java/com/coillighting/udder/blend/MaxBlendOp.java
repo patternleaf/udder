@@ -12,4 +12,8 @@ public class MaxBlendOp implements BlendOp {
         return val;
     }
 
+    public String toString() {
+        return "maximum";
+    }
+
 }

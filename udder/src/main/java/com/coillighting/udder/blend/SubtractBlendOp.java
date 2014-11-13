@@ -12,4 +12,7 @@ public class SubtractBlendOp implements BlendOp {
         return val;
     }
 
+    public String toString() {
+        return "subtract";
+    }
 }

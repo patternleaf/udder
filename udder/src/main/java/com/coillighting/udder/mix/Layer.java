@@ -22,8 +22,6 @@ public class Layer extends MixableBase implements Effect, Mixable {
     /** Delegate animations to this plug-in effect. */
     protected Effect effect;
 
-    protected boolean verbose = false;
-
     public Layer(String name, Effect effect) {
         if(effect == null) {
             throw new NullPointerException("Layer requires an Effect to animate and render pixels.");
@@ -62,10 +60,6 @@ public class Layer extends MixableBase implements Effect, Mixable {
         for(int i=0; i<min; i++) {
             canvasPixels[i].blendWith(myPixels[i], this.level, this.blendOp);
         }
-        // TEMP:
-        String fg = myPixels[0].toString();
-        String after = canvasPixels[0].toString();
-        if(this.verbose) System.err.println("mixWith: " + before + " + " + fg + " @" + this.level + " = " + after);
     }
 
     public void patchDevices(List<Device> devices) {

@@ -1,0 +1,12 @@
+state={
+    "fileName": "images/red_triclops_embellished.png",
+    "automatic": false,
+    "maxTempoMillis": 0,
+
+    "controlQuad": [
+        [0.0, 0.0],
+        [0.0, 1.0],
+        [1.0, 0.0],
+        [1.0, 1.0]
+    ]
+}

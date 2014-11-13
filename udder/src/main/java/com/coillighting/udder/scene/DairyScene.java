@@ -28,67 +28,92 @@ public abstract class DairyScene {
         BlendOp max = new MaxBlendOp();
         BlendOp mult = new MultiplyBlendOp();
 
-        // Add layers from bottom (background) to top (foreground), i.e. in
-        // order of composition.
+        // Add layers from bottom (background) to top (foreground),
+        // in order of composition.
         ArrayList<Mixable> layers = new ArrayList<Mixable>();
 
-        /*
         // A basic three-layer look to get started.
+
+        // The background is additive (unlike the gel layer
+        // below), so add color globally using this level.
         Layer background = new Layer("Background",
             new MonochromeEffect(Pixel.black()));
         background.setBlendOp(max);
         layers.add(background);
-        */
 
+        // The woven effect periodically reappears when the
+        // mixer's shuffler is running.
         Layer woven = new Layer("Woven", new WovenEffect());
         woven.setBlendOp(max);
         layers.add(woven);
 
-        /*
+        // Supply an array of colors to be directly
+        // mapped onto the rig with this layer.
         Layer external = new Layer("External input", new RasterEffect(null));
         external.setBlendOp(max);
         layers.add(external);
-        */
 
-        /*
-        // Lots of chases, for load testing.
-        Layer[] chases = new Layer[10];
-        for(int i=0; i<chases.length; i++) {
-            chases[i] = new Layer("Chase " + i, new ChaseEffect(null));
-            chases[i].setBlendOp(max);
+        // Currently layers 3-19 are all sequenced textures.
+        // They are sorted so that any two to four adjacent
+        // layers look good together. When the mixer's shuffler
+        // is running, pairs and trios of adjacent layers
+        // appear together, fading in and out.
+        String [] sequencedTextures = {
+                "blue_skull_necklace.png",
+                "green_gilled_lace.png",
+                "yellow_antennae.png",
+                "cyan_chains.png",
+                "magenta_loops.png",
+                "yellowlavender_calligraphic.png",
+                "purple_chains.png",
+                "amber_mustachioed_cthulus.png",
+                "orange_mustachioed_cthulus.png",
+                "purple_blue_chains.png",
+                "red_triclops_minimal.png",
+                "red_triclops_embellished.png",
+                "light_blue_calligraphemes.png",
+                "lavender_propellers.png",
+                "skyblue_loops.png",
+                "mauve_taupe_worms.png",
+                "redblue_triclops.png",
+        };
+
+        int sequenceStartIndex = layers.size();
+        for(String filename: sequencedTextures) {
+            Layer texture = new Layer("Texture " + filename,
+                    new TextureEffect("images/" + filename));
+            texture.setBlendOp(max);
+            layers.add(texture);
         }
-        for(Layer c: chases) {
-            layers.add(c);
-        }
-        */
+        int sequenceEndIndex = layers.size() - 1;
 
-        Layer texture = new Layer("Texture", new TextureEffect("images/test_pattern.png"));
-        texture.setBlendOp(max);
-        layers.add(texture);
+        // A chase that runs over the devices in patch sheet order
+        // (not spatial order, not OPC address order).
+        // Requires an external raster to display anything.
+        Layer chase = new Layer("Chase", new ChaseEffect(null));
+        chase.setBlendOp(max);
+        layers.add(chase);
 
-        /*
-        Layer gel = new Layer("Gel", new MonochromeEffect(Pixel.white()));
+        // In the mult blendop, white=transparent. Tint
+        // everything globally by adjusting this color.
+        Layer gel = new Layer("Color correction gel", new MonochromeEffect(Pixel.white()));
         gel.setBlendOp(mult);
         layers.add(gel);
-        */
 
         Mixer mixer = new Mixer((Collection<Mixable>) layers);
         mixer.patchDevices(devices);
-        System.err.println("Patched " + devices.size()
+        System.out.println("Patched " + devices.size()
             + " devices to the DairyScene's Mixer.");
 
         for(Mixable layer: mixer) {
             layer.setLevel(0.0f);
         }
-        /*
-        woven.setLevel(0.0f); // TEMP
-        external.setLevel(1.0f); // TEMP
-        for(Layer c: chases) {
-            c.setLevel(1.0f); // TEMP
-        }
-        */
-        texture.setLevel(1.0f);
         mixer.setLevel(1.0f);
+
+        System.out.println(mixer.getDescription());
+        System.out.println("Shuffled sequence start layer: "
+                + sequenceStartIndex + " end layer: " + sequenceEndIndex);
+
         return mixer;
     }
 

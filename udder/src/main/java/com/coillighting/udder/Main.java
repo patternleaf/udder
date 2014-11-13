@@ -66,7 +66,7 @@ public class Main {
             Main.die(null);
         }
 
-        System.err.println("Using config " + configPath);
+        System.out.println("Using config " + configPath);
         PatchSheet patchSheet = Main.createDevices(configPath);
 
         if(layoutPath != null) {
@@ -76,7 +76,6 @@ public class Main {
             System.err.println("Dumped OPC JSON layout to " + layoutPath);
         }
 
-        // TODO: how to communicate addressSpaceDeviceMap to the transmitter?
         ServicePipeline pipeline = new ServicePipeline(
             DairyScene.create(patchSheet.getModelSpaceDevices()),
             patchSheet.getDeviceAddressMap());
@@ -93,7 +92,9 @@ public class Main {
             System.err.println(errorMessage);
         }
         System.err.println(
-            "Usage: java com.coillighting.udder.Main path/to/config.json [opc_layout.json]");
+            "Usage: java com.coillighting.udder.Main path/to/config.json [opc_layout.json]\n"
+            +"    (Specify an OPC layout filename to generate a new layout\n"
+            +"    file for consumption by openpixelcontrol's gl_server.)");
     }
 
     // TODO: move static utils into their own class
@@ -122,9 +123,7 @@ public class Main {
         // TODO REF? Why Arraylist instead of array? (Same below.)
         List<Device> devices = new ArrayList<Device>(patchElements.size());
         for(PatchElement pe: patchElements) {
-            Device device = pe.toDevice();
-            System.err.println(device); //TEMP
-            devices.add(device);
+            devices.add(pe.toDevice());
         }
         return new PatchSheet(devices);
     }

@@ -69,6 +69,7 @@ public class ShowRunner implements Runnable {
                     sleepy = true;
                     if(command != null) {
                         this.log("Received command: " + command); //TEMP
+//                        this.log("           value: " + command.getValue()); //TEMP
 
                         // TODO - add routes for timer
                         String path = command.getPath();

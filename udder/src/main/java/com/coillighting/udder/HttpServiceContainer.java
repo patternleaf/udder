@@ -21,8 +21,7 @@ public class HttpServiceContainer implements Container {
 
     protected Queue<Command> queue; // feed requests to this queue
     protected Map<String, Class> commandMap; // translate JSON to command object
-    protected int requestIndex = 0; // TEMP count requests to assist debugging
-    protected boolean verbose = false;
+    protected int requestIndex = 0; // Count requests to assist debugging (for now)
 
     public HttpServiceContainer(Queue<Command> queue, Map<String, Class> commandMap) {
         if(queue==null) {
@@ -141,6 +140,7 @@ public class HttpServiceContainer implements Container {
             Command command = this.createCommand(request);
             if(command == null) {
                 // TODO error response - 404
+                this.log("Failed to parse a valid command from this request.");
             } else {
                 boolean accepted = this.queue.offer(command);
                 if(this.verbose) {

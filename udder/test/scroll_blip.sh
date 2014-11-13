@@ -1,2 +1,3 @@
 #!/usr/bin/env sh
-curl -X POST -d @blip.json http://localhost:8080/mixer0/layer3/effect
+# Test pattern: scroll an orange blip across the rig in patch sheet order.
+curl -X POST -d @blip.json http://localhost:8080/mixer0/layer20/effect
