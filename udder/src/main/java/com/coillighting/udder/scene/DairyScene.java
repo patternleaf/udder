@@ -66,7 +66,7 @@ public abstract class DairyScene {
                 "yellow_antennae.png",
                 "cyan_chains.png",
                 "magenta_loops.png",
-                "yellowlavender_calligraphic.png",
+                "yellow_lavender_calligraphic.png",
                 "purple_chains.png",
                 "amber_mustachioed_cthulus.png",
                 "orange_mustachioed_cthulus.png",
