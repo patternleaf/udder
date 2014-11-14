@@ -1,4 +1,4 @@
-package com.coillighting.udder.signal;
+package com.coillighting.udder.geometry.wave;
 
 import com.coillighting.udder.Util;
 
@@ -6,9 +6,9 @@ import com.coillighting.udder.Util;
  *  end, looping back discontinuously to the start value when the period has
  *  elapsed.
  */
-public class SawtoothFloatSignal extends FloatSignalBase {
+public class SawtoothFloatWave extends FloatWaveBase {
 
-    public SawtoothFloatSignal(float start, float end, long period) {
+    public SawtoothFloatWave(float start, float end, long period) {
         super(start, end, period);
     }
 

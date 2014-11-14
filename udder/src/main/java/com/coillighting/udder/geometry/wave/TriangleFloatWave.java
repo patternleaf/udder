@@ -1,13 +1,13 @@
-package com.coillighting.udder.signal;
+package com.coillighting.udder.geometry.wave;
 
 import com.coillighting.udder.Util;
 
 /** A linearly interpolated signal that continuously oscillates between two
  *  values, with sharp corners at the values themselves.
  */
- public class TriangleFloatSignal extends FloatSignalBase {
+ public class TriangleFloatWave extends FloatWaveBase {
 
-    public TriangleFloatSignal(float start, float end, long period) {
+    public TriangleFloatWave(float start, float end, long period) {
         super(start, end, period);
     }
 

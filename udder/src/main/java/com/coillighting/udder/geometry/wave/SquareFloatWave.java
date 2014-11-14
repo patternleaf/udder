@@ -1,12 +1,12 @@
-package com.coillighting.udder.signal;
+package com.coillighting.udder.geometry.wave;
 
 
 /** An uninterpolated signal that discontinuously switches between two
  *  values.
  */
- public class SquareFloatSignal extends FloatSignalBase {
+ public class SquareFloatWave extends FloatWaveBase {
 
-    public SquareFloatSignal(float start, float end, long period) {
+    public SquareFloatWave(float start, float end, long period) {
         super(start, end, period);
     }
 

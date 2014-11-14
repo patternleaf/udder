@@ -1,17 +1,17 @@
-package com.coillighting.udder.signal;
+package com.coillighting.udder.geometry.wave;
 
 import com.coillighting.udder.mix.TimePoint;
 
 /** Abstract base class for removing boilerplate from the implementation of
- *  periodic floating-point Signal generators.
+ *  periodic floating-point signal generators.
  */
-public abstract class FloatSignalBase implements Signal<Float> {
+public abstract class FloatWaveBase implements Wave<Float> {
 
     protected float start = 0.0f;
     protected float end = 0.0f;
     protected long period = 0;
 
-    public FloatSignalBase(float start, float end, long period) {
+    public FloatWaveBase(float start, float end, long period) {
         this.start = start;
         this.end = end;
         this.period = period;

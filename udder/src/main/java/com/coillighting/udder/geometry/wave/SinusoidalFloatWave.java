@@ -1,13 +1,13 @@
-package com.coillighting.udder.signal;
+package com.coillighting.udder.geometry.wave;
 
 import com.coillighting.udder.Util;
 
 /** A sinusoidally interpolated signal that continuously oscillates between two
  *  values, with smooth corners at the values themselves.
  */
- public class SinusoidalFloatSignal extends FloatSignalBase {
+ public class SinusoidalFloatWave extends FloatWaveBase {
 
-    public SinusoidalFloatSignal(float start, float end, long period) {
+    public SinusoidalFloatWave(float start, float end, long period) {
         super(start, end, period);
     }
 
@@ -15,7 +15,7 @@ import com.coillighting.udder.Util;
         // This is a funny way to implement this, but I want to give
         // crossfadeSinusoidal a little exercise before simplifying it.
         // Alternately, I might add a ramp-up balance/ramp-down balance
-        // param to this Signal, for use as a simple impulse envelope. (TODO)
+        // param to this class, for use as a simple impulse envelope. (TODO)
         float x0;
         float x1;
         if(x <= 0.5f) {

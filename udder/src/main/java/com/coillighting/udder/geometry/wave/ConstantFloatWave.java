@@ -1,13 +1,13 @@
-package com.coillighting.udder.signal;
+package com.coillighting.udder.geometry.wave;
 
 import com.coillighting.udder.mix.TimePoint;
 
 /** Base class implementing a constant signal. */
-public class ConstantFloatSignal implements Signal<Float> {
+public class ConstantFloatWave implements Wave<Float> {
 
     protected float value = 0.0f;
 
-    public ConstantFloatSignal(float value) {
+    public ConstantFloatWave(float value) {
         this.value = value;
     }
 

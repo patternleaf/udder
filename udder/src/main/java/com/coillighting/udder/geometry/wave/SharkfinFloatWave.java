@@ -1,13 +1,13 @@
-package com.coillighting.udder.signal;
+package com.coillighting.udder.geometry.wave;
 
 import com.coillighting.udder.Util;
 
 /** A sinusoidally interpolated signal that continuously oscillates from start
  *  to end, then discontinuously jumps back to the start value.
  */
- public class SharkfinFloatSignal extends FloatSignalBase {
+ public class SharkfinFloatWave extends FloatWaveBase {
 
-    public SharkfinFloatSignal(float start, float end, long period) {
+    public SharkfinFloatWave(float start, float end, long period) {
         super(start, end, period);
     }
 
