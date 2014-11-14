@@ -114,7 +114,7 @@ public class WovenEffect extends EffectBase {
     }
 
     protected void log(Object msg) {
-        System.err.println(msg);
+        System.out.println(msg);
     }
 
     public void animate(TimePoint timePoint) {

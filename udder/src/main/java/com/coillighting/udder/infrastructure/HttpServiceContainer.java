@@ -177,7 +177,7 @@ public class HttpServiceContainer implements Container {
     }
 
     public void log(Object message) {
-        System.err.println(message);
+        System.out.println(message);
     }
 
 }

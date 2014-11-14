@@ -74,7 +74,7 @@ public class Main {
             String layoutJson = JsonFactory.toJson(
                 Main.createOpcLayoutPointsFromDevices(patchSheet));
             Main.stringToFile(layoutPath, layoutJson);
-            System.err.println("Dumped OPC JSON layout to " + layoutPath);
+            System.out.println("Dumped OPC JSON layout to " + layoutPath);
         }
 
         ServicePipeline pipeline = new ServicePipeline(
@@ -90,9 +90,9 @@ public class Main {
 
     protected static void printUsage(String errorMessage) {
         if(errorMessage != null) {
-            System.err.println(errorMessage);
+            System.out.println(errorMessage);
         }
-        System.err.println(
+        System.out.println(
             "Usage: java com.coillighting.udder.Main path/to/config.json [opc_layout.json]\n"
             +"    (Specify an OPC layout filename to generate a new layout\n"
             +"    file for consumption by openpixelcontrol's gl_server.)");

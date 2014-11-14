@@ -158,9 +158,6 @@ public class WovenFrame {
 
                 final double px = wScale * (pt.getX() + xOff); // normalized 0..1
                 final double py = hScale * (pt.getY() + yOff); // ditto
-                // TODO account for z or group?
-
-                // System.err.println("px " + px + " = wScale " + wScale + " * (pt.getX() " + pt.getX() + " + xOff " + xOff + ") warpLen=" + warp.length);
 
                 // Draw the nearest neighbor in the warp for this pixel.
                 final double warpScale = -0.000000001 + (double) warp.length;

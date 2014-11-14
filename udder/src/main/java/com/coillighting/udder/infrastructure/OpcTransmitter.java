@@ -239,6 +239,6 @@ public class OpcTransmitter implements Runnable {
     }
 
     public void log(String msg) {
-        System.err.println(msg);
+        System.out.println(msg);
     }
 }

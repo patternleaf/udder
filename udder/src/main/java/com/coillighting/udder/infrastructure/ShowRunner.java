@@ -145,9 +145,7 @@ public class ShowRunner implements Runnable {
     }
 
     public void log(Object msg) {
-        if(msg != null) {
-            System.out.println(msg.toString());
-        }
+        System.out.println(msg);
     }
 
 

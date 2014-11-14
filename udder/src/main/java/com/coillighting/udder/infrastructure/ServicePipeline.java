@@ -94,6 +94,6 @@ public class ServicePipeline {
     }
 
     public void log(Object message) {
-        System.err.println(message);
+        System.out.println(message);
     }
 }
