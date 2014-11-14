@@ -1,6 +1,6 @@
 package com.coillighting.udder.effect.woven;
 
-import com.coillighting.udder.TimePoint;
+import com.coillighting.udder.mix.TimePoint;
 
 public class CueBase implements Cue {
 

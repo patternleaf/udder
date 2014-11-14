@@ -1,8 +1,6 @@
-package com.coillighting.udder;
+package com.coillighting.udder.geometry;
 
 import java.awt.geom.Point2D;
-
-import com.coillighting.udder.Stretch;
 
 /** A simple public datastructure for storing four
  *  points of a control polygon.

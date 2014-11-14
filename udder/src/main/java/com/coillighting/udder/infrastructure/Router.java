@@ -1,4 +1,4 @@
-package com.coillighting.udder;
+package com.coillighting.udder.infrastructure;
 
 import java.util.HashMap;
 import java.util.Map;

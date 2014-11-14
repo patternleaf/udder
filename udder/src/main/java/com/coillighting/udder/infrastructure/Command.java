@@ -1,4 +1,4 @@
-package com.coillighting.udder;
+package com.coillighting.udder.infrastructure;
 
 /** A deserialized command to the udder server. Normally this command originates
  *  from an external client, often a browser. Commands do not know or care how

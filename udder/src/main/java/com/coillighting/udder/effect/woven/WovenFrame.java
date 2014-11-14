@@ -1,13 +1,13 @@
 package com.coillighting.udder.effect.woven;
 
-import com.coillighting.udder.geometry.BoundingCube;
-import com.coillighting.udder.geometry.Point3D;
+import java.util.Random;
 
-import com.coillighting.udder.Device;
-import com.coillighting.udder.Pixel;
 import com.coillighting.udder.blend.BlendOp;
 import com.coillighting.udder.blend.MaxBlendOp;
-import java.util.Random;
+import com.coillighting.udder.geometry.BoundingCube;
+import com.coillighting.udder.geometry.Point3D;
+import com.coillighting.udder.model.Device;
+import com.coillighting.udder.model.Pixel;
 
 /** A simple data structure by which a WovenEffect communicates pixels
  *  to its Cues.

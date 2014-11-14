@@ -1,7 +1,7 @@
-package com.coillighting.udder;
+package com.coillighting.udder.infrastructure;
 
 
-import com.coillighting.udder.Device;
+import com.coillighting.udder.model.Device;
 
 /** This class is used as a JSON schema spec and output datatype for the Boon
  *  JsonFactory when it deserializes JSON patch sheets exported from Eric's

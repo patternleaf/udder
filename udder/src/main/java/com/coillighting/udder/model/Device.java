@@ -1,4 +1,4 @@
-package com.coillighting.udder;
+package com.coillighting.udder.model;
 
 import com.coillighting.udder.geometry.BoundingCube;
 import com.coillighting.udder.geometry.Point3D;

@@ -1,4 +1,4 @@
-package com.coillighting.udder;
+package com.coillighting.udder.infrastructure;
 
 import java.io.OutputStream;
 import java.io.DataOutputStream;
@@ -9,6 +9,8 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 import com.coillighting.udder.mix.Frame;
+import com.coillighting.udder.mix.TimePoint;
+import com.coillighting.udder.model.Pixel;
 
 /** First stab at an Open Pixel Control network client.
  *  This class is responsible for translating the pixels in mixed down frames

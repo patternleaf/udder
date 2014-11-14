@@ -1,4 +1,4 @@
-package com.coillighting.udder;
+package com.coillighting.udder.mix;
 
 
 /** A frozen point in time against which all frame animations are calculated,

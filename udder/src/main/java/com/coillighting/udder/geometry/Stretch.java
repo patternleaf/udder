@@ -1,4 +1,4 @@
-package com.coillighting.udder;
+package com.coillighting.udder.geometry;
 
 import java.awt.geom.Point2D;
 

@@ -1,7 +1,5 @@
 package com.coillighting.udder.geometry;
 
-// TODO a Bounds interface?
-
 /** A 3D bounding box.
  *
  *  See notes about ditching JavaFX (and possibly switching

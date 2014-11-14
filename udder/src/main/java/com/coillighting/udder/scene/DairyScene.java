@@ -12,9 +12,11 @@ import com.coillighting.udder.effect.ChaseEffect;
 import com.coillighting.udder.effect.RasterEffect;
 import com.coillighting.udder.effect.TextureEffect;
 import com.coillighting.udder.effect.woven.WovenEffect;
-import com.coillighting.udder.Device;
-import com.coillighting.udder.mix.*;
-import com.coillighting.udder.Pixel;
+import com.coillighting.udder.mix.Layer;
+import com.coillighting.udder.mix.Mixable;
+import com.coillighting.udder.mix.Mixer;
+import com.coillighting.udder.model.Device;
+import com.coillighting.udder.model.Pixel;
 
 /** Define the scenegraph for the December, 2014 weavers' conference at
  *  Boulder's Dairy Center for the Arts (thedairy.org). An Udder scenegraph

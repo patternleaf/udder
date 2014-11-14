@@ -1,13 +1,15 @@
-package com.coillighting.udder;
+package com.coillighting.udder.infrastructure;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Iterator;
 
-import com.coillighting.udder.Device;
+import com.coillighting.udder.model.Device;
 
 /** Organize devices so that we can traverse them either in OPC address order
- *  or in patch sheet order.
+ *  or in patch sheet order. Patch sheet order is arbitrary, but most LDs
+ *  like to patch their show so that the order of the devices on the patch
+ *  sheet correlate spatially with the the order of the devices in space.
  */
 public class PatchSheet {
 

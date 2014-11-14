@@ -1,9 +1,10 @@
 package com.coillighting.udder.effect.woven;
 
-import com.coillighting.udder.Pixel;
-import com.coillighting.udder.TimePoint;
 import com.coillighting.udder.Util;
+import com.coillighting.udder.mix.TimePoint;
+import com.coillighting.udder.model.Pixel;
 
+/** Pulse the completed scene to retain visual interest. */
 public class FinaleCue extends CueBase {
 
     protected double timeShare;

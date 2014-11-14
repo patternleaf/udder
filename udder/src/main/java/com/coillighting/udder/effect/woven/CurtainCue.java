@@ -1,8 +1,9 @@
 package com.coillighting.udder.effect.woven;
 
-import com.coillighting.udder.TimePoint;
 import com.coillighting.udder.Util;
+import com.coillighting.udder.mix.TimePoint;
 
+/** Bring up an unremarkable background color (e.g. amber wash). */
 public class CurtainCue extends CueBase {
 
     public CurtainCue(long duration, WovenFrame frame) {

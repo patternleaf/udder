@@ -1,9 +1,8 @@
-package com.coillighting.udder;
+package com.coillighting.udder.infrastructure;
 
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Queue;
 
@@ -13,6 +12,8 @@ import org.simpleframework.http.Query;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.core.Container;
+
+import com.coillighting.udder.Util;
 
 /** The HTTP controller for Udder's Simple-brand webserver.
  *  Receives requests, translates them into commands, and responds as needed.

@@ -1,8 +1,9 @@
 package com.coillighting.udder.effect.woven;
 
-import com.coillighting.udder.Pixel;
-import com.coillighting.udder.TimePoint;
+import com.coillighting.udder.mix.TimePoint;
+import com.coillighting.udder.model.Pixel;
 
+/** Fade smoothly to black. */
 public class FadeOutCue extends CueBase {
 
     public FadeOutCue(long duration, WovenFrame frame) {

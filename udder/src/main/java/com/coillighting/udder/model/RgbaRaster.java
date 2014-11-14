@@ -1,4 +1,4 @@
-package com.coillighting.udder;
+package com.coillighting.udder.model;
 
 /** A wrapper to satisfy Boon's JSON mapper, which didn't like plain old
  *  Integer[].

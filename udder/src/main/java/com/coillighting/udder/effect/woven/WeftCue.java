@@ -1,11 +1,12 @@
 package com.coillighting.udder.effect.woven;
 
-import com.coillighting.udder.Pixel;
-import com.coillighting.udder.TimePoint;
 import com.coillighting.udder.Util;
 import com.coillighting.udder.blend.BlendOp;
 import com.coillighting.udder.blend.MaxBlendOp;
+import com.coillighting.udder.mix.TimePoint;
+import com.coillighting.udder.model.Pixel;
 
+/** Draw pixels representing the weaving of the weft in a loom. */
 public class WeftCue extends CueBase {
 
     protected int weftX = 0;

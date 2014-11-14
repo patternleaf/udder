@@ -1,6 +1,6 @@
 package com.coillighting.udder.effect.woven;
 
-import com.coillighting.udder.Animator;
+import com.coillighting.udder.mix.Animator;
 
 public interface Cue extends Animator {
 

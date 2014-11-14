@@ -1,6 +1,6 @@
 package com.coillighting.udder.effect;
 
-import com.coillighting.udder.ControlQuad;
+import com.coillighting.udder.geometry.ControlQuad;
 
 public class TextureEffectState {
 

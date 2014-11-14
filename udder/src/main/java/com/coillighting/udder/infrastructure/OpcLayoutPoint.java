@@ -1,5 +1,4 @@
-package com.coillighting.udder;
-
+package com.coillighting.udder.infrastructure;
 
 /** Data structure representing a 3D point in an Open Pixel Control layout
  *  file. We will serialize this as an element in a JSON array. For details

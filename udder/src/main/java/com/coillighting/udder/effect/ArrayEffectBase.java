@@ -2,8 +2,8 @@ package com.coillighting.udder.effect;
 
 import java.util.List;
 
-import com.coillighting.udder.Pixel;
-import com.coillighting.udder.RgbaRaster;
+import com.coillighting.udder.model.Pixel;
+import com.coillighting.udder.model.RgbaRaster;
 
 public abstract class ArrayEffectBase extends EffectBase {
 

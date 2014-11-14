@@ -2,10 +2,14 @@ package com.coillighting.udder.effect;
 
 import java.util.List;
 
-import com.coillighting.udder.Pixel;
-import com.coillighting.udder.RgbaRaster;
-import com.coillighting.udder.TimePoint;
+import com.coillighting.udder.mix.TimePoint;
+import com.coillighting.udder.model.Pixel;
+import com.coillighting.udder.model.RgbaRaster;
 
+/** Scroll an array of pixels over all Devices in patch sheet order
+ *  (as opposed to spatial order or address order, which only correlate
+ *  with the patch sheet if you deliberately build your patch to match).
+ */
 public class ChaseEffect extends ArrayEffectBase {
 
     protected int offset = 0; // current scrolling offset

@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.Random;
 import javax.imageio.ImageIO;
 
-import com.coillighting.udder.ControlQuad;
-import com.coillighting.udder.Device;
-import com.coillighting.udder.Pixel;
-import com.coillighting.udder.TimePoint;
 import com.coillighting.udder.Util;
 import com.coillighting.udder.geometry.BoundingCube;
+import com.coillighting.udder.geometry.ControlQuad;
+import com.coillighting.udder.mix.TimePoint;
+import com.coillighting.udder.model.Device;
+import com.coillighting.udder.model.Pixel;
 
 
 /**

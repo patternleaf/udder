@@ -1,10 +1,9 @@
 package com.coillighting.udder.mix;
 
-import com.coillighting.udder.Pixel;
-import com.coillighting.udder.TimePoint;
+import com.coillighting.udder.mix.TimePoint;
+import com.coillighting.udder.model.Pixel;
 
-
-/** An instantaneous sample of all timebased RGB values for the entire scene. */
+/** An instantaneous sample of all timebased pixel values for the entire scene. */
 public class Frame {
 
     private TimePoint timePoint;

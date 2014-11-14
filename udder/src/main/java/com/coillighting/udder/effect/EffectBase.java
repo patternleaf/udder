@@ -2,10 +2,11 @@ package com.coillighting.udder.effect;
 
 import java.util.List;
 
-import com.coillighting.udder.Device;
-import com.coillighting.udder.Pixel;
-import com.coillighting.udder.TimePoint;
+import com.coillighting.udder.mix.TimePoint;
+import com.coillighting.udder.model.Device;
+import com.coillighting.udder.model.Pixel;
 
+/** Abstract base class for typical Effects. */
 public abstract class EffectBase implements Effect {
 
     protected Pixel[] pixels = null;

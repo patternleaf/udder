@@ -1,5 +1,4 @@
-package com.coillighting.udder;
-import com.coillighting.udder.TimePoint;
+package com.coillighting.udder.mix;
 
 public interface Animator {
 

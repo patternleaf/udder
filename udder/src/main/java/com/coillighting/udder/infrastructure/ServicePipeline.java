@@ -1,4 +1,4 @@
-package com.coillighting.udder;
+package com.coillighting.udder.infrastructure;
 
 import java.net.BindException;
 import java.net.InetSocketAddress;
@@ -8,13 +8,15 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.Queue;
+
 import org.simpleframework.http.core.Container;
 import org.simpleframework.http.core.ContainerServer;
 import org.simpleframework.transport.connect.Connection;
 import org.simpleframework.transport.connect.SocketConnection;
 import org.simpleframework.transport.Server;
 
-import com.coillighting.udder.mix.*;
+import com.coillighting.udder.mix.Frame;
+import com.coillighting.udder.mix.Mixer;
 
 /** Udder's central patchbay. Owns references to all of the persistent entities
  *  in the program. Manages Thread lifecycles for each components.
@@ -48,7 +50,7 @@ public class ServicePipeline {
         this.mixer = mixer;
         this.router = new Router();
 
-        // TODO variable base path token for mixer - add constructor arg
+        // TODO variable base path token for mixer - add constructor arg so we can have multiple mixers
         this.router.addRoutes("mixer0", this.mixer);
 
         // TODO args or properties to set connection binding params,

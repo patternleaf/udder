@@ -11,11 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 import org.boon.json.JsonFactory;
 
+import com.coillighting.udder.infrastructure.OpcLayoutPoint;
+import com.coillighting.udder.infrastructure.PatchElement;
+import com.coillighting.udder.infrastructure.PatchSheet;
+import com.coillighting.udder.infrastructure.ServicePipeline;
+import com.coillighting.udder.model.Device;
 import com.coillighting.udder.scene.DairyScene;
-import com.coillighting.udder.Device;
-import com.coillighting.udder.PatchElement;
-import com.coillighting.udder.PatchSheet;
-import com.coillighting.udder.ServicePipeline;
 
 // TODO drive the animation when people aren't hitting it with requests
 // look into Timer, TimerTask, and this stuff from JDK 5+:

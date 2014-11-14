@@ -3,10 +3,9 @@ package com.coillighting.udder.mix;
 import java.lang.UnsupportedOperationException;
 import java.util.List;
 
-import com.coillighting.udder.Pixel;
 import com.coillighting.udder.effect.Effect;
-import com.coillighting.udder.Device;
-import com.coillighting.udder.TimePoint;
+import com.coillighting.udder.model.Device;
+import com.coillighting.udder.model.Pixel;
 
 /** A Mixer is typically composed of several Layers. Each Layer is capable of
  *  animating and rendering the whole scene, so the parent Mixer is responsible

@@ -1,10 +1,9 @@
 package com.coillighting.udder.effect;
 
-import java.util.List;
+import com.coillighting.udder.mix.TimePoint;
+import com.coillighting.udder.model.Pixel;
 
-import com.coillighting.udder.Pixel;
-import com.coillighting.udder.TimePoint;
-
+/** Show a single color on all pixels. */
 public class MonochromeEffect extends EffectBase {
 
     private boolean dirty = false;

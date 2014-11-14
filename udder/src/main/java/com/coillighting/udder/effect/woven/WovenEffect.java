@@ -2,10 +2,10 @@ package com.coillighting.udder.effect.woven;
 
 import java.util.LinkedHashMap;
 
-import com.coillighting.udder.Pixel;
-import com.coillighting.udder.TimePoint;
 import com.coillighting.udder.effect.EffectBase;
 import static com.coillighting.udder.effect.woven.CueEnum.*;
+import com.coillighting.udder.mix.TimePoint;
+import com.coillighting.udder.model.Pixel;
 
 /** The Woven effect conveys the motions of manually weaving on a loom. This
  *  effect is mapped onto the Boulder Dairy's architectural-scale metal tapestry

@@ -1,6 +1,6 @@
 package com.coillighting.udder.signal;
 
-import com.coillighting.udder.TimePoint;
+import com.coillighting.udder.mix.TimePoint;
 
 /** Base class implementing a constant signal. */
 public class ConstantFloatSignal implements Signal<Float> {

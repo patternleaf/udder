@@ -1,4 +1,4 @@
-package com.coillighting.udder;
+package com.coillighting.udder.model;
 
 import com.coillighting.udder.blend.BlendOp;
 

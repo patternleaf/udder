@@ -1,8 +1,8 @@
 package com.coillighting.udder.mix;
 
 import com.coillighting.udder.blend.BlendOp;
-import com.coillighting.udder.Pixel;
-import com.coillighting.udder.TimePoint;
+import com.coillighting.udder.model.Pixel;
+import com.coillighting.udder.mix.TimePoint;
 
 /** A concrete base class implementation of Mixable. Removes boilerplate from
  *  Layer and Mixer.

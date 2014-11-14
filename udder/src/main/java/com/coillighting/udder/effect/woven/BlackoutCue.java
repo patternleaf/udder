@@ -1,8 +1,9 @@
 package com.coillighting.udder.effect.woven;
 
-import com.coillighting.udder.Pixel;
-import com.coillighting.udder.TimePoint;
+import com.coillighting.udder.mix.TimePoint;
+import com.coillighting.udder.model.Pixel;
 
+/** All black, no fade. */
 public class BlackoutCue extends CueBase {
 
     public BlackoutCue(long duration, WovenFrame frame) {

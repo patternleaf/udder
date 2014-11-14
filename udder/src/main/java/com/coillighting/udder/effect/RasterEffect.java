@@ -2,10 +2,10 @@ package com.coillighting.udder.effect;
 
 import java.util.List;
 
-import com.coillighting.udder.Pixel;
-import com.coillighting.udder.RgbaRaster;
+import com.coillighting.udder.model.Pixel;
+import com.coillighting.udder.model.RgbaRaster;
 
-// TODO rename -- the etymology of 'raster' is the latin word for 'rake',
+// FIXME rename -- the etymology of 'raster' is the latin word for 'rake',
 // so a raster has really got to be a 2D datastructure.
 public class RasterEffect extends ArrayEffectBase {
 
