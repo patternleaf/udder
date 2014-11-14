@@ -68,7 +68,6 @@ public class ServicePipeline {
             this.frameQueue, deviceAddressMap.clone());
         this.transmitterThread = new Thread(this.opcTransmitter);
 
-        // TODO rename to HttpServiceContainer or something
         this.httpServiceContainer = new HttpServiceContainer(
             this.commandQueue,
             this.router.getCommandMap());
