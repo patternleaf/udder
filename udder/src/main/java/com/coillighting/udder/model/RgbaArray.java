@@ -3,11 +3,11 @@ package com.coillighting.udder.model;
 /** A wrapper to satisfy Boon's JSON mapper, which didn't like plain old
  *  Integer[].
  */
-public class RgbaRaster {
+public class RgbaArray {
 
     private Integer[] pixels = null;
 
-    public RgbaRaster(Integer[] pixels) {
+    public RgbaArray(Integer[] pixels) {
         // TODO assert not null
         this.pixels = pixels;
     }

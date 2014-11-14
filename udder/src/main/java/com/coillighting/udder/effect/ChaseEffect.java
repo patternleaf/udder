@@ -4,11 +4,12 @@ import java.util.List;
 
 import com.coillighting.udder.mix.TimePoint;
 import com.coillighting.udder.model.Pixel;
-import com.coillighting.udder.model.RgbaRaster;
+import com.coillighting.udder.model.RgbaArray;
 
 /** Scroll an array of pixels over all Devices in patch sheet order
  *  (as opposed to spatial order or address order, which only correlate
  *  with the patch sheet if you deliberately build your patch to match).
+ *  This is primarily intended as a test pattern generator.
  */
 public class ChaseEffect extends ArrayEffectBase {
 
@@ -16,8 +17,8 @@ public class ChaseEffect extends ArrayEffectBase {
     protected int step = 1; // how fast to scroll
     protected Integer[] rgbaTexture = null;
 
-    public ChaseEffect(RgbaRaster raster) {
-        super(raster);
+    public ChaseEffect(RgbaArray pixels) {
+        super(pixels);
     }
 
     /** Draw a single frame, then scroll everything by one step. */
@@ -27,6 +28,11 @@ public class ChaseEffect extends ArrayEffectBase {
             for(int t=0; t<rgbaTexture.length; t++) {
                 int p = (t + offset) % pixels.length;
                 pixels[p].setRGBAColor(rgbaTexture[t]);
+            }
+            // If insufficient pixels were provided, black out the others.
+            for(int t=rgbaTexture.length; t<pixels.length; t++) {
+                int p = (t + offset) % pixels.length;
+                pixels[p].setBlack();
             }
             offset += step;
         }

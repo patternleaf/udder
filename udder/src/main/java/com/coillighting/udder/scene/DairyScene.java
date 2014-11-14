@@ -9,7 +9,7 @@ import com.coillighting.udder.blend.MaxBlendOp;
 import com.coillighting.udder.blend.MultiplyBlendOp;
 import com.coillighting.udder.effect.MonochromeEffect;
 import com.coillighting.udder.effect.ChaseEffect;
-import com.coillighting.udder.effect.RasterEffect;
+import com.coillighting.udder.effect.ArrayEffect;
 import com.coillighting.udder.effect.TextureEffect;
 import com.coillighting.udder.effect.woven.WovenEffect;
 import com.coillighting.udder.mix.Layer;
@@ -49,12 +49,6 @@ public abstract class DairyScene {
         woven.setBlendOp(max);
         layers.add(woven);
 
-        // Supply an array of colors to be directly
-        // mapped onto the rig with this layer.
-        Layer external = new Layer("External input", new RasterEffect(null));
-        external.setBlendOp(max);
-        layers.add(external);
-
         // Currently layers 3-19 are all sequenced textures.
         // They are sorted so that any two to four adjacent
         // layers look good together. When the mixer's shuffler
@@ -92,9 +86,21 @@ public abstract class DairyScene {
         // A chase that runs over the devices in patch sheet order
         // (not spatial order, not OPC address order).
         // Requires an external raster to display anything.
+        // A useful test pattern generator because in its default config,
+        // it scrolls the chase by a single pixel at a time.
         Layer chase = new Layer("Chase", new ChaseEffect(null));
         chase.setBlendOp(max);
         layers.add(chase);
+
+        // Supply an array of colors to be directly
+        // mapped onto the rig with these two layers.
+        Layer externalA = new Layer("External input A", new ArrayEffect(null));
+        externalA.setBlendOp(max);
+        layers.add(externalA);
+
+        Layer externalB = new Layer("External input B", new ArrayEffect(null));
+        externalB.setBlendOp(max);
+        layers.add(externalB);
 
         // In the mult blendop, white=transparent. Tint
         // everything globally by adjusting this color.

@@ -70,8 +70,8 @@ public class ShowRunner implements Runnable {
                 if(command != null || !sleepy) {
                     sleepy = true;
                     if(command != null) {
-                        this.log("Received command: " + command); //TEMP
-//                        this.log("           value: " + command.getValue()); //TEMP
+                        this.log(command); //TEMP
+                        // this.log("           value: " + command.getValue()); //TEMP
 
                         // TODO - add routes for timer
                         String path = command.getPath();
@@ -144,8 +144,10 @@ public class ShowRunner implements Runnable {
         }
     }
 
-    public void log(String msg) {
-        System.err.println(msg);
+    public void log(Object msg) {
+        if(msg != null) {
+            System.err.println(msg.toString());
+        }
     }
 
 
