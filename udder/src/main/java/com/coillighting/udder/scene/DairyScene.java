@@ -1,5 +1,6 @@
 package com.coillighting.udder.scene;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -77,7 +78,7 @@ public abstract class DairyScene {
         int sequenceStartIndex = layers.size();
         for(String filename: sequencedTextures) {
             Layer texture = new Layer("Texture " + filename,
-                    new TextureEffect("images/" + filename));
+                    new TextureEffect("images" + File.separator + filename));
             texture.setBlendOp(max);
             layers.add(texture);
         }
