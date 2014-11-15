@@ -48,4 +48,6 @@ public interface Effect extends Animator {
      */
     public void setState(Object state) throws ClassCastException;
 
+    // TODO convert to double
+    public void levelChanged(float oldLevel, float newLevel);
 }

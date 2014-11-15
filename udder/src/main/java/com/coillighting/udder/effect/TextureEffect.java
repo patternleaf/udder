@@ -16,9 +16,11 @@ import com.coillighting.udder.model.Device;
 import com.coillighting.udder.model.Pixel;
 
 
-/**
- * FUTURE add an affine transform layer to the manual side, for
- * easy rotations, scalings, etc.
+/** Stretch and squeeze a raster image over the pointcloud representing the
+ *  Devices in your show. See TextureEffectState for options.
+ *
+ *  FUTURE add an affine transform layer to the manual side, for
+ *  easy rotations, scalings, etc.
  */
 public class TextureEffect extends EffectBase {
 

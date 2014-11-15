@@ -117,4 +117,7 @@ public class Mixer extends MixableBase implements Mixable, Iterable<Mixable> {
         return sb.toString();
     }
 
+    /** A Mixer doesn't currently care when its parent Mixer's level changes. */
+    public void levelChanged(float oldLevel, float newLevel) {}
+
 }

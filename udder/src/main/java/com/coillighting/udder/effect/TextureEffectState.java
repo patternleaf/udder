@@ -2,6 +2,9 @@ package com.coillighting.udder.effect;
 
 import com.coillighting.udder.geometry.ControlQuad;
 
+/** Convey public parameters to and from TextureEffect instances.
+ *  This class serves as a JSON mapping target for Boon.
+ */
 public class TextureEffectState {
 
     /** Map this texture onto the rig. Normally we store these in

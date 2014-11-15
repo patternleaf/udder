@@ -133,4 +133,11 @@ public class WovenEffect extends EffectBase {
         frame.render(pixels, devices);
         return pixels;
     }
+
+    /** Rewind when the layer is turned off and on. */
+    public void levelChanged(float oldLevel, float newLevel) {
+        if(oldLevel == 0.0f && newLevel > 0.0f) {
+            this.reset();
+        }
+    }
 }

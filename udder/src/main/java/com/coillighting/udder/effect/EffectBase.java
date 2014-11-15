@@ -45,4 +45,10 @@ public abstract class EffectBase implements Effect {
         return this.pixels;
     }
 
+    /** levelChanged notifications are sent by Layer when a fader is turned up
+     *  past 0%. Most effects don't care, but some will want to rewind when
+     *  that happens.
+     */
+    public void levelChanged(float oldLevel, float newLevel) {}
+
 }

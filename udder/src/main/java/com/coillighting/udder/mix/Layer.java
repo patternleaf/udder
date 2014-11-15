@@ -73,4 +73,17 @@ public class Layer extends MixableBase implements Effect, Mixable {
         return this.name;
     }
 
+    /** Currently we notify Effects only when the layer goes from off (0%)
+     *  to on (>0%). Some effects (currently just Woven) will want to start
+     *  from their first cue or reset animation state when that happens.
+     */
+    protected void notifyLevelChanged(float oldLevel, float newLevel) {
+        if(effect != null && oldLevel == 0.0f && newLevel > 0.0f) {
+            effect.levelChanged(oldLevel, newLevel);
+        }
+    }
+
+    /** A Layer doesn't currently care when its parent Mixer's level changes. */
+    public void levelChanged(float oldLevel, float newLevel) {}
+
 }
