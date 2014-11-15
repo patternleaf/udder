@@ -2,7 +2,6 @@ package com.coillighting.udder.infrastructure;
 
 import java.net.BindException;
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -35,14 +34,19 @@ public class ServicePipeline {
     protected HttpServiceContainer httpServiceContainer;
     protected Server server;
     protected int listenPort = 8080;
-    protected SocketAddress listenAddress;
+    protected InetSocketAddress listenAddress;
     protected Connection serverConnection;
     protected ShowRunner showRunner;
     protected Thread showThread;
     protected OpcTransmitter opcTransmitter;
     protected Thread transmitterThread;
 
-    public ServicePipeline(Mixer mixer, int[] deviceAddressMap) throws IOException {
+    public ServicePipeline(Mixer mixer,
+                           int[] deviceAddressMap,
+                           SocketAddress udderAddr,
+                           SocketAddress opcServer1Addr,
+                           SocketAddress opcServer2Addr) throws IOException
+    {
         if(mixer == null) {
             throw new NullPointerException(
                 "ServicePipeline requires a Mixer that defines the scene.");
@@ -61,10 +65,10 @@ public class ServicePipeline {
             this.router, this.frameQueue);
         this.showThread = new Thread(this.showRunner);
 
-        int glServerDefaultPort = 7890;
-        int chromeServerDefaultPort = 8888;
+//        int glServerDefaultPort = 7890;
+//        int chromeServerDefaultPort = 8888;
 
-        this.opcTransmitter = new OpcTransmitter("127.0.0.1", glServerDefaultPort,
+        this.opcTransmitter = new OpcTransmitter(opcServer1Addr,
             this.frameQueue, deviceAddressMap.clone());
         this.transmitterThread = new Thread(this.opcTransmitter);
 
@@ -73,10 +77,10 @@ public class ServicePipeline {
             this.router.getCommandMap());
         this.httpServiceContainer.setVerbose(this.verbose);
 
-        this.server = new ContainerServer((Container) this.httpServiceContainer);
+        this.server = new ContainerServer(this.httpServiceContainer);
         this.serverConnection = new SocketConnection(this.server);
-        this.listenPort = 8080;
-        this.listenAddress = new InetSocketAddress(this.listenPort);
+        this.listenPort = udderAddr.getPort();
+        this.listenAddress = new InetSocketAddress(udderAddr.getHost(), this.listenPort);
     }
 
     public void start() throws IOException {

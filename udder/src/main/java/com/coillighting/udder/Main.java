@@ -1,6 +1,7 @@
 package com.coillighting.udder;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -9,12 +10,15 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import org.boon.json.JsonFactory;
 
 import com.coillighting.udder.infrastructure.OpcLayoutPoint;
 import com.coillighting.udder.infrastructure.PatchElement;
 import com.coillighting.udder.infrastructure.PatchSheet;
 import com.coillighting.udder.infrastructure.ServicePipeline;
+import com.coillighting.udder.infrastructure.SocketAddress;
+import com.coillighting.udder.mix.Mixer;
 import com.coillighting.udder.model.Device;
 import com.coillighting.udder.scene.DairyScene;
 
@@ -32,6 +36,9 @@ import com.coillighting.udder.scene.DairyScene;
  *  Start up a new Udder lighting server. Load the scene for the Boulder Dairy.
  */
 public class Main {
+
+    // TODO convert these static methods to class methods, and minimize the
+    // static main method.
 
     /** Arguments are currently ignored. TODO: configuration. */
     public static void main(String[] args) throws Exception {
@@ -68,7 +75,36 @@ public class Main {
         }
 
         System.out.println("Using config " + configPath);
-        PatchSheet patchSheet = Main.createDevices(configPath);
+
+        Properties prop = new Properties();
+        prop.load(new FileInputStream(configPath));
+
+        String patchSheetPath = Main.translateSeparators(
+                Main.getMandatoryProperty(prop, configPath, DairyProperties.PATCH_SHEET));
+
+        String udderAddr = Main.getMandatoryProperty(prop, configPath, DairyProperties.UDDER_ADDRESS);
+        Integer udderPort = Main.parseInteger(
+                Main.getMandatoryProperty(prop, configPath, DairyProperties.UDDER_PORT));
+
+        String opcServer1Addr = Main.getMandatoryProperty(prop, configPath, DairyProperties.OPC_SERVER1_HOST);
+        Integer opcServer1Port = Main.parseInteger(
+                Main.getMandatoryProperty(prop, configPath, DairyProperties.OPC_SERVER1_PORT));
+
+        String opcServer2Addr = prop.getProperty(DairyProperties.OPC_SERVER2_HOST);
+        Integer opcServer2Port = Main.parseInteger(
+                prop.getProperty(DairyProperties.OPC_SERVER2_PORT));
+
+        if(opcServer2Addr == null && opcServer2Port != null) {
+            Main.die("If you specify " + DairyProperties.OPC_SERVER2_HOST
+                + ", you must also provide " + DairyProperties.OPC_SERVER2_PORT + ".");
+        }
+
+        if(opcServer2Port == null && opcServer2Addr != null) {
+            Main.die("If you specify " + DairyProperties.OPC_SERVER2_PORT
+                    + ", you must also provide " + DairyProperties.OPC_SERVER2_HOST + ".");
+        }
+
+        PatchSheet patchSheet = Main.createDevices(patchSheetPath);
 
         if(layoutPath != null) {
             String layoutJson = JsonFactory.toJson(
@@ -77,10 +113,46 @@ public class Main {
             System.out.println("Dumped OPC JSON layout to " + layoutPath);
         }
 
+        SocketAddress opcServer2SocketAddr = null;
+        if(opcServer2Addr != null) {
+            opcServer2SocketAddr = new SocketAddress(opcServer2Addr, opcServer2Port);
+        }
+
+        Mixer mixer = DairyScene.create(patchSheet.getModelSpaceDevices());
+
         ServicePipeline pipeline = new ServicePipeline(
-            DairyScene.create(patchSheet.getModelSpaceDevices()),
-            patchSheet.getDeviceAddressMap());
+                mixer,
+                patchSheet.getDeviceAddressMap(),
+                new SocketAddress(udderAddr, udderPort),
+                new SocketAddress(opcServer1Addr, opcServer1Port),
+                opcServer2SocketAddr);
         pipeline.start();
+    }
+
+    protected static String getMandatoryProperty(Properties prop, String configPath, String key) {
+        String value = prop.getProperty(key);
+        if(value == null) {
+            Main.die("The properties file '" + configPath
+                    + "' does not contain the mandatory " + key + " key.");
+        }
+        return value;
+    }
+
+    /** Translate generic forward-slash path separators into the system
+     * specific separator, in case we're running on Windows.
+     */
+    protected static String translateSeparators(String path) {
+        if(path == null) {
+            return null;
+        }
+        return path.replace('/', File.separatorChar);
+    }
+
+    protected static Integer parseInteger(String s) {
+        if(s == null) {
+            return null;
+        }
+        return new Integer(s);
     }
 
     protected static void die(String errorMessage) {
@@ -187,5 +259,50 @@ public class Main {
         }
         return points;
     }
+
+}
+
+class DairyProperties {
+
+    /** The list of Devices (lights) and their locations in space.
+     * Mandatory. Example: "conf/patch_sheet.json". Forward slashes are
+     * converted to the system-specific File.separator.
+     */
+    public static final String PATCH_SHEET = "patchSheet";
+
+    /** The Udder webserver binds to this local address.
+     * Mandatory. Example: "127.0.0.1"
+     */
+    public static final String UDDER_ADDRESS = "udder.address";
+
+    /** The Udder webserver listens on this port.
+     * Mandatory. Example: "8080".
+     */
+    public static final String UDDER_PORT = "udder.port";
+
+    /** The primary downstream Open Pixel Control Server is at this address.
+     * By convention, this is the server that drives your devices.
+     * Mandatory. Example: "127.0.0.1".
+     */
+    public static final String OPC_SERVER1_HOST = "opcServer1.host";
+
+    /** The primary downstream Open Pixel Control Server listens on this port.
+     * See OPC_SERVER1_ADDRESS for details. Mandatory. Example: "7890".
+     */
+    public static final String OPC_SERVER1_PORT = "opcServer1.port";
+
+    /** The secondary downstream Open Pixel Control Server is at this address.
+     * By convention, this is your visualizer or monitor, but it could be a
+     * second OPC server that drives more lights. If both servers are
+     * specified, then both servers receive copies of the same frames, however
+     * frame synchronization is necessarily imperfect.
+     * Optional. Example: "127.0.0.1".
+     */
+    public static final String OPC_SERVER2_HOST = "opcServer2.host";
+
+    /** The secondary downstream Open Pixel Control Server listens on this port.
+     * See OPC_SERVER2_ADDRESS for details. Optional. Example: "7891".
+     */
+    public static final String OPC_SERVER2_PORT = "opcServer2.port";
 
 }

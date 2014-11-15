@@ -30,7 +30,7 @@ public class OpcTransmitter implements Runnable {
     protected int maxDelayMillis;
     protected Socket socket;
     protected DataOutputStream dataOutputStream;
-    protected String serverAddress;
+    protected String serverHost;
     protected int serverPort;
     protected int[] deviceAddressMap; // see PatchSheet.deviceAddressMap
     protected long previousFrameRealTimeMillis = 0;
@@ -39,19 +39,19 @@ public class OpcTransmitter implements Runnable {
     protected final boolean verbose =false;
     protected final boolean debug = true;
 
-    public OpcTransmitter(String opcServerAddress, int opcServerPort,
-            BlockingQueue<Frame> frameQueue, int[] deviceAddressMap)
+    public OpcTransmitter(SocketAddress opcServerAddr,
+                          BlockingQueue<Frame> frameQueue,
+                          int[] deviceAddressMap)
     {
         if(frameQueue==null) {
             throw new NullPointerException(
                 "ShowRunner requires a queue that supplies frames.");
         }
         this.frameQueue = frameQueue;
-        this.maxDelayMillis = 15000; // TODO: tune this
+        this.maxDelayMillis = 15000; // FUTURE: allow the user to tune this
 
-        // TODO: pass in the user-configured properties as params
-        this.serverAddress = opcServerAddress;
-        this.serverPort = opcServerPort;
+        this.serverHost = opcServerAddr.getHost();
+        this.serverPort = opcServerAddr.getPort();
         this.deviceAddressMap = deviceAddressMap;
     }
 
@@ -60,9 +60,9 @@ public class OpcTransmitter implements Runnable {
         this.dataOutputStream = null;
 
         this.log("Attempting to connect to OPC remote server at "
-            + this.serverAddress + ":"+ this.serverPort);
+            + this.serverHost + ":"+ this.serverPort);
 
-        this.socket = new Socket(this.serverAddress, this.serverPort);
+        this.socket = new Socket(this.serverHost, this.serverPort);
         this.log("Connected.");
         OutputStream out = socket.getOutputStream();
         this.log("Got Socket OutputStream.");
