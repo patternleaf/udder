@@ -103,7 +103,7 @@ public class TimePoint {
     }
 
     public String toString() {
-        return "" + this.sceneTimeMillis + '[' + this.frameIndex + ']';
+        return "" + this.sceneTimeMillis + "ms [#" + this.frameIndex + ']';
     }
 
 }

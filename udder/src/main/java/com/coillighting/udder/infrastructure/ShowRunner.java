@@ -1,5 +1,6 @@
 package com.coillighting.udder.infrastructure;
 
+import java.util.List;
 import java.util.Queue;
 
 import com.coillighting.udder.effect.Effect;
@@ -20,7 +21,7 @@ public class ShowRunner implements Runnable {
     protected Queue<Command> commandQueue;
     protected Mixer mixer;
     protected Router router;
-    protected Queue<Frame> frameQueue;
+    protected List<Queue<Frame>> frameQueues;
 
     protected boolean verbose = false;
 
@@ -32,7 +33,7 @@ public class ShowRunner implements Runnable {
     protected long frameCounter = 0;
 
     public ShowRunner(Queue<Command> commandQueue, Mixer mixer,
-        Router router, Queue<Frame> frameQueue)
+        Router router, List<Queue<Frame>> frameQueues)
     {
         if(commandQueue==null) {
             throw new NullPointerException(
@@ -43,14 +44,17 @@ public class ShowRunner implements Runnable {
         } else if(router==null) {
             throw new NullPointerException(
                 "ShowRunner requires a Router to send commands to scene elements.");
-        } else if(frameQueue==null) {
+        } else if(frameQueues==null) {
             throw new NullPointerException(
-                "ShowRunner requires a queue that supplies frames.");
+                "ShowRunner requires a list of queues for supplying frames to outputs.");
+        } else if(frameQueues.size()==0) {
+            throw new IllegalArgumentException(
+                "ShowRunner requires at least one queue for supplying frames to outputs.");
         }
         this.commandQueue = commandQueue;
         this.mixer = mixer;
         this.router = router;
-        this.frameQueue = frameQueue;
+        this.frameQueues = frameQueues;
     }
 
     public void run() {
@@ -59,7 +63,7 @@ public class ShowRunner implements Runnable {
             TimePoint timePoint = new TimePoint();
             boolean sleepy=false;
             int droppedFrameCount = -1;
-            final int droppedFrameLogInterval = 500;
+            final int droppedFrameLogInterval = 1001;
 
             this.log("Starting show.");
 
@@ -105,25 +109,35 @@ public class ShowRunner implements Runnable {
 
                     this.mixer.animate(timePoint);
 
-                    // FIXME clarify ownership of pixels.. render() isn't quite threadsafe yet.
+                    // TODO clarify ownership of pixels.. render() isn't quite threadsafe yet.
+                    // The transmitters MUST NOT modify pixels[] or their contents.
+                    // FIXME Should make an ImmutablePixel interface now that multiple transmitters
+                    // are trusted not to write to pixels. Unfortunately Java does not
+                    // support immutable arrays.
                     Pixel[] pixels = this.mixer.render();
-                    // FIXME REF: get this Frame straight from the Mixer?
-                    Frame frame = new Frame(timePoint, pixels);
 
-                    if(!frameQueue.offer(frame)) {
-                        if(droppedFrameCount == -1) {
-                            this.log("Frame queue overflow. Dropped frame " + timePoint);
-                            droppedFrameCount = 1;
-                        } else {
-                            if(droppedFrameCount + 1 >= droppedFrameLogInterval) {
-                                this.log("Frame queue overflow on frame "
-                                    + timePoint + ". Dropped " + droppedFrameCount
-                                    + " frames since the previous message like this.");
-                                droppedFrameCount = 0;
+                    int q=0;
+                    for(Queue<Frame> frameQueue: frameQueues) {
+                        Frame frame = new Frame(timePoint, pixels);
+
+                        if (!frameQueue.offer(frame)) {
+                            if (droppedFrameCount == -1) {
+                                this.log("Frame queue[" + q + "/" + frameQueues.size()
+                                    + "] overflow. Dropped frame " + timePoint);
+                                droppedFrameCount = 1;
                             } else {
-                                ++droppedFrameCount;
+                                if (droppedFrameCount + 1 >= droppedFrameLogInterval) {
+                                    this.log("Frame queue[" + q + "/" + frameQueues.size()
+                                        + "] overflow on frame "
+                                        + timePoint + ". Dropped " + droppedFrameCount
+                                        + " frames since the previous message like this.");
+                                    droppedFrameCount = 0;
+                                } else {
+                                    ++droppedFrameCount;
+                                }
                             }
                         }
+                        q++;
                     }
                 } else if(busyWait) {
                     // duration=10000 gave me 2000-5000 fps in a mix with

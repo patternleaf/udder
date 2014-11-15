@@ -36,7 +36,7 @@ public class OpcTransmitter implements Runnable {
     protected long previousFrameRealTimeMillis = 0;
 
     // TODO reorganize logging levels
-    protected final boolean verbose =false;
+    protected final boolean verbose = false;
     protected final boolean debug = true;
 
     public OpcTransmitter(SocketAddress opcServerAddr,
@@ -63,11 +63,10 @@ public class OpcTransmitter implements Runnable {
             + this.serverHost + ":"+ this.serverPort);
 
         this.socket = new Socket(this.serverHost, this.serverPort);
-        this.log("Connected.");
+        this.log("Connected " + this);
         OutputStream out = socket.getOutputStream();
-        this.log("Got Socket OutputStream.");
         this.dataOutputStream = new DataOutputStream(out);
-        this.log("Got DataOutputStream.");
+        this.log("Got socket DataOutputStream to " + this);
     }
 
     protected void sendBytes(byte[] bytes) throws IOException {
@@ -82,7 +81,7 @@ public class OpcTransmitter implements Runnable {
 
     public void run() {
         try {
-            this.log("Starting OPC transmitter.");
+            this.log("Starting OPC transmitter " + this);
             final Pixel black = new Pixel(0.0f, 0.0f, 0.0f);
             byte[] message = null;
             while(true) {
@@ -155,12 +154,14 @@ public class OpcTransmitter implements Runnable {
                         if(message != null) {
                             this.log("Received no new frame in the past "
                                 + this.maxDelayMillis
-                                + " milliseconds. Retransmitting the previous frame.");
+                                + " milliseconds. Retransmitting the previous frame in "
+                                + this + '.');
                             this.sendBytes(message);
                         } else {
                             this.log("Received no new frame in the past "
                                 + this.maxDelayMillis
-                                + " milliseconds. Awaiting the first frame.");
+                                + " milliseconds. Awaiting the first frame in "
+                                + this + '.');
                         }
                     }
                 } catch(SocketException e) {
@@ -179,7 +180,7 @@ public class OpcTransmitter implements Runnable {
                 }
             }
         } catch(InterruptedException e) {
-            this.log("Stopping OPC transmitter.");
+            this.log("Stopping OPC transmitter " + this);
         }
     }
 
@@ -240,5 +241,9 @@ public class OpcTransmitter implements Runnable {
 
     public void log(String msg) {
         System.out.println(msg);
+    }
+
+    public String toString() {
+        return "OpcTransmitter(" + serverHost + ":" + serverPort + ")";
     }
 }

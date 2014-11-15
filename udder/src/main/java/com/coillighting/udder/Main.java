@@ -80,19 +80,19 @@ public class Main {
         prop.load(new FileInputStream(configPath));
 
         String patchSheetPath = Main.translateSeparators(
-                Main.getMandatoryProperty(prop, configPath, DairyProperties.PATCH_SHEET));
+            Main.getMandatoryProperty(prop, configPath, DairyProperties.PATCH_SHEET));
 
         String udderAddr = Main.getMandatoryProperty(prop, configPath, DairyProperties.UDDER_ADDRESS);
         Integer udderPort = Main.parseInteger(
-                Main.getMandatoryProperty(prop, configPath, DairyProperties.UDDER_PORT));
+            Main.getMandatoryProperty(prop, configPath, DairyProperties.UDDER_PORT));
 
         String opcServer1Addr = Main.getMandatoryProperty(prop, configPath, DairyProperties.OPC_SERVER1_HOST);
         Integer opcServer1Port = Main.parseInteger(
-                Main.getMandatoryProperty(prop, configPath, DairyProperties.OPC_SERVER1_PORT));
+            Main.getMandatoryProperty(prop, configPath, DairyProperties.OPC_SERVER1_PORT));
 
         String opcServer2Addr = prop.getProperty(DairyProperties.OPC_SERVER2_HOST);
         Integer opcServer2Port = Main.parseInteger(
-                prop.getProperty(DairyProperties.OPC_SERVER2_PORT));
+            prop.getProperty(DairyProperties.OPC_SERVER2_PORT));
 
         if(opcServer2Addr == null && opcServer2Port != null) {
             Main.die("If you specify " + DairyProperties.OPC_SERVER2_HOST
@@ -104,28 +104,29 @@ public class Main {
                     + ", you must also provide " + DairyProperties.OPC_SERVER2_HOST + ".");
         }
 
+        ArrayList<SocketAddress> opcServerAddresses = new ArrayList<SocketAddress>(2);
+        opcServerAddresses.add(new SocketAddress(opcServer1Addr, opcServer1Port));
+
+        if(opcServer2Addr != null && opcServer2Port != null) {
+            opcServerAddresses.add(new SocketAddress(opcServer2Addr, opcServer2Port));
+        }
+
         PatchSheet patchSheet = Main.createDevices(patchSheetPath);
-
-        if(layoutPath != null) {
-            String layoutJson = JsonFactory.toJson(
-                Main.createOpcLayoutPointsFromDevices(patchSheet));
-            Main.stringToFile(layoutPath, layoutJson);
-            System.out.println("Dumped OPC JSON layout to " + layoutPath);
-        }
-
-        SocketAddress opcServer2SocketAddr = null;
-        if(opcServer2Addr != null) {
-            opcServer2SocketAddr = new SocketAddress(opcServer2Addr, opcServer2Port);
-        }
-
         Mixer mixer = DairyScene.create(patchSheet.getModelSpaceDevices());
 
         ServicePipeline pipeline = new ServicePipeline(
                 mixer,
                 patchSheet.getDeviceAddressMap(),
                 new SocketAddress(udderAddr, udderPort),
-                new SocketAddress(opcServer1Addr, opcServer1Port),
-                opcServer2SocketAddr);
+                opcServerAddresses);
+
+        if(layoutPath != null) {
+            String layoutJson = JsonFactory.toJson(
+                    Main.createOpcLayoutPointsFromDevices(patchSheet));
+            Main.stringToFile(layoutPath, layoutJson);
+            System.out.println("Dumped OPC JSON layout to " + layoutPath);
+        }
+
         pipeline.start();
     }
 
@@ -301,7 +302,7 @@ class DairyProperties {
     public static final String OPC_SERVER2_HOST = "opcServer2.host";
 
     /** The secondary downstream Open Pixel Control Server listens on this port.
-     * See OPC_SERVER2_ADDRESS for details. Optional. Example: "7891".
+     * See OPC_SERVER2_ADDRESS for details. Optional. Example: "8888".
      */
     public static final String OPC_SERVER2_PORT = "opcServer2.port";
 
