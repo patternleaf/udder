@@ -9,6 +9,7 @@ public class Interpolator {
 
     private double rootModePower;
     private double powerModePower;
+
     protected Random random = null;
 
     public enum Interpolation {
@@ -19,6 +20,12 @@ public class Interpolator {
         this(0.5, 2.5);
     }
 
+    /** Construct a new interpolator with specific exponent parameters
+     * to the easing curves. 0.5 (square root), 2.5 (squared + a little)
+     * are good starting places for transitions on the order of ~5-10 sec,
+     * but (0.20, 5.0) is more extremely nonlinear, to put some excitement
+     * back into slow queues.
+     */
     public Interpolator(double rootModePower, double powerModePower) {
         this.rootModePower = rootModePower;
         this.powerModePower = powerModePower;
@@ -65,5 +72,21 @@ public class Interpolator {
             mode = Interpolator.Interpolation.POWER;
         }
         return mode;
+    }
+
+    public double getRootModePower() {
+        return rootModePower;
+    }
+
+    public void setRootModePower(double rootModePower) {
+        this.rootModePower = rootModePower;
+    }
+
+    public double getPowerModePower() {
+        return powerModePower;
+    }
+
+    public void setPowerModePower(double powerModePower) {
+        this.powerModePower = powerModePower;
     }
 }

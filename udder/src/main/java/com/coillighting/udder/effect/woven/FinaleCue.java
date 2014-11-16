@@ -19,10 +19,10 @@ public class FinaleCue extends CueBase {
 
         // this much for accelerating pulses, saving the rest for the last hurrah
         timeShare = 0.8;
-        approxPulseCount = 12; // keep this an even number for no glitches
+        approxPulseCount = 4; // keep this an even number for no glitches
         alignment = FinaleCue.computeAlignment(approxPulseCount);
         contrast = 0.75; // out of 1.0 max = 100% contrast
-        brightness = 0.75f; // allow some warp and weft to shine through
+        brightness = 0.80f; // allow some warp and weft to shine through
     }
 
     protected static double computeAlignment(int pulseCount) {

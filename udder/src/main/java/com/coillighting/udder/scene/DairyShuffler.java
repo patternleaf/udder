@@ -79,12 +79,17 @@ public class DairyShuffler implements Animator {
                     "A shuffler's woven layer may not also be a shuffled layer.");
             }
         }
-        this.interpolator = new Interpolator();
+
+        // These interpolator curve settings favor a three-way mix
+        // over a one-way mix.
+        // 0.15: fade in quick, linger for a while and fade out quick
+        // 2.5: relatively brighter, more gradual fade in and out in POWER mode
+        this.interpolator = new Interpolator(0.15, 2.5);
         this.mixer = mixer;
         this.wovenLayerIndex = wovenLayerIndex;
         this.shuffleLayerStartIndex = shuffleLayerStartIndex;
         this.shuffleLayerEndIndex = shuffleLayerEndIndex;
-        textureCueDurationMillis = 1000; // TODO: user-adjustable step time, always > 0
+        textureCueDurationMillis = 60000; // TODO: user-adjustable step time, always > 0
         this.reset();
         this.mixer.subscribeAnimator(this);
         off = new Point2D.Double(0.0, 0.0);
@@ -122,16 +127,17 @@ public class DairyShuffler implements Animator {
         if(end < now) {
             // Step forward to the next track in the playlist.
             if(wovenMode) {
-                // Switch to texture mode
+                // Switch from woven to texture mode
                 cueDurationMillis = textureCueDurationMillis;
                 wovenMode = false;
                 wovenLevel = 0.0f;
-                this.setLevelConditionally(wovenLevel, wovenLayerIndex);
+                mixer.getLayer(wovenLayerIndex).setLevel(wovenLevel);
                 incomingLayerIndex = shuffleLayerStartIndex;
+                interpolationModeIncoming = Interpolation.ROOT; // fade in quick, don't leave it black
             } else if(incomingLayerIndex >= shuffleLayerEndIndex + 2) {
                 // Switch to woven mode
                 for(int i=shuffleLayerStartIndex; i<=shuffleLayerEndIndex; i++) {
-                    this.setLevelConditionally(0.0f, i);
+                    this.setTextureLevelConditionally(0.0f, i);
                 }
                 this.reset();
                 // level will be set below on transition into Woven effect
@@ -143,7 +149,7 @@ public class DairyShuffler implements Animator {
 
                 cueDurationMillis = textureCueDurationMillis;
                 // finish fading out the outgoing track if needed:
-                this.setLevelConditionally(0.0f, incomingLayerIndex - 2);
+                this.setTextureLevelConditionally(0.0f, incomingLayerIndex - 2);
                 outgoingLevel = primaryLevel;
                 primaryLevel = incomingLevel;
                 incomingLevel = 0.0f;
@@ -156,7 +162,7 @@ public class DairyShuffler implements Animator {
         if(wovenMode) {
             if(cueStartTimeMillis == now) {
                 wovenLevel = 1.0f;
-                this.setLevelConditionally(wovenLevel, wovenLayerIndex);
+                mixer.getLayer(wovenLayerIndex).setLevel(wovenLevel);
             }
         } else {
             double pct = (double) (now - cueStartTimeMillis) / cueDurationMillis;
@@ -167,26 +173,25 @@ public class DairyShuffler implements Animator {
             // on the existing 2D API and ignore y.
             // FIXME: convert all layer levels to doubles.
             incomingLevel = (float) current.x;
-            this.setLevelConditionally(incomingLevel, li);
+            this.setTextureLevelConditionally(incomingLevel, li);
 
             // primary look (if applicable)
             li -= 1;
             primaryLevel = 1.0f;
-            this.setLevelConditionally(primaryLevel, li);
+            this.setTextureLevelConditionally(primaryLevel, li);
 
             // outgoing look (if applicable)
             li -= 1;
             interpolator.interpolate2D(interpolationModeOutgoing, pct, on, current, off);
             outgoingLevel = (float) current.x;
-            this.setLevelConditionally(outgoingLevel, li);
+            this.setTextureLevelConditionally(outgoingLevel, li);
         }
 
     }
 
-    private final void setLevelConditionally(float level, int layerIndex) {
-        if(layerIndex == wovenLayerIndex
-                || (layerIndex >= shuffleLayerStartIndex
-                    && layerIndex <= shuffleLayerEndIndex)) {
+    private void setTextureLevelConditionally(float level, int layerIndex) {
+        if(layerIndex >= shuffleLayerStartIndex
+                && layerIndex <= shuffleLayerEndIndex) {
             mixer.getLayer(layerIndex).setLevel(level);
         }
     }

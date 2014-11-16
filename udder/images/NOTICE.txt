@@ -1,0 +1,19 @@
+Images by Mike Bissell - http://www.coil-lighting.com
+Generated in Resolume Arena using Coil's custom FFGL plugins.
+
+These images are released under the same license as the Udder server software:
+
+    https://github.com/coil-lighting/udder
+
+
+...and this license gives you many rights to use them. The fine print:
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+
+But don't be a jerk: if you use these images, please give credit where credit is
+due.
+
+Also, don't forget that you must distributed the license to recipients of this 
+work or derivative works. See the license text for details.
+
