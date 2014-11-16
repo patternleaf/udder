@@ -25,7 +25,10 @@ public class Interpolator {
         random = new Random();
     }
 
-    public void interpolate(Interpolation mode,
+    /** Reads, but does not write, start and target points.
+     * Writes, but does not read, current point.
+     */
+    public void interpolate2D(Interpolation mode,
                             double pct,
                             Point2D.Double start,
                             Point2D.Double current,

@@ -240,7 +240,7 @@ public class TextureEffect extends EffectBase {
         // not as simple as subtracting y from 1.0 here:
 
         Interpolation mode = interpolations[corner];
-        interpolator.interpolate(mode, pct, pts.start, pts.current, pts.target);
+        interpolator.interpolate2D(mode, pct, pts.start, pts.current, pts.target);
     }
 
     private void animateCorner(int corner, long now,
