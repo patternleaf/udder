@@ -49,6 +49,7 @@ public abstract class DairyScene {
         Layer woven = new Layer("Woven", new WovenEffect());
         woven.setBlendOp(max);
         layers.add(woven);
+        int wovenLayerIndex = 1;
 
         // Currently layers 3-19 are all sequenced textures.
         // They are sorted so that any two to four adjacent
@@ -122,6 +123,10 @@ public abstract class DairyScene {
         System.out.println(mixer.getDescription());
         System.out.println("Shuffled sequence start layer: "
                 + sequenceStartIndex + " end layer: " + sequenceEndIndex);
+
+        // This shuffler will subscribe itself to the mixer, which therefore
+        // retains a reference. The shuffler retains a backref to the mixer.
+        new DairyShuffler(mixer, wovenLayerIndex, sequenceStartIndex, sequenceEndIndex);
 
         return mixer;
     }

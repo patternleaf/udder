@@ -39,8 +39,8 @@ public abstract class MixableBase implements Mixable {
             level = 1.0f;
         }
         float old = this.level;
-        this.level=level;
         if(old != level) {
+            this.level=level;
             this.notifyLevelChanged(old, level);
         }
     }
