@@ -23,9 +23,24 @@ public class Mixer extends MixableBase implements Mixable, Iterable<Mixable> {
     protected Pixel[] pixels; // the developing frame
     protected int deviceCount = 0;
 
+    /** Additional objects may sign up to be animated in synch with the layers.
+     * They are always animated before the layers, in the order in which they
+     * subscribed. It is permissible for a subscriber to manipulate this Mixer
+     * as long as it keeps its hands off the list of subscribers. For example,
+     * a shuffle mode subscriber might randomly turn up some layers and
+     * turn down others, or an LFO subscriber might periodically fade up and
+     * down the mixer's master level.
+     */
+    protected List<Animator> subscribers;
+
     public Mixer(Collection<Mixable> layers) {
         this.layers = new ArrayList<Mixable>(layers);
         this.setBlendOp(new MaxBlendOp());
+        this.subscribers = new ArrayList<Animator>();
+    }
+
+    public void subscribeAnimator(Animator a) {
+        subscribers.add(a);
     }
 
     public Class getStateClass() {
@@ -62,6 +77,9 @@ public class Mixer extends MixableBase implements Mixable, Iterable<Mixable> {
      *  state as Pixels.
      */
     public void animate(TimePoint timePoint) {
+        for(Animator a: subscribers) {
+            a.animate(timePoint);
+        }
         for(Mixable layer : this) {
             layer.animate(timePoint);
         }

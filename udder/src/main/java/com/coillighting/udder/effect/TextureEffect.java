@@ -8,12 +8,14 @@ import java.util.List;
 import java.util.Random;
 import javax.imageio.ImageIO;
 
-import com.coillighting.udder.Util;
 import com.coillighting.udder.geometry.BoundingCube;
 import com.coillighting.udder.geometry.ControlQuad;
+import com.coillighting.udder.geometry.Interpolator;
 import com.coillighting.udder.mix.TimePoint;
 import com.coillighting.udder.model.Device;
 import com.coillighting.udder.model.Pixel;
+
+import static com.coillighting.udder.geometry.Interpolator.Interpolation;
 
 
 /** Stretch and squeeze a raster image over the pointcloud representing the
@@ -24,10 +26,7 @@ import com.coillighting.udder.model.Pixel;
  */
 public class TextureEffect extends EffectBase {
 
-    protected enum Interpolation {
-        LINEAR, SINUSOIDAL, ROOT, POWER
-    }
-
+    protected Interpolator interpolator = null;
     protected Random random = null;
 
     protected String filename = null;
@@ -58,15 +57,18 @@ public class TextureEffect extends EffectBase {
     public TextureEffect(String filename) {
         this.filename = filename;
         random = new Random();
+        interpolator = new Interpolator();
         controlQuadManual = new ControlQuad();
         controlQuadAutomaticStart = new ControlQuad();
         controlQuadAutomaticCurrent = new ControlQuad();
         controlQuadAutomaticTarget = new ControlQuad();
         transitTimesMillis = new long[4][2]; // defaults to 0s per java lang spec
-        interpolations = new Interpolation[] { Interpolation.SINUSOIDAL,
-                                               Interpolation.SINUSOIDAL,
-                                               Interpolation.SINUSOIDAL,
-                                               Interpolation.SINUSOIDAL };
+        interpolations = new Interpolation[] {
+            Interpolation.SINUSOIDAL,
+            Interpolation.SINUSOIDAL,
+            Interpolation.SINUSOIDAL,
+            Interpolation.SINUSOIDAL
+        };
 
         // Initialize temps
         p = Pixel.black();
@@ -215,18 +217,7 @@ public class TextureEffect extends EffectBase {
     }
 
     private void randomizeInterpolationMode(int corner) {
-        Interpolation mode;
-        int r = random.nextInt(100);
-        if(r < 10) {
-            mode = Interpolation.LINEAR;
-        } else if(r < 50) {
-            mode = Interpolation.SINUSOIDAL;
-        } else if(r < 80) {
-            mode = Interpolation.ROOT;
-        } else {
-            mode = Interpolation.POWER;
-        }
-        interpolations[corner] = mode;
+        interpolations[corner] = interpolator.randomMode(10, 50, 80);
     }
 
     private void advance(int corner, long now) {
@@ -249,21 +240,7 @@ public class TextureEffect extends EffectBase {
         // not as simple as subtracting y from 1.0 here:
 
         Interpolation mode = interpolations[corner];
-        if(mode == Interpolation.LINEAR) {
-            pts.current.x = Util.crossfadeLinear(pct, pts.start.x, pts.target.x);
-            pts.current.y = Util.crossfadeLinear(pct, pts.start.y, pts.target.y);
-        } else if(mode == Interpolation.SINUSOIDAL) {
-            pts.current.x = Util.crossfadeSinusoidal(pct, pts.start.x, pts.target.x);
-            pts.current.y = Util.crossfadeSinusoidal(pct, pts.start.y, pts.target.y);
-        } else if(mode == Interpolation.ROOT) {
-            pts.current.x = Util.crossfadeExponential(pct, 0.5, pts.start.x, pts.target.x);
-            pts.current.y = Util.crossfadeExponential(pct, 0.5, pts.start.y, pts.target.y);
-        } else if(mode == Interpolation.POWER) {
-            pts.current.x = Util.crossfadeExponential(pct, 2.5, pts.start.x, pts.target.x);
-            pts.current.y = Util.crossfadeExponential(pct, 2.5, pts.start.y, pts.target.y);
-        } else {
-            throw new IllegalArgumentException("Unsupported interpolation (todo)" + interpolations[corner]);
-        }
+        interpolator.interpolate(mode, pct, pts.start, pts.current, pts.target);
     }
 
     private void animateCorner(int corner, long now,
