@@ -1,5 +1,7 @@
 package com.coillighting.udder.mix;
 
+import com.coillighting.udder.infrastructure.Stateful;
+
 public interface Animator {
 
     /** Draw this animator's subscene and/or update its internal state given the

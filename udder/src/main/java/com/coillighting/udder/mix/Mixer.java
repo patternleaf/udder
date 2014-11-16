@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.coillighting.udder.blend.MaxBlendOp;
+import com.coillighting.udder.infrastructure.Stateful;
 import com.coillighting.udder.model.Device;
 import com.coillighting.udder.model.Pixel;
 
@@ -31,15 +32,16 @@ public class Mixer extends MixableBase implements Mixable, Iterable<Mixable> {
      * turn down others, or an LFO subscriber might periodically fade up and
      * down the mixer's master level.
      */
-    protected List<Animator> subscribers;
+    protected List<StatefulAnimator> subscribers;
 
     public Mixer(Collection<Mixable> layers) {
+
         this.layers = new ArrayList<Mixable>(layers);
         this.setBlendOp(new MaxBlendOp());
-        this.subscribers = new ArrayList<Animator>();
+        this.subscribers = new ArrayList<StatefulAnimator>();
     }
 
-    public void subscribeAnimator(Animator a) {
+    public void subscribeAnimator(StatefulAnimator a) {
         subscribers.add(a);
     }
 
@@ -137,5 +139,9 @@ public class Mixer extends MixableBase implements Mixable, Iterable<Mixable> {
 
     /** A Mixer doesn't currently care when its parent Mixer's level changes. */
     public void levelChanged(float oldLevel, float newLevel) {}
+
+    public List<StatefulAnimator> getSubscribers() {
+        return subscribers;
+    }
 
 }

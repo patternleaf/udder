@@ -8,18 +8,20 @@ import com.coillighting.udder.mix.Layer;
 import com.coillighting.udder.mix.Mixable;
 import com.coillighting.udder.mix.Mixer;
 
+import javax.swing.plaf.nimbus.State;
+
 /** Route command names (ordinarily derives from HTTP request URLs) to their
  *  consumers in a Mixer tree.
  */
 public class Router {
 
-    protected HashMap<String, Effect> routes = null;
+    protected HashMap<String, Stateful> routes = null;
 
     public Router() {
-        this.routes = new HashMap<String, Effect>();
+        this.routes = new HashMap<String, Stateful>();
     }
 
-    public Effect get(String path) {
+    public Stateful get(String path) {
         return this.routes.get(path);
     }
 
@@ -48,6 +50,13 @@ public class Router {
                 }
             }
         }
+
+        int j=0;
+        for(Stateful subscriber: mixer.getSubscribers()) {
+            String subscriberKey = mixerKey + "/subscriber" + j;
+            routes.put(subscriberKey, subscriber);
+            j++;
+        }
     }
 
     /** Router.routes contains non-threadsafe direct references to Mixers and
@@ -61,8 +70,8 @@ public class Router {
     public Map<String, Class> getCommandMap() {
         Map<String, Class> commandMap = new HashMap<String, Class>();
 
-        for(Map.Entry<String, Effect> entry : this.routes.entrySet()) {
-            Effect v = entry.getValue();
+        for(Map.Entry<String, Stateful> entry : this.routes.entrySet()) {
+            Stateful v = entry.getValue();
             Class stateClass = v.getStateClass();
             if(stateClass == null) {
                 throw new NullPointerException("Null stateClass from " + v);

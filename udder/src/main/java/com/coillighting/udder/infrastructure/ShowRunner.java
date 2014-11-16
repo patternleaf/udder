@@ -79,7 +79,7 @@ public class ShowRunner implements Runnable {
 
                         // TODO - add routes for timer
                         String path = command.getPath();
-                        Effect dest = this.router.get(path);
+                        Stateful dest = this.router.get(path);
                         // TODO check for null dest
                         try {
                             dest.setState(command.getValue());

@@ -2,7 +2,7 @@ package com.coillighting.udder.scene;
 
 import com.coillighting.udder.effect.woven.WovenEffect;
 import com.coillighting.udder.geometry.Interpolator;
-import com.coillighting.udder.mix.Animator;
+import com.coillighting.udder.mix.StatefulAnimator;
 import com.coillighting.udder.mix.Layer;
 import com.coillighting.udder.mix.Mixer;
 import com.coillighting.udder.mix.TimePoint;
@@ -22,7 +22,7 @@ import static com.coillighting.udder.geometry.Interpolator.Interpolation;
  * the outgoing look have their own easing curves, randomly selected from
  * the available modes.
  */
-public class DairyShuffler implements Animator {
+public class DairyShuffler implements StatefulAnimator {
 
     protected Mixer mixer;
     protected Interpolator interpolator;
@@ -35,6 +35,7 @@ public class DairyShuffler implements Animator {
     long wovenCueDurationMillis;
     long cueDurationMillis;
 
+    boolean enabled;
     boolean wovenMode;
     protected Interpolation interpolationModeIncoming;
     protected Interpolation interpolationModeOutgoing;
@@ -91,10 +92,11 @@ public class DairyShuffler implements Animator {
         this.shuffleLayerEndIndex = shuffleLayerEndIndex;
         textureCueDurationMillis = 60000; // TODO: user-adjustable step time, always > 0
         this.reset();
-        this.mixer.subscribeAnimator(this);
         off = new Point2D.Double(0.0, 0.0);
         current = new Point2D.Double(0.0, 0.0);
         on = new Point2D.Double(1.0, 1.0);
+        enabled = true;
+        this.mixer.subscribeAnimator(this);
     }
 
     public void reset() throws ClassCastException {
@@ -118,81 +120,99 @@ public class DairyShuffler implements Animator {
     // so human operators can play around with transient looks,
     // like woven + textures
     public void animate(TimePoint timePoint) {
-        // Step forward or rewind and start over if needed.
-        long now = timePoint.sceneTimeMillis();
-        if(cueStartTimeMillis < 0) {
-            cueStartTimeMillis = now;
-        }
-        long end = cueStartTimeMillis + cueDurationMillis;
-        if(end < now) {
-            // Step forward to the next track in the playlist.
-            if(wovenMode) {
-                // Switch from woven to texture mode
-                cueDurationMillis = textureCueDurationMillis;
-                wovenMode = false;
-                wovenLevel = 0.0f;
-                mixer.getLayer(wovenLayerIndex).setLevel(wovenLevel);
-                incomingLayerIndex = shuffleLayerStartIndex;
-                interpolationModeIncoming = Interpolation.ROOT; // fade in quick, don't leave it black
-            } else if(incomingLayerIndex >= shuffleLayerEndIndex + 2) {
-                // Switch to woven mode
-                for(int i=shuffleLayerStartIndex; i<=shuffleLayerEndIndex; i++) {
-                    this.setTextureLevelConditionally(0.0f, i);
+        if(enabled) {
+            // Step forward or rewind and start over if needed.
+            long now = timePoint.sceneTimeMillis();
+            if (cueStartTimeMillis < 0) {
+                cueStartTimeMillis = now;
+            }
+            long end = cueStartTimeMillis + cueDurationMillis;
+            if (end < now) {
+                // Step forward to the next track in the playlist.
+                if (wovenMode) {
+                    // Switch from woven to texture mode
+                    cueDurationMillis = textureCueDurationMillis;
+                    wovenMode = false;
+                    wovenLevel = 0.0f;
+                    mixer.getLayer(wovenLayerIndex).setLevel(wovenLevel);
+                    incomingLayerIndex = shuffleLayerStartIndex;
+                    interpolationModeIncoming = Interpolation.ROOT; // fade in quick, don't leave it black
+                } else if (incomingLayerIndex >= shuffleLayerEndIndex + 2) {
+                    // Switch to woven mode
+                    for (int i = shuffleLayerStartIndex; i <= shuffleLayerEndIndex; i++) {
+                        this.setTextureLevelConditionally(0.0f, i);
+                    }
+                    this.reset();
+                    // level will be set below on transition into Woven effect
+                } else {
+                    // Start fading in the next texture.
+                    // Choose a new easing curve each time.
+                    interpolationModeIncoming = interpolator.randomMode(10, 40, 70);
+                    interpolationModeOutgoing = interpolator.randomMode(10, 40, 70);
+
+                    cueDurationMillis = textureCueDurationMillis;
+                    // finish fading out the outgoing track if needed:
+                    this.setTextureLevelConditionally(0.0f, incomingLayerIndex - 2);
+                    outgoingLevel = primaryLevel;
+                    primaryLevel = incomingLevel;
+                    incomingLevel = 0.0f;
+                    incomingLayerIndex++;
                 }
-                this.reset();
-                // level will be set below on transition into Woven effect
+                cueStartTimeMillis = now;
+                end = cueStartTimeMillis + cueDurationMillis;
+            }
+
+            if (wovenMode) {
+                if (cueStartTimeMillis == now) {
+                    wovenLevel = 1.0f;
+                    mixer.getLayer(wovenLayerIndex).setLevel(wovenLevel);
+                }
             } else {
-                // Start fading in the next texture.
-                // Choose a new easing curve each time.
-                interpolationModeIncoming = interpolator.randomMode(10, 40, 70);
-                interpolationModeOutgoing = interpolator.randomMode(10, 40, 70);
+                double pct = (double) (now - cueStartTimeMillis) / cueDurationMillis;
+                // incoming look (if applicable)
+                int li = incomingLayerIndex;
+                interpolator.interpolate2D(interpolationModeIncoming, pct, off, current, on);
+                // FUTURE: implement a 1D Interpolator API, for now just piggyback
+                // on the existing 2D API and ignore y.
+                // FIXME: convert all layer levels to doubles.
+                incomingLevel = (float) current.x;
+                this.setTextureLevelConditionally(incomingLevel, li);
 
-                cueDurationMillis = textureCueDurationMillis;
-                // finish fading out the outgoing track if needed:
-                this.setTextureLevelConditionally(0.0f, incomingLayerIndex - 2);
-                outgoingLevel = primaryLevel;
-                primaryLevel = incomingLevel;
-                incomingLevel = 0.0f;
-                incomingLayerIndex++;
+                // primary look (if applicable)
+                li -= 1;
+                primaryLevel = 1.0f;
+                this.setTextureLevelConditionally(primaryLevel, li);
+
+                // outgoing look (if applicable)
+                li -= 1;
+                interpolator.interpolate2D(interpolationModeOutgoing, pct, on, current, off);
+                outgoingLevel = (float) current.x;
+                this.setTextureLevelConditionally(outgoingLevel, li);
             }
-            cueStartTimeMillis = now;
-            end = cueStartTimeMillis + cueDurationMillis;
         }
-
-        if(wovenMode) {
-            if(cueStartTimeMillis == now) {
-                wovenLevel = 1.0f;
-                mixer.getLayer(wovenLayerIndex).setLevel(wovenLevel);
-            }
-        } else {
-            double pct = (double) (now - cueStartTimeMillis) / cueDurationMillis;
-            // incoming look (if applicable)
-            int li = incomingLayerIndex;
-            interpolator.interpolate2D(interpolationModeIncoming, pct, off, current, on);
-            // FUTURE: implement a 1D Interpolator API, for now just piggyback
-            // on the existing 2D API and ignore y.
-            // FIXME: convert all layer levels to doubles.
-            incomingLevel = (float) current.x;
-            this.setTextureLevelConditionally(incomingLevel, li);
-
-            // primary look (if applicable)
-            li -= 1;
-            primaryLevel = 1.0f;
-            this.setTextureLevelConditionally(primaryLevel, li);
-
-            // outgoing look (if applicable)
-            li -= 1;
-            interpolator.interpolate2D(interpolationModeOutgoing, pct, on, current, off);
-            outgoingLevel = (float) current.x;
-            this.setTextureLevelConditionally(outgoingLevel, li);
-        }
-
     }
 
     private void setTextureLevelConditionally(float level, int layerIndex) {
         if(layerIndex >= shuffleLayerStartIndex
                 && layerIndex <= shuffleLayerEndIndex) {
             mixer.getLayer(layerIndex).setLevel(level);
+        }
+    }
+
+    public Class getStateClass() {
+        return DairyShufflerState.class;
+    }
+
+    public Object getState() {
+        return new DairyShufflerState(enabled, textureCueDurationMillis);
+    }
+
+    public void setState(Object state) throws ClassCastException {
+        DairyShufflerState command = (DairyShufflerState) state;
+        this.enabled = command.getEnabled();
+        long millis = command.getCueDurationMillis();
+        if(millis > 0) {
+            this.textureCueDurationMillis = millis;
         }
     }
 

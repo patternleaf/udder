@@ -34,10 +34,10 @@ public class WovenEffect extends EffectBase {
         cues = new LinkedHashMap<CueEnum, Cue>();
         frame = new WovenFrame();
 
-        int speedup = 3; // for rapid debugging, set > 1
+        int speedup = 1; // for rapid debugging, set > 1
 
-        cues.put(BLACKOUT, new BlackoutCue(4000 / speedup, frame));
-        cues.put(CURTAIN, new CurtainCue(4000 / speedup, frame));
+        cues.put(BLACKOUT, new BlackoutCue(3000 / speedup, frame));
+        cues.put(CURTAIN, new CurtainCue(6000 / speedup, frame));
         cues.put(WARP, new WarpCue(30000 / speedup, frame,
                 new Pixel(0.35f, 0.0f, 1.0f)));
         cues.put(WEFT, new WeftCue(30000 / speedup, frame,
