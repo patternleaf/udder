@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+echo "Turning all pixels on full so you have some light to work by."
+echo "Don't forget to turn this off with worklight_off.sh."
+curl -X POST -d @json/level_full.json http://localhost:8080/mixer0/layer0
+curl -X POST -d @json/white_worklight.json http://localhost:8080/mixer0/layer0/effect

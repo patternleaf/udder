@@ -15,12 +15,15 @@ import org.simpleframework.http.Status;
 
 import com.coillighting.udder.Util;
 
+import static org.boon.Exceptions.SoftenedException;
+
 /** The HTTP controller for Udder's Simple-brand webserver.
  *  Receives requests, translates them into commands, and responds as needed.
  */
 public class HttpServiceContainer implements Container {
 
-    protected boolean verbose = true;
+    protected boolean verbose = true; // log errors
+    protected boolean debug = false; // log successful POSTs and our response
     protected Queue<Command> queue; // feed requests to this queue
     protected Map<String, Class> commandMap; // translate JSON to command object
     protected int requestIndex = 0; // Count requests to assist debugging (for now)
@@ -72,9 +75,9 @@ public class HttpServiceContainer implements Container {
             throws UnsupportedEncodingException,
             RoutingException,
             CommandParserException,
-            ClassCastException // often a Boon JSON parser exception in disguise
+            SoftenedException, // generic wrapper for a boon JSON parser exception
+            ClassCastException // sometimes a Boon JSON parser exception in disguise
     {
-        Command command;
         Query query = request.getQuery();
         Path path = request.getPath();
         String route = path.toString();
@@ -100,7 +103,7 @@ public class HttpServiceContainer implements Container {
                     if (state == null) {
                         throw new CommandParserException(
                                 "Failed to deserialize a JSON command of length "
-                                        + json.length() + " for path " + route);
+                                        + json.length() + " for " + route);
 
                     } else if (state.getClass() == stateClass) {
                         return new Command(route, state);
@@ -108,7 +111,7 @@ public class HttpServiceContainer implements Container {
                     } else {
                         throw new CommandParserException(
                                 "Failed to convert a command of length "
-                                        + json.length() + " for path " + route + " into a "
+                                        + json.length() + " for " + route + " into a "
                                         + stateClass.getSimpleName() + ".");
                     }
                 }
@@ -122,8 +125,6 @@ public class HttpServiceContainer implements Container {
      * http://www.simpleframework.org/doc/tutorial/tutorial.php
      */
     public void handle(Request request, Response response) {
-        // To see what is happening to your requests:
-        //     this.log(this.formatRequest(request));
         try {
             String method = request.getMethod();
             if(method.equals("POST") || method.equals("PUT")) {
@@ -175,13 +176,13 @@ public class HttpServiceContainer implements Container {
                 if(accepted) {
                     response.setStatus(Status.OK);
                     responseBody = "OK " + index;
-                    if(this.verbose) this.log(responseBody);
+                    if(this.debug) this.log(command.toString() + ' ' + responseBody);
                 } else {
                     // For some reason, Status doesn't know about RFC 6585.
                     response.setCode(429);
                     response.setDescription("Too Many Requests");
                     responseBody = "DROPPED " + index;
-                    if(this.verbose) this.log("Request " + index + " dropped. No room in queue.");
+                    if(this.debug) this.log("Request " + index + " for " + command + " dropped. No room in queue.");
                 }
             }
 
@@ -194,10 +195,10 @@ public class HttpServiceContainer implements Container {
         } catch (UnsupportedEncodingException e) {
             response.setStatus(Status.BAD_REQUEST);
             responseBody = "UNSUPPORTED_ENCODING " + index;
-            if(this.verbose) this.log(e.getMessage());
+            if(this.verbose) this.log("Unsupported character encoding in request " + index + ": " + e);
 
         } catch (ClassCastException e) {
-            this.log("Error (malformed JSON?) in request " + index + ": " + e.toString());
+            this.log("Error (malformed JSON?) in request " + index + ": " + e);
 
             // Save you hours of misguided debugging by explaining this error.
             // Example of an incomprehensible parser error, with no real indication
@@ -211,10 +212,15 @@ public class HttpServiceContainer implements Container {
             response.setStatus(Status.BAD_REQUEST);
             responseBody = "PARSE_CAST_ERROR " + index;
 
+        } catch(SoftenedException e) {
+            response.setStatus(Status.BAD_REQUEST);
+            responseBody = "PARSE_ERROR " + index;
+            if(this.verbose) this.log("Boon failed to parse a valid command from request " + index + ": " + e);
+
         } catch(CommandParserException e) {
             response.setStatus(Status.BAD_REQUEST);
             responseBody = "PARSE_ERROR " + index;
-            if(this.verbose) this.log("Failed to parse a valid command from request " + index);
+            if(this.verbose) this.log("Failed to parse a valid command from request " + index + ": " + e);
 
         } catch(Exception e) {
             response.setStatus(Status.BAD_REQUEST);
@@ -255,7 +261,6 @@ public class HttpServiceContainer implements Container {
     public void log(Object message) {
         System.out.println(message);
     }
-
 }
 
 

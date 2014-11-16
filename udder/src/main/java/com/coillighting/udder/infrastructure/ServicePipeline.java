@@ -87,7 +87,7 @@ public class ServicePipeline {
         this.httpServiceContainer = new HttpServiceContainer(
             this.commandQueue,
             this.router.getCommandMap());
-        this.httpServiceContainer.setVerbose(this.verbose);
+        this.httpServiceContainer.setVerbose(this.verbose || this.httpServiceContainer.getVerbose());
 
         this.server = new ContainerServer(this.httpServiceContainer);
         this.serverConnection = new SocketConnection(this.server);

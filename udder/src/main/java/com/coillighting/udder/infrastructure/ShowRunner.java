@@ -74,13 +74,8 @@ public class ShowRunner implements Runnable {
                 if(command != null || !sleepy) {
                     sleepy = true;
                     if(command != null) {
-                        this.log(command); //TEMP
-                        // this.log("           value: " + command.getValue()); //TEMP
-
-                        // TODO - add routes for timer
                         String path = command.getPath();
                         Stateful dest = this.router.get(path);
-                        // TODO check for null dest
                         try {
                             dest.setState(command.getValue());
                         } catch(Exception e) {

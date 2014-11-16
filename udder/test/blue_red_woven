@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+curl -X POST -d @json/level_full.json http://localhost:8080/mixer0/layer1
+curl -X POST -d @json/blue_red_woven.json http://localhost:8080/mixer0/layer1/effect

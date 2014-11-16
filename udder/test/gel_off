@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+echo "Neutralizing gel and switching off its layer."
+curl -X POST -d @json/level_off.json http://localhost:8080/mixer0/layer22
+curl -X POST -d @json/neutral_gel.json http://localhost:8080/mixer0/layer22/effect

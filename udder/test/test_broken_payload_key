@@ -1,0 +1,2 @@
+#!/usr/bin/env sh
+curl -i -X POST -d @json/broken_payload_key.json http://localhost:8080/mixer0/layer19/effect
