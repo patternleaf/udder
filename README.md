@@ -23,7 +23,7 @@ Udder Service Architecture in a Nutshell
 
 The class com.coillighting.udder.ServicePipeline assembles the application components into a webserver capable of driving OPC RGB pixel lighting instruments. The coarse grained pipeline has three stages, with network IO:
 
-Network => HttpServiceContainer => ShowRunner => OpcTransmitter(s) => Network
+Network => HttpServiceContainer => ShowRunner => OpcTransmitter(s) => Network => Lights
 
 Details:
 * A human **lighting designer** initiates HTTP **requests** from a web page in a browser.
