@@ -21,11 +21,10 @@ public class WeftCue extends CueBase {
 
     protected BlendOp blendOp = null;
 
-    public WeftCue(long duration, WovenFrame frame) {
+    public WeftCue(long duration, WovenFrame frame, Pixel threadColor) {
         super(duration, frame);
 
-        // TODO variable colors
-        this.threadColor = new Pixel(1.0f, 0.0f, 0.0f);
+        this.threadColor = new Pixel(threadColor);
         this.cursorColor = Pixel.white();
         this.backgroundColor = Pixel.black();
         this.blendOp = new MaxBlendOp();
@@ -102,6 +101,14 @@ public class WeftCue extends CueBase {
                 frame.weft[weftX][weftY].setColor(color);
             }
         }
+    }
+
+    public Pixel getThreadColor() {
+        return threadColor;
+    }
+
+    public void setThreadColor(Pixel threadColor) {
+        this.threadColor = threadColor;
     }
 
 }

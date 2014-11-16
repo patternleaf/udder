@@ -1,0 +1,4 @@
+state={
+    "warpThreadColor": {"r": 0.20, "g": 0.0, "b": 1.0},
+    "weftThreadColor": {"r": 0.10, "g": 0.7, "b": 0.20}
+}

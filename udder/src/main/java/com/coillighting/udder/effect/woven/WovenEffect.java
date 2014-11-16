@@ -34,15 +34,17 @@ public class WovenEffect extends EffectBase {
         cues = new LinkedHashMap<CueEnum, Cue>();
         frame = new WovenFrame();
 
-        int speedup = 1; // for rapid debugging, set > 1
+        int speedup = 3; // for rapid debugging, set > 1
 
         cues.put(BLACKOUT, new BlackoutCue(4000 / speedup, frame));
         cues.put(CURTAIN, new CurtainCue(4000 / speedup, frame));
-
-        cues.put(WARP, new WarpCue(30000 / speedup, frame));
-        cues.put(WEFT, new WeftCue(30000 / speedup, frame));
+        cues.put(WARP, new WarpCue(30000 / speedup, frame,
+                new Pixel(0.35f, 0.0f, 1.0f)));
+        cues.put(WEFT, new WeftCue(30000 / speedup, frame,
+                new Pixel(1.0f, 0.66f, 0.0f)));
         cues.put(FINALE, new FinaleCue(15000 / speedup, frame));
         cues.put(FADEOUT, new FadeOutCue(10000 / speedup, frame));
+
         this.reset();
     }
 
@@ -110,15 +112,25 @@ public class WovenEffect extends EffectBase {
     }
 
     public Class getStateClass() {
-        return Object.class; // TODO
+        return WovenEffectState.class;
     }
 
     public Object getState() {
-        return null; // TODO
+        return new WovenEffectState(
+                ((WarpCue) cues.get(WARP)).getThreadColor(),
+                ((WeftCue) cues.get(WEFT)).getThreadColor());
     }
 
     public void setState(Object state) throws ClassCastException {
-        // TODO
+        WovenEffectState command = (WovenEffectState) state;
+        Pixel warp = command.getWarpThreadColor();
+        if(warp != null) {
+            ((WarpCue) cues.get(WARP)).setThreadColor(warp);
+        }
+        Pixel weft = command.getWeftThreadColor();
+        if(weft != null) {
+            ((WeftCue) cues.get(WEFT)).setThreadColor(weft);
+        }
     }
 
     protected void log(Object msg) {

@@ -12,10 +12,8 @@ import com.coillighting.udder.blend.BlendOp;
  */
 public class Pixel {
 
-    /** These are public for fast, direct access. Use with caution.
-     *  TODO: just make 'em protected?
-     */
-    // FIXME the json mapper is not using the standard constructor for these.
+    // FIXME I think the json mapper is not using the standard constructor for these!
+    /** These are public for fast, direct access.*/
     public float r=0.0f;
     public float g=0.0f;
     public float b=0.0f;

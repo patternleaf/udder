@@ -20,11 +20,12 @@ public class WarpCue extends CueBase {
 
     protected BlendOp blendOp = null;
 
-    public WarpCue(long duration, WovenFrame frame) {
+    public WarpCue(long duration, WovenFrame frame, Pixel threadColor) {
         super(duration, frame);
 
         // TODO variable colors
-        this.threadColor = new Pixel(0.0f, 0.0f, 1.0f);
+        this.threadColor = new Pixel(threadColor);
+
         this.cursorColor = Pixel.white();
         this.backgroundColor = Pixel.black();
         this.blendOp = new MaxBlendOp();
@@ -97,4 +98,11 @@ public class WarpCue extends CueBase {
         }
     }
 
+    public Pixel getThreadColor() {
+        return threadColor;
+    }
+
+    public void setThreadColor(Pixel threadColor) {
+        this.threadColor = threadColor;
+    }
 }
