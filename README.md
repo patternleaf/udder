@@ -118,7 +118,7 @@ Wishlist
 * OSC input for Effect modulation.
 * OSC output.
 * MIDI and OSC Motorboard / LEDboard control for Mixer trees (not easy to be generic, but there is a reference impl in LD50).
-* Bspline, NURBS, and Catmull-Rom spline signal generators, envelopes, and corssfaders (easy port from LD50).
+* Bspline, NURBS, and Catmull-Rom spline signal generators, envelopes, and crossfaders (easy port from LD50).
 * A self-assembling web UI for Mixer control and Effect modulation.
 
 
