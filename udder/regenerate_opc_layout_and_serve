@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
 # If the gl server segfaults, it probably just can't find the conf file.
 rm conf/opc_layout.json
-java -cp "dist/udder-0.4.jar" com.coillighting.udder.Main conf/dairy.properties conf/opc_layout.json 
-
+java -cp "dist/udder-0.4.jar" com.coillighting.udder.Main conf/dairy.properties conf/opc_layout.json
