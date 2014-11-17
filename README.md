@@ -9,7 +9,7 @@ Getting Started
 
 You need to install JDK 1.7+ and Maven 3.2.3+.
 
-To help bootstrap development, this repository currently comes with a copy of Maven 3.2.3 plus several jars required by the application. Eventually these resources will disappear. If you've already installed the JDK and Maven on your devbox, you don't have to use them. Mac OS X users may `source env.sh` to get set up rapidly.
+To help bootstrap development, this repository temporarily comes with a copy of Maven 3.2.3 plus several jars required by the application. Eventually these resources will disappear. If you've already installed the JDK and Maven on your devbox, you don't have to use them. Mac OS X users may `source env.sh` to get set up rapidly.
 
 Once Maven and the JDK are installed in your current environment (see `env.sh` for examples), `cd udder` and run either the `build` script or `build_clean`.
 
@@ -97,6 +97,9 @@ Micah Scott's Fade Candy device, the LED pixel driver we use:
 The official API Javadocs for certain "special sauce" coupler components:
 * [java.util.concurrent.ConcurrentLinkedQueue](http://docs.oracle.com/javase/7/docs/api/index.html?java/util/concurrent/ConcurrentLinkedQueue.html)
 * [java.util.concurrent.LinkedBlockingQueue](http://docs.oracle.com/javase/7/docs/api/index.html?java/util/concurrent/LinkedBlockingQueue.html)
+
+Eric Miller's 3D simulator (currently a Chrome extension) and visualizer for the Dairy installation:
+* [Archway - Github](https://github.com/patternleaf/archway)
 
 3rd party libraries are covered by their own licenses (mostly Apache 2.0, MIT, or equivalent). Everything else in this repository is released under the following license:
 
