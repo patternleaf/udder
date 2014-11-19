@@ -27,7 +27,7 @@ public class ShowRunner implements Runnable {
 
     // Timing measurements.
     // Normally (busyWait=false) fps roughly equals 1000/frameDelayMillis.
-    protected int frameDelayMillis = 10; // ignored if busywait
+    protected int frameDelayMillis = 30; // ignored if busywait
     protected boolean busyWait = false; // wait in a hot idle loop, not thread sleep
     protected long previousFrameRealTimeMillis = 0;
     protected long frameCounter = 0;

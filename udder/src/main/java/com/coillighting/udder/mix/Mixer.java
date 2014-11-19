@@ -82,8 +82,12 @@ public class Mixer extends MixableBase implements Mixable, Iterable<Mixable> {
         for(Animator a: subscribers) {
             a.animate(timePoint);
         }
-        for(Mixable layer : this) {
-            layer.animate(timePoint);
+        if(level > 0.0) {
+            for (Mixable layer : this) {
+                if(layer.getLevel() > 0.0) {
+                    layer.animate(timePoint);
+                }
+            }
         }
     }
 
@@ -99,7 +103,9 @@ public class Mixer extends MixableBase implements Mixable, Iterable<Mixable> {
 
         if(level > 0.0) {
             for(Mixable layer : this) {
-                layer.mixWith(pixels);
+                if(layer.getLevel() > 0.0) {
+                    layer.mixWith(pixels);
+                }
             }
             if(level < 1.0) {
                 for(Pixel p: pixels) {
