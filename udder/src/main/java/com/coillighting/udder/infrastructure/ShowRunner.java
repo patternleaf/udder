@@ -32,6 +32,10 @@ public class ShowRunner implements Runnable {
     protected long previousFrameRealTimeMillis = 0;
     protected long frameCounter = 0;
 
+    // Break out idling into its own method so the profiler can account
+    // for it separately. Only works with standard sleep, NOT busywait mode.
+    private final boolean profilerFriendlySleep = false;
+
     public ShowRunner(Queue<Command> commandQueue, Mixer mixer,
         Router router, List<Queue<Frame>> frameQueues)
     {
@@ -148,8 +152,12 @@ public class ShowRunner implements Runnable {
                 } else {
                     // Our crude timing mechanism currently does not account for
                     // the cost of processing each command.
-                    Thread.sleep(this.frameDelayMillis);
-                    // this.waitSleepy(this.frameDelayMillis); // For profiling. (DEBUG)
+                    if(profilerFriendlySleep) {
+                        this.waitSleepy(this.frameDelayMillis); // For profiling. (DEBUG)
+                    } else {
+                        // Normal
+                        Thread.sleep(this.frameDelayMillis);
+                    }
                     sleepy = false;
                 }
             }
