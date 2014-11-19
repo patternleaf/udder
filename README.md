@@ -4,6 +4,11 @@ udder
 HTTP server, animators, mixer, and Open Pixel Control (OPC) renderer for a 2014 public lighting installation at Boulder's Dairy Center for the Arts.
 
 
+Author
+------
+[Mike Bissell, Coil Lighting](http://www.coil-lighting.com/)
+
+
 Getting Started
 ---------------
 
@@ -125,24 +130,6 @@ Wishlist
 * A self-assembling web UI for Mixer control and Effect modulation.
 
 
-Apache License, v2.0
---------------------
-
-Copyright 2014 Michael Bissell
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
-
 Acknowledgements
 ----------------
 Special thanks to the following LDs, engineers, and suppliers for contributing
@@ -161,5 +148,22 @@ and tooling to this project (including its earlier incarnation as LD50):
 * Goolie Gould
 * Josh Erickson
 * Sparkfun.com
-* ...And the whole RA crew.
+* ...and the whole RA crew.
 
+
+Apache License, v2.0
+--------------------
+
+Copyright 2014 Michael Bissell
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
