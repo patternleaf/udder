@@ -147,19 +147,19 @@ Acknowledgements
 ----------------
 Special thanks to the following LDs, engineers, and suppliers for contributing
 concepts, bug reports, parts, funds, visual designs, bug fixes, hands-on testing,
-and tooling to this project (including its earlier incarnation as LD50).
+and tooling to this project (including its earlier incarnation as LD50):
 
-Allison Vanderslice
-Becky Vanderslice
-Chris Macklin
-Dan Cohn
-Dan Julio
-Dave Able
-Ed Colmar
-Eric Miller
-Erin Rosenthal
-Goolie Gould
-Josh Erickson
-Sparkfun.com
-...And the whole RA crew.
+* Allison Vanderslice
+* Becky Vanderslice
+* Chris Macklin
+* Dan Cohn
+* Dan Julio
+* Dave Able
+* Ed Colmar
+* Eric Miller
+* Erin Rosenthal
+* Goolie Gould
+* Josh Erickson
+* Sparkfun.com
+* ...And the whole RA crew.
 
