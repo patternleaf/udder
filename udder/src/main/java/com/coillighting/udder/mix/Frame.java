@@ -1,6 +1,5 @@
 package com.coillighting.udder.mix;
 
-import com.coillighting.udder.mix.TimePoint;
 import com.coillighting.udder.model.Pixel;
 
 /** An instantaneous sample of all timebased pixel values for the entire scene. */
