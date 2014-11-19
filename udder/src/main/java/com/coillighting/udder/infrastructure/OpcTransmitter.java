@@ -83,7 +83,7 @@ public class OpcTransmitter implements Runnable {
         try {
             this.log("Starting OPC transmitter " + this);
             final Pixel black = new Pixel(0.0f, 0.0f, 0.0f);
-            byte[] message = null;
+            byte[] message = new byte[0];
             while(true) {
                 try {
                     Frame frame = this.frameQueue.poll(this.maxDelayMillis,
@@ -111,7 +111,11 @@ public class OpcTransmitter implements Runnable {
                         final int subpixelLen = 3 * pixelLen;
                         final int headerLen = 4;
                         final int messageLen = headerLen + subpixelLen;
-                        message = new byte[messageLen]; // TODO: recycle if len identical
+
+                        // recycle the message struct whenever possible
+                        if(messageLen != message.length) {
+                            message = new byte[messageLen];
+                        }
 
                         // header: channel, 0 (??), length MSB, length LSB
                         final byte channel = 0;
@@ -165,15 +169,11 @@ public class OpcTransmitter implements Runnable {
                         }
                     }
                 } catch(SocketException e) {
-                    // FIXME: this catches the exception when the OPC server
-                    // goes down, but it doesn't actually sleep.
                     this.log("\nERROR -----------------------------------------");
                     this.socket = null;
                     this.dataOutputStream = null;
-                    int timeout = 10000;
                     this.log(e.toString());
-                    this.log("Waiting " + timeout + " milliseconds before attempting reconnection to OPC server...");
-                    Thread.currentThread().sleep(timeout);
+                    this.delayReconnect();
                 } catch(IOException e) {
                     this.log("\nERROR -----------------------------------------");
                     this.log(e.toString());
@@ -182,6 +182,14 @@ public class OpcTransmitter implements Runnable {
         } catch(InterruptedException e) {
             this.log("Stopping OPC transmitter " + this);
         }
+    }
+
+    // We break this out into a separate method so that a profiler can easily
+    // distinguish between a real hotspot and a quick nap.
+    protected void delayReconnect() throws InterruptedException {
+        int timeout = 10000;
+        this.log("Waiting " + timeout + " milliseconds before attempting reconnection to OPC server...");
+        Thread.currentThread().sleep(timeout);
     }
 
     public String formatMessage(byte[] message) throws IOException {

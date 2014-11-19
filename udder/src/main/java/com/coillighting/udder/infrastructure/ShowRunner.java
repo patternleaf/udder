@@ -109,21 +109,24 @@ public class ShowRunner implements Runnable {
                     // FIXME Should make an ImmutablePixel interface now that multiple transmitters
                     // are trusted not to write to pixels. Unfortunately Java does not
                     // support immutable arrays.
+                    // IDEA Could use object pooling to recycle these frames without
+                    // reallocation when the downstream transmitter is done with them.
+                    // This worked well in LD50. Same goes with the pixel arrays.
                     Pixel[] pixels = this.mixer.render();
 
                     int q=0;
                     for(Queue<Frame> frameQueue: frameQueues) {
                         Frame frame = new Frame(timePoint, pixels);
 
-                        if (!frameQueue.offer(frame)) {
-                            if (droppedFrameCount == -1) {
-                                this.log("Frame queue[" + q + "/" + frameQueues.size()
-                                    + "] overflow. Dropped frame " + timePoint);
+                        if(!frameQueue.offer(frame)) {
+                            if(droppedFrameCount == -1) {
+                                this.log("Frame queue #" + q + " (of " + frameQueues.size()
+                                    + " queues) overflow. Dropped frame at " + timePoint);
                                 droppedFrameCount = 1;
                             } else {
-                                if (droppedFrameCount + 1 >= droppedFrameLogInterval) {
-                                    this.log("Frame queue[" + q + "/" + frameQueues.size()
-                                        + "] overflow on frame "
+                                if(droppedFrameCount + 1 >= droppedFrameLogInterval) {
+                                    this.log("Frame queue #" + q + " (of " + frameQueues.size()
+                                        + " queues) overflow on frame at "
                                         + timePoint + ". Dropped " + droppedFrameCount
                                         + " frames since the previous message like this.");
                                     droppedFrameCount = 0;
@@ -135,6 +138,7 @@ public class ShowRunner implements Runnable {
                         q++;
                     }
                 } else if(busyWait) {
+                    // EXPERIMENTAL - For load testing. Avoid busyWait in production.
                     // duration=10000 gave me 2000-5000 fps in a mix with
                     // more than 10 layers * 2 Kpixels, 1 of them animated.
                     // Performance degraded by roughly 20% when I animated 10 of
@@ -145,12 +149,19 @@ public class ShowRunner implements Runnable {
                     // Our crude timing mechanism currently does not account for
                     // the cost of processing each command.
                     Thread.sleep(this.frameDelayMillis);
+                    // this.waitSleepy(this.frameDelayMillis); // For profiling. (DEBUG)
                     sleepy = false;
                 }
             }
         } catch(InterruptedException e) {
             this.log("Stopping show.");
         }
+    }
+
+    // We break this out into a separate method so that a profiler can easily
+    // distinguish between a real hotspot and a quick nap. Enable above.
+    protected void waitSleepy(long Duration) throws InterruptedException {
+        Thread.sleep(this.frameDelayMillis);
     }
 
     public void log(Object msg) {
