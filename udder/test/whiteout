@@ -1,0 +1,28 @@
+#!/usr/bin/env sh
+echo "Turning up ALL levels. This will put the MAXMIMUM load on the server,"
+echo "and it won't look good. Use the blackout script to kill this look."
+echo "(If shuffle mode is running, it may immediately counteract this effect.)"
+curl -X POST -d @json/level_full.json http://localhost:8080/mixer0
+curl -X POST -d @json/level_full.json http://localhost:8080/mixer0/layer0
+curl -X POST -d @json/level_full.json http://localhost:8080/mixer0/layer1
+curl -X POST -d @json/level_full.json http://localhost:8080/mixer0/layer2
+curl -X POST -d @json/level_full.json http://localhost:8080/mixer0/layer3
+curl -X POST -d @json/level_full.json http://localhost:8080/mixer0/layer4
+curl -X POST -d @json/level_full.json http://localhost:8080/mixer0/layer5
+curl -X POST -d @json/level_full.json http://localhost:8080/mixer0/layer6
+curl -X POST -d @json/level_full.json http://localhost:8080/mixer0/layer7
+curl -X POST -d @json/level_full.json http://localhost:8080/mixer0/layer8
+curl -X POST -d @json/level_full.json http://localhost:8080/mixer0/layer9
+curl -X POST -d @json/level_full.json http://localhost:8080/mixer0/layer10
+curl -X POST -d @json/level_full.json http://localhost:8080/mixer0/layer11
+curl -X POST -d @json/level_full.json http://localhost:8080/mixer0/layer12
+curl -X POST -d @json/level_full.json http://localhost:8080/mixer0/layer13
+curl -X POST -d @json/level_full.json http://localhost:8080/mixer0/layer14
+curl -X POST -d @json/level_full.json http://localhost:8080/mixer0/layer15
+curl -X POST -d @json/level_full.json http://localhost:8080/mixer0/layer16
+curl -X POST -d @json/level_full.json http://localhost:8080/mixer0/layer17
+curl -X POST -d @json/level_full.json http://localhost:8080/mixer0/layer18
+curl -X POST -d @json/level_full.json http://localhost:8080/mixer0/layer19
+curl -X POST -d @json/level_full.json http://localhost:8080/mixer0/layer20
+curl -X POST -d @json/level_full.json http://localhost:8080/mixer0/layer21
+curl -X POST -d @json/level_full.json http://localhost:8080/mixer0/layer22
