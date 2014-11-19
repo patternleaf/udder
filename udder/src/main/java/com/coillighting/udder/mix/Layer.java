@@ -52,9 +52,7 @@ public class Layer extends MixableBase implements Effect, Mixable {
     }
 
     public void mixWith(Pixel[] canvasPixels) {
-        String before = canvasPixels[0].toString(); //TEMP
         Pixel[] myPixels = this.render();
-        int length = myPixels.length;
         int min = canvasPixels.length > myPixels.length ? myPixels.length : canvasPixels.length;
         for(int i=0; i<min; i++) {
             canvasPixels[i].blendWith(myPixels[i], this.level, this.blendOp);

@@ -34,6 +34,7 @@ public class ShowRunner implements Runnable {
 
     // Break out idling into its own method so the profiler can account
     // for it separately. Only works with standard sleep, NOT busywait mode.
+    // Set it to false when not profiling.
     private final boolean profilerFriendlySleep = false;
 
     public ShowRunner(Queue<Command> commandQueue, Mixer mixer,
