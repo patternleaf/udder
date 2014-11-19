@@ -93,8 +93,6 @@ public class OpcTransmitter implements Runnable {
 
                         if(verbose && debug) {
                             // Roughly clock frame timing.
-                            TimePoint timePoint = frame.getTimePoint();
-                            long currentFrameRealTimeMillis = timePoint.realTimeMillis();
                             long time = frame.getTimePoint().realTimeMillis();
                             long latency = time - previousFrameRealTimeMillis;
                             this.log("OPC frame latency: " + latency + " ms");
