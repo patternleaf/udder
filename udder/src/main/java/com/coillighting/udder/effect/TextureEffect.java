@@ -16,6 +16,7 @@ import com.coillighting.udder.model.Device;
 import com.coillighting.udder.model.Pixel;
 
 import static com.coillighting.udder.geometry.Interpolator.Interpolation;
+import static com.coillighting.udder.util.LogUtil.log;
 
 
 /** Stretch and squeeze a raster image over the pointcloud representing the
@@ -85,7 +86,7 @@ public class TextureEffect extends EffectBase {
     }
 
     public Object getState() {
-        return null; // TODO
+        return null; // TODO TextureEffectState
     }
 
     public void setState(Object state) throws ClassCastException {
@@ -113,14 +114,9 @@ public class TextureEffect extends EffectBase {
         }
     }
 
-    public void patchDevices(List<Device> devices) {
+    public void patchDevices(Device[] devices) {
         super.patchDevices(devices);
-        deviceBounds = Device.getDeviceBoundingCube(devices.toArray(new Device[0]));
-    }
-
-    public void log(Object message) {
-        // TODO proper logging
-        System.out.println("" + message);
+        deviceBounds = Device.getDeviceBoundingCube(devices);
     }
 
     private void clearImage() {
@@ -137,29 +133,29 @@ public class TextureEffect extends EffectBase {
         if(filename != null) {
             File imageFile = new File(filename);
             if(!imageFile.exists()) {
-                this.log("File not found: " + filename);
+                log("File not found: " + filename);
                 filename = null;
             } else if(!imageFile.isFile()) {
-                this.log("Not a regular file: " + filename);
+                log("Not a regular file: " + filename);
                 filename = null;
             } else {
                 try {
                     image = ImageIO.read(imageFile);
                 } catch(IOException iox) {
-                    this.log("Error loading image " + filename + "\n" + iox);
+                    log("Error loading image " + filename + "\n" + iox);
                     filename = null;
                     return;
                 }
                 imageWidth = image.getWidth();
                 imageHeight = image.getHeight();
                 if(imageWidth == 0 || imageHeight == 0) {
-                    this.log("Error loading " + filename + ": empty image.");
+                    log("Error loading " + filename + ": empty image.");
                     this.clearImage();
                     filename = null;
                 }
             }
         } else {
-            this.log("TextureEffect: no image to load.");
+            log("TextureEffect: no image to load.");
         }
     }
 
@@ -235,7 +231,7 @@ public class TextureEffect extends EffectBase {
             pct = 0.0;
         }
 
-        // TODO N and S are flipped due to flipped coordinates.
+        // FIXME N and S are flipped due to flipped coordinates.
         // Figure out how to unflip them, or rename N and S. It's
         // not as simple as subtracting y from 1.0 here:
 

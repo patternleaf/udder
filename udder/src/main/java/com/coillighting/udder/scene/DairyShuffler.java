@@ -81,8 +81,8 @@ public class DairyShuffler implements StatefulAnimator {
             }
         }
 
-        // These interpolator curve settings favor a three-way mix
-        // over a one-way mix.
+        // These interpolator curve settings favor a strong three-way mix
+        // over what looks almost like a one-way mix.
         // 0.15: fade in quick, linger for a while and fade out quick
         // 2.5: relatively brighter, more gradual fade in and out in POWER mode
         this.interpolator = new Interpolator(0.15, 2.5);
@@ -90,7 +90,7 @@ public class DairyShuffler implements StatefulAnimator {
         this.wovenLayerIndex = wovenLayerIndex;
         this.shuffleLayerStartIndex = shuffleLayerStartIndex;
         this.shuffleLayerEndIndex = shuffleLayerEndIndex;
-        textureCueDurationMillis = 60000; // TODO: user-adjustable step time, always > 0
+        textureCueDurationMillis = 60000;
         this.reset();
         off = new Point2D.Double(0.0, 0.0);
         current = new Point2D.Double(0.0, 0.0);
@@ -216,7 +216,4 @@ public class DairyShuffler implements StatefulAnimator {
         }
     }
 
-    public void log(Object msg) {
-        System.out.println(msg);
-    }
 }

@@ -1,9 +1,10 @@
 package com.coillighting.udder.scene;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import static java.io.File.separator;
 
 import com.coillighting.udder.blend.BlendOp;
 import com.coillighting.udder.blend.MaxBlendOp;
@@ -27,7 +28,7 @@ import com.coillighting.udder.model.Pixel;
 public abstract class DairyScene {
 
     /** Instantiate a new scene in the form of a Mixer. */
-    public static Mixer create(List<Device> devices) {
+    public static Mixer create(Device[] devices) {
         BlendOp max = new MaxBlendOp();
         BlendOp mult = new MultiplyBlendOp();
 
@@ -79,7 +80,8 @@ public abstract class DairyScene {
         int sequenceStartIndex = layers.size();
         for(String filename: sequencedTextures) {
             Layer texture = new Layer("Texture " + filename,
-                    new TextureEffect("images" + File.separator + filename));
+                new TextureEffect(
+                    "images" + separator + "dairy_collection_A_720p" + separator + filename));
             texture.setBlendOp(max);
             layers.add(texture);
         }
@@ -112,7 +114,7 @@ public abstract class DairyScene {
 
         Mixer mixer = new Mixer((Collection<Mixable>) layers);
         mixer.patchDevices(devices);
-        System.out.println("Patched " + devices.size()
+        System.out.println("Patched " + devices.length
             + " devices to the DairyScene's Mixer.");
 
         for(Mixable layer: mixer) {

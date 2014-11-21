@@ -13,30 +13,36 @@ import com.coillighting.udder.model.Pixel;
 public interface Effect extends StatefulAnimator {
 
     /** Called occasionally when somebody changes the device list (a.k.a.
-     *  "the patch" in lighting parlance).
+     * "the patch" in lighting parlance).
      *
-     *  Although Devices are variable in the long-term, they are locally
-     *  constant in a typical sequence of frames. For this reason, and
-     *  considering that physical Devices are infrequently reconfigured, the
-     *  locally constant Device data (just its address and spatial position)
-     *  is set separately from pixels, which typically vary per frame.
+     * Although Devices are variable in the long-term, they are locally
+     * constant in a typical sequence of frames. For this reason, and
+     * considering that physical Devices are infrequently reconfigured, the
+     * locally constant Device data (just its address and spatial position)
+     * is set separately from pixels, which typically vary per frame.
      *
-     *  Expensive setup computations might be performed only when we
-     *  patchDevices, allowing us to animate pixels efficiently.
+     * Expensive setup computations might be performed only when we
+     * patchDevices, allowing us to animate pixels efficiently.
      */
-    public void patchDevices(List<Device> devices);
+    public void patchDevices(Device[] devices);
 
     /** Draw this object's current state as a pixel array. Normally, each
-     *  Renderer is also an Animator, and each call to render() follows a call
-     *  to animate(TimePoint). See Effect.
+     * Renderer is also an Animator, and each call to render() follows a call
+     * to animate(TimePoint). See Effect.
+     *
+     * In the interest of performance, Effects are permitted to return
+     * either a new array or a direct reference to a persistent array
+     * owned by the Effect, with the stipulation that the caller will not
+     * modify the returned data, that the caller will not share it with
+     * other threads, and that no references will be left laying around
+     * when this render loop completes.
+     *
+     * When your whole tree of Mixers, Layers and Effects has rendered,
+     * then use Frame.createByCopy(TimePoint, Pixel[]) to make your own
+     * copy of the results. Don't share references to Pixels that belong
+     * to Effects with others, especially not other threads.
      */
     public Pixel[] render();
-    // FIXME clarify ownership of the returned pixel array! it might be shared with
-    // multiple downstream OPC transmitters. should probably copy it if there
-    // are >1 downstream consumers. For now, it is crucial that the renturned
-    // pixel array is owned soley by the caller, and that downstream consumers are
-    // read-only, never write, on this array.
 
-    // TODO convert all levels to double
-    public void levelChanged(float oldLevel, float newLevel);
+    public void levelChanged(double oldLevel, double newLevel);
 }

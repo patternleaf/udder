@@ -8,12 +8,30 @@ public class Frame {
     private TimePoint timePoint;
     private Pixel[] pixels;
 
+    /** Construct a new Frame by deeply copying the given Pixels so that it is
+     * safe to give this Frame to a transmitter in another thread. (Per
+     * Effect.render's contract, renderers are permitted to return direct
+     * references to internal Pixels. This makes it safe.)
+     *
+     * timePoint is immutable, so it is safe to share by reference.
+     */
+    public static Frame createByCopy(TimePoint timePoint, Pixel[] otherPixels) {
+        Frame frame = new Frame(timePoint, new Pixel[otherPixels.length]);
+        for(int i=0; i<frame.pixels.length; i++) {
+            frame.pixels[i] = new Pixel(otherPixels[i]);
+        }
+        return frame;
+    }
+
+    /** Construct a new Frame incorporating the given pixels by reference. */
     public Frame(TimePoint timePoint, Pixel[] pixels) {
         if(timePoint == null) {
             throw new NullPointerException("Frame requires a timePoint.");
+        } else if(pixels == null) {
+            throw new NullPointerException("Pixel array must not be null.");
         }
         this.timePoint = timePoint;
-        this.setPixels(pixels);
+        this.pixels = pixels;
     }
 
     public String toString() {
@@ -25,11 +43,6 @@ public class Frame {
     }
 
     public void setPixels(Pixel[] pixels) {
-        if(pixels == null) {
-            throw new NullPointerException("Pixel array must not be null.");
-        } else if(pixels.length < 2000) { // TEMP-DEBUG
-            throw new NullPointerException("Corrupt Frame: pixel array len=" + pixels.length);
-        }
         this.pixels = pixels;
     }
 

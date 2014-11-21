@@ -8,7 +8,7 @@ import com.coillighting.udder.blend.BlendOp;
  *  so few.
  *
  *  We use the 32 bit float type rather than the 64 bit float type in hopes
- *  that it will speed processing on lightweight 32 bit devices.
+ *  that it might speed processing on lightweight 32 bit devices.
  */
 public class Pixel {
 
@@ -36,19 +36,19 @@ public class Pixel {
         this.setColor(pixel.r, pixel.g, pixel.b);
     }
 
-    public void setColor(float r, float g, float b) {
+    public final void setColor(float r, float g, float b) {
         this.r = r;
         this.g = g;
         this.b = b;
     }
 
-    public void scale(float scale) {
+    public final void scale(float scale) {
         this.r *= scale;
         this.g *= scale;
         this.b *= scale;
     }
 
-    public void setColor(Pixel pixel) {
+    public final void setColor(Pixel pixel) {
         if(pixel == null) {
             throw new NullPointerException("A null pixel has no color.");
         } else {
@@ -59,9 +59,9 @@ public class Pixel {
     /** If you don't know what blendOp to use, just use MaxBlendOp until you
      *  have time to experiment with other options.
      *
-     *  TODO A variant that takes an RGB BlendMode (per-channel blendops).
+     *  FUTURE A variant that takes an RGB(A) BlendMode (a mode might have per-channel blendops)
      */
-    public void blendWith(Pixel foreground, float level, BlendOp blendOp) {
+    public final void blendWith(Pixel foreground, float level, BlendOp blendOp) {
         if(blendOp == null) {
             throw new NullPointerException("BlendOp is required.");
         } else if(foreground != null) {
@@ -79,25 +79,27 @@ public class Pixel {
                     gg = blendedScale * gg + bgScale * this.g;
                     bb = blendedScale * bb + bgScale * this.b;
                 }
-                this.setColor(rr, gg, bb);
+                this.r = rr;
+                this.g = gg;
+                this.b = bb;
             }
         }
     }
 
     /** Compare this Pixel to another by value. */
-    public boolean equals(Pixel pixel) {
+    public final boolean equals(Pixel pixel) {
         return pixel != null && pixel.r == this.r && pixel.g == this.g
             && pixel.b == this.b;
     }
 
     /** Clip each component to the range 0.0..1.0, inclusive. */
-    public void clip() {
+    public final void clip() {
         this.r = Pixel.clipChannel(this.r);
         this.g = Pixel.clipChannel(this.g);
         this.b = Pixel.clipChannel(this.b);
     }
 
-    protected static final float clipChannel(float value) {
+    private static final float clipChannel(float value) {
         if(value <= 0.0f) {
             return 0.0f;
         } else if(value >= 1.0f) {
@@ -124,7 +126,7 @@ public class Pixel {
     /** Return an int approximation of this pixel value, encoded 0x00RRGGBB.
      *  Skip alpha. If you interpret this pixel as ARGB, alpha will read as 0.
      */
-    public int toRGB() {
+    public final int toRGB() {
         float conv = 255.99f;
         int rr = (int)(this.r * conv);
         int gg = (int)(this.g * conv);
@@ -135,7 +137,7 @@ public class Pixel {
     /** Return an int approximation of this pixel value, encoded 0xRRGGBBAA.
      *  Set alpha to 100% (255).
      */
-    public int toRGBA() {
+    public final int toRGBA() {
         int aa = 0xFF; // placeholder
         return (this.toRGB() << 8) | aa;
     }
@@ -143,18 +145,18 @@ public class Pixel {
     /** Return an int approximation of this pixel value, encoded 0xAARRGGBB.
      *  Set alpha to 100% (255).
      */
-    public int toARGB() {
+    public final int toARGB() {
         int aa = 0xFF; // placeholder
         return this.toRGB() | (aa << 24);
     }
 
-    /** Ignore alpha for now. (TODO) */
-    public void setRGBAColor(int rgba) {
+    /** Ignore alpha for now. (FUTURE) */
+    public final void setRGBAColor(int rgba) {
         this.setRGBColor(rgba >> 8);
     }
 
     /** Also works with argb, since alpha is ignored. */
-    public void setRGBColor(int rgb) {
+    public final void setRGBColor(int rgb) {
         float conv = 255.0f;
         int rr = (rgb >> 16) & 0xFF;
         int gg = (rgb >> 8) & 0xFF;
@@ -181,23 +183,23 @@ public class Pixel {
                 (float)bb / conv);
     }
 
-    public void setBlack() {
+    public final void setBlack() {
         this.setColor(0.0f, 0.0f, 0.0f);
     }
 
-    public void setWhite() {
+    public final void setWhite() {
         this.setColor(1.0f, 1.0f, 1.0f);
     }
 
-    public void setRed() {
+    public final void setRed() {
         this.setColor(1.0f, 0.0f, 0.0f);
     }
 
-    public void setGreen() {
+    public final void setGreen() {
         this.setColor(0.0f, 1.0f, 0.0f);
     }
 
-    public void setBlue() {
+    public final void setBlue() {
         this.setColor(0.0f, 0.0f, 1.0f);
     }
 

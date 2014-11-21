@@ -3,8 +3,6 @@ package com.coillighting.udder.geometry;
 import java.awt.geom.Point2D;
 import java.util.Random;
 
-import com.coillighting.udder.Util;
-
 public class Interpolator {
 
     private double rootModePower;
@@ -42,17 +40,17 @@ public class Interpolator {
                             Point2D.Double target)
     {
         if (mode == Interpolation.LINEAR) {
-            current.x = Util.crossfadeLinear(pct, start.x, target.x);
-            current.y = Util.crossfadeLinear(pct, start.y, target.y);
+            current.x = Crossfade.linear(pct, start.x, target.x);
+            current.y = Crossfade.linear(pct, start.y, target.y);
         } else if(mode == Interpolation.SINUSOIDAL) {
-            current.x = Util.crossfadeSinusoidal(pct, start.x, target.x);
-            current.y = Util.crossfadeSinusoidal(pct, start.y, target.y);
+            current.x = Crossfade.sinusoidal(pct, start.x, target.x);
+            current.y = Crossfade.sinusoidal(pct, start.y, target.y);
         } else if(mode == Interpolation.ROOT) {
-            current.x = Util.crossfadeExponential(pct, rootModePower, start.x, target.x);
-            current.y = Util.crossfadeExponential(pct, rootModePower, start.y, target.y);
+            current.x = Crossfade.exponential(pct, rootModePower, start.x, target.x);
+            current.y = Crossfade.exponential(pct, rootModePower, start.y, target.y);
         } else if(mode == Interpolation.POWER) {
-            current.x = Util.crossfadeExponential(pct, powerModePower, start.x, target.x);
-            current.y = Util.crossfadeExponential(pct, powerModePower, start.y, target.y);
+            current.x = Crossfade.exponential(pct, powerModePower, start.x, target.x);
+            current.y = Crossfade.exponential(pct, powerModePower, start.y, target.y);
         } else {
             throw new IllegalArgumentException("Unsupported interpolation " + mode);
         }

@@ -1,6 +1,6 @@
 package com.coillighting.udder.effect.woven;
 
-import com.coillighting.udder.Util;
+import com.coillighting.udder.geometry.Reshape;
 import com.coillighting.udder.mix.TimePoint;
 
 /** Bring up an unremarkable background color (e.g. amber wash). */
@@ -21,8 +21,7 @@ public class CurtainCue extends CueBase {
             if(elapsed >= 1.0) {
                 this.stopTimer();
             } else {
-                // TODO: color selection, nonlinear fade-in. for now linear amber.
-                frame.setBrightness(Util.reshapeExponential(elapsed,0.5));
+                frame.setBrightness(Reshape.exponential(elapsed,0.5));
             }
         }
     }

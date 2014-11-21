@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 
-import org.simpleframework.http.core.Container;
 import org.simpleframework.http.core.ContainerServer;
 import org.simpleframework.transport.connect.Connection;
 import org.simpleframework.transport.connect.SocketConnection;
@@ -18,6 +17,8 @@ import org.simpleframework.transport.Server;
 
 import com.coillighting.udder.mix.Frame;
 import com.coillighting.udder.mix.Mixer;
+
+import static com.coillighting.udder.util.LogUtil.log;
 
 /** Udder's central patchbay. Owns references to all of the persistent entities
  *  in the program. Manages Thread lifecycles for each components.
@@ -42,6 +43,7 @@ public class ServicePipeline {
 
     public ServicePipeline(Mixer mixer,
                            int[] deviceAddressMap,
+                           Integer frameDelayMillis,
                            SocketAddress udderAddr,
                            List<SocketAddress> opcServerAddresses) throws IOException
     {
@@ -80,8 +82,12 @@ public class ServicePipeline {
             transmissionCouplings.add(coupling);
             frameQueues.add(coupling.frameQueue);
         }
-        this.showRunner = new ShowRunner(this.commandQueue, this.mixer,
-            this.router, frameQueues);
+        this.showRunner = new ShowRunner(
+                frameDelayMillis,
+                this.commandQueue,
+                this.mixer,
+                this.router,
+                frameQueues);
         this.showThread = new Thread(this.showRunner);
 
         this.httpServiceContainer = new HttpServiceContainer(
@@ -98,22 +104,18 @@ public class ServicePipeline {
     public void start() throws IOException {
         try {
             for(TransmissionCoupling coupling: transmissionCouplings) {
-                this.log("Will transmit OPC frames to " + coupling.getOpcTransmitter());
+                log("Will transmit OPC frames to " + coupling.getOpcTransmitter());
                 coupling.start();
             }
             this.showThread.start();
             this.serverConnection.connect(this.listenAddress);
-            this.log("Listening on http://localhost:" + this.listenPort + '/');
-            this.log("ListenAddress: " + this.listenAddress);
+            log("Listening on http://localhost:" + this.listenPort + '/');
+            log("ListenAddress: " + this.listenAddress);
         } catch(BindException be) {
-            this.log(be);
-            this.log("Another process is already listening on " + this.listenAddress + ".");
+            log(be);
+            log("Another process is already listening on " + this.listenAddress + ".");
             System.exit(1);
         }
-    }
-
-    public void log(Object message) {
-        System.out.println(message);
     }
 }
 

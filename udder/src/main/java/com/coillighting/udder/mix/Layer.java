@@ -36,7 +36,7 @@ public class Layer extends MixableBase implements Effect, Mixable {
     }
 
     public Object getState() {
-        return null; // TODO
+        return null; // TODO LayerState
     }
 
     public void setState(Object state) throws ClassCastException {
@@ -47,6 +47,7 @@ public class Layer extends MixableBase implements Effect, Mixable {
         this.effect.animate(timePoint);
     }
 
+    /** See borrowing contract on Effect. */
     public Pixel[] render() {
         return this.effect.render();
     }
@@ -54,12 +55,13 @@ public class Layer extends MixableBase implements Effect, Mixable {
     public void mixWith(Pixel[] canvasPixels) {
         Pixel[] myPixels = this.render();
         int min = canvasPixels.length > myPixels.length ? myPixels.length : canvasPixels.length;
+        float lf = (float) this.level;
         for(int i=0; i<min; i++) {
-            canvasPixels[i].blendWith(myPixels[i], this.level, this.blendOp);
+            canvasPixels[i].blendWith(myPixels[i], lf, this.blendOp);
         }
     }
 
-    public void patchDevices(List<Device> devices) {
+    public void patchDevices(Device[] devices) {
         this.effect.patchDevices(devices);
     }
 
@@ -75,13 +77,13 @@ public class Layer extends MixableBase implements Effect, Mixable {
      *  to on (>0%). Some effects (currently just Woven) will want to start
      *  from their first cue or reset animation state when that happens.
      */
-    protected void notifyLevelChanged(float oldLevel, float newLevel) {
-        if(effect != null && oldLevel == 0.0f && newLevel > 0.0f) {
+    protected void notifyLevelChanged(double oldLevel, double newLevel) {
+        if(effect != null && oldLevel == 0.0 && newLevel > 0.0) {
             effect.levelChanged(oldLevel, newLevel);
         }
     }
 
     /** A Layer doesn't currently care when its parent Mixer's level changes. */
-    public void levelChanged(float oldLevel, float newLevel) {}
+    public void levelChanged(double oldLevel, double newLevel) {}
 
 }

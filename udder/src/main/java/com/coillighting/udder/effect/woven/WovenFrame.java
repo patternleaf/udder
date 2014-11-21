@@ -147,21 +147,19 @@ public class WovenFrame {
         final double xOff = -box.getMinX();
         final double yOff = -box.getMinY();
 
+        final double warpScale = -0.000000001 + (double) warp.length;
+        final double weftScale = -0.000000001 + (double) weft[0].length;
+
         for(int i=0; i<devices.length; i++) {
             final Device device = devices[i];
             final int group = device.getGroup();
 
             if(group < 2) {
 
-                // Scale this pixel's device coordinates into the unit square.
-                final Point3D pt = device.getPoint3D();
-
-                final double px = wScale * (pt.getX() + xOff); // normalized 0..1
-                final double py = hScale * (pt.getY() + yOff); // ditto
+                final double px = wScale * (device.x + xOff); // normalized 0..1
+                final double py = hScale * (device.y + yOff); // ditto
 
                 // Draw the nearest neighbor in the warp for this pixel.
-                final double warpScale = -0.000000001 + (double) warp.length;
-
                 // Fill from right to left.
                 final int xWarp = warp.length - 1 - (int)(px * warpScale);
 
@@ -172,9 +170,8 @@ public class WovenFrame {
                 // else if(group == 1) pixel.setColor(0.7f * (float) px, 0.0f, 0.0f);
 
                 // Draw the nearest neighbor in the weft for this pixel.
-                final double weftScale =-0.000000001 + (double) weft[0].length;
-                final double center = 0.125;
-                final int xWeft = px < center ? 0 : 1; // TODO fine-tune this breakpoint, poss. crop
+                final double center = 0.125; // oscillate around this line
+                final int xWeft = px < center ? 0 : 1;
                 final int yWeft = (int)(py * weftScale);
 
                 final Pixel pixel = pixels[i];

@@ -9,8 +9,9 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 import com.coillighting.udder.mix.Frame;
-import com.coillighting.udder.mix.TimePoint;
 import com.coillighting.udder.model.Pixel;
+
+import static com.coillighting.udder.util.LogUtil.log;
 
 /** First stab at an Open Pixel Control network client.
  *  This class is responsible for translating the pixels in mixed down frames
@@ -35,9 +36,11 @@ public class OpcTransmitter implements Runnable {
     protected int[] deviceAddressMap; // see PatchSheet.deviceAddressMap
     protected long previousFrameRealTimeMillis = 0;
 
-    // TODO reorganize logging levels
     protected final boolean verbose = false;
     protected final boolean debug = true;
+
+    // Don't keep reallocation this
+    private final Pixel black = new Pixel(0.0f, 0.0f, 0.0f);
 
     public OpcTransmitter(SocketAddress opcServerAddr,
                           BlockingQueue<Frame> frameQueue,
@@ -59,14 +62,14 @@ public class OpcTransmitter implements Runnable {
         this.socket = null;
         this.dataOutputStream = null;
 
-        this.log("Attempting to connect to OPC remote server at "
+        log("Attempting to connect to OPC remote server at "
             + this.serverHost + ":"+ this.serverPort);
 
         this.socket = new Socket(this.serverHost, this.serverPort);
-        this.log("Connected " + this);
+        log("Connected " + this);
         OutputStream out = socket.getOutputStream();
         this.dataOutputStream = new DataOutputStream(out);
-        this.log("Got socket DataOutputStream to " + this);
+        log("Got socket DataOutputStream to " + this);
     }
 
     protected void sendBytes(byte[] bytes) throws IOException {
@@ -74,28 +77,47 @@ public class OpcTransmitter implements Runnable {
             this.connect();
         }
         this.dataOutputStream.write(bytes, 0, bytes.length);
-        if(verbose) {
-            this.log(this.formatMessage(bytes));
+        if(verbose) log(this.formatMessage(bytes));
+    }
+
+    // Broken out into a separate method for easy profiling.
+    // Some profilers otherwise have a hard time distinguishing between
+    // time spent in run() and time spend waiting for the next frame.
+    protected Frame pollFrameQueue() throws InterruptedException {
+        return this.frameQueue.poll(this.maxDelayMillis,
+                TimeUnit.MILLISECONDS);
+    }
+
+    protected void writeOPCPixels(byte[] message, Pixel[] pixels) {
+        int i = OpcHeader.SUBPIXEL_START;
+        for (int deviceIndex : deviceAddressMap) {
+            Pixel pixel;
+            if (deviceIndex < 0 || deviceIndex >= pixels.length) {
+                pixel = black;
+            } else {
+                pixel = pixels[deviceIndex];
+            }
+            message[i] = (byte) (0xFF & (int) (255.99999f * pixel.r));
+            message[i + 1] = (byte) (0xFF & (int) (255.99999f * pixel.g));
+            message[i + 2] = (byte) (0xFF & (int) (255.99999f * pixel.b));
+            i += 3;
         }
     }
 
     public void run() {
         try {
-            this.log("Starting OPC transmitter " + this);
-            final Pixel black = new Pixel(0.0f, 0.0f, 0.0f);
+            log("Starting OPC transmitter " + this);
             byte[] message = new byte[0];
             while(true) {
                 try {
-                    Frame frame = this.frameQueue.poll(this.maxDelayMillis,
-                        TimeUnit.MILLISECONDS);
-
+                    Frame frame = this.pollFrameQueue();
                     if(frame != null) {
 
                         if(verbose && debug) {
                             // Roughly clock frame timing.
                             long time = frame.getTimePoint().realTimeMillis();
                             long latency = time - previousFrameRealTimeMillis;
-                            this.log("OPC frame latency: " + latency + " ms");
+                            log("OPC frame latency: " + latency + " ms");
                             previousFrameRealTimeMillis = time;
                         }
 
@@ -115,70 +137,54 @@ public class OpcTransmitter implements Runnable {
                             message = new byte[messageLen];
                         }
 
+                        // Fadecandy uses channel 0 in a funny way compared
+                        // to the OPC spec. There is an old post from Micah
+                        // on the topic.
                         // header: channel, 0 (??), length MSB, length LSB
                         final byte channel = 0;
 
-                        // OPC protocol details (byte offsets)
-                        // TODO move these into an OpcHeader constants class
-                        final int CHANNEL = 0;
-                        final int COMMAND = 1;
-                        final int COMMAND_SET_PIXELS = 0;
-                        final int SUBPIXEL_COUNT_MSB = 2;
-                        final int SUBPIXEL_COUNT_LSB = 3;
-                        final int SUBPIXEL_START = 4;
+                        // OPTIMIZATION CANDIDATE: lots of these don't need to be
+                        // recomputed in every frame because they are tied to
+                        // constants or values that rarely vary.
 
-                        message[CHANNEL] = channel;
-                        message[COMMAND] = COMMAND_SET_PIXELS;
+                        message[OpcHeader.CHANNEL] = channel;
+                        message[OpcHeader.COMMAND] = OpcHeader.COMMAND_SET_PIXELS;
 
-                        message[SUBPIXEL_COUNT_MSB] = (byte)(subpixelLen / 256);
-                        message[SUBPIXEL_COUNT_LSB] = (byte)(subpixelLen % 256);
+                        message[OpcHeader.SUBPIXEL_COUNT_MSB] = (byte)(subpixelLen / 256);
+                        message[OpcHeader.SUBPIXEL_COUNT_LSB] = (byte)(subpixelLen % 256);
 
-                        // TODO consider relocating this into Frame
-                        int i=SUBPIXEL_START;
-                        for(int deviceIndex: deviceAddressMap) {
-                            Pixel pixel;
-                            if(deviceIndex < 0 || deviceIndex >= pixels.length) {
-                                pixel = black;
-                            } else {
-                                pixel = pixels[deviceIndex];
-                            }
-                            message[i] = (byte)(0xFF & (int)(255.99999f * pixel.r));
-                            message[i+1] = (byte) (0xFF & (int)(255.99999f * pixel.g));
-                            message[i+2] = (byte) (0xFF & (int)(255.99999f * pixel.b));
-                            i += 3;
-                        }
+                        this.writeOPCPixels(message, pixels);
                         this.sendBytes(message);
-                        // TODO recycle the frame datastructure
                     } else {
                         // If there are no incoming frames, periodically retransmit
                         // the last frame, in case the remote OPC server process was
                         // restarted and needs its state refreshed.
                         if(message != null) {
-                            this.log("Received no new frame in the past "
+                            log("Received no new frame in the past "
                                 + this.maxDelayMillis
                                 + " milliseconds. Retransmitting the previous frame in "
                                 + this + '.');
                             this.sendBytes(message);
                         } else {
-                            this.log("Received no new frame in the past "
+                            log("Received no new frame in the past "
                                 + this.maxDelayMillis
                                 + " milliseconds. Awaiting the first frame in "
                                 + this + '.');
                         }
                     }
                 } catch(SocketException e) {
-                    this.log("\nERROR -----------------------------------------");
+                    log("\nERROR -----------------------------------------");
                     this.socket = null;
                     this.dataOutputStream = null;
-                    this.log(e.toString());
+                    log(e.toString());
                     this.delayReconnect();
                 } catch(IOException e) {
-                    this.log("\nERROR -----------------------------------------");
-                    this.log(e.toString());
+                    log("\nERROR -----------------------------------------");
+                    log(e.toString());
                 }
             }
         } catch(InterruptedException e) {
-            this.log("Stopping OPC transmitter " + this);
+            log("Stopping OPC transmitter " + this);
         }
     }
 
@@ -186,7 +192,7 @@ public class OpcTransmitter implements Runnable {
     // distinguish between a real hotspot and a quick nap.
     protected void delayReconnect() throws InterruptedException {
         int timeout = 10000;
-        this.log("Waiting " + timeout + " milliseconds before attempting reconnection to OPC server...");
+        log("Waiting " + timeout + " milliseconds before attempting reconnection to OPC server...");
         Thread.currentThread().sleep(timeout);
     }
 
@@ -199,7 +205,7 @@ public class OpcTransmitter implements Runnable {
         }
 
         int i = 0;
-        StringBuffer log = new StringBuffer("[ " + message.length + " bytes:"
+        StringBuffer sb = new StringBuffer("[ " + message.length + " bytes:"
             // OPC header
             + " chan=" + (0xFF & (int) message[i++])
             + " command=" + (0xFF & (int) message[i++])
@@ -215,10 +221,10 @@ public class OpcTransmitter implements Runnable {
             + " ]");
 
         if(debug) {
-            log.append('\n');
+            sb.append('\n');
 
             // csv header
-            log.append("buffer_index,subpixel_offset,component,value\n");
+            sb.append("buffer_index,subpixel_offset,component,value\n");
 
             for(int j=0; j<message.length; j++) {
                 int subpixelOffset = j - 4;
@@ -234,22 +240,29 @@ public class OpcTransmitter implements Runnable {
                     }
                 }
 
-                log.append("" + j + ',' + subpixelOffset + ',' + component + ','
+                sb.append("" + j + ',' + subpixelOffset + ',' + component + ','
                     + (0xFF & (int) message[j]) + '\n');
 
                 // To break off the output after you reach a certain device:
                 // if(subpixelOffset > 3 * 60) break;
             }
-            log.append('\n');
+            sb.append('\n');
         }
-        return log.toString();
-    }
-
-    public void log(String msg) {
-        System.out.println(msg);
+        return sb.toString();
     }
 
     public String toString() {
         return "OpcTransmitter(" + serverHost + ":" + serverPort + ")";
     }
+}
+
+class OpcHeader {
+    // OPC protocol details (byte offsets)
+    public static final int CHANNEL = 0;
+    public static final int COMMAND = 1;
+    public static final int COMMAND_SET_PIXELS = 0;
+    public static final int SUBPIXEL_COUNT_MSB = 2;
+    public static final int SUBPIXEL_COUNT_LSB = 3;
+    public static final int SUBPIXEL_START = 4;
+
 }

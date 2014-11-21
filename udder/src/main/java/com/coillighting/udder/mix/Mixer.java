@@ -46,11 +46,11 @@ public class Mixer extends MixableBase implements Mixable, Iterable<Mixable> {
     }
 
     public Class getStateClass() {
-        return LayerState.class;
+        return LayerState.class; // TODO MixerState
     }
 
     public Object getState() {
-        return null; // TODO
+        return null; // TODO MixerState
     }
 
     public void setState(Object state) throws ClassCastException {
@@ -108,22 +108,29 @@ public class Mixer extends MixableBase implements Mixable, Iterable<Mixable> {
                 }
             }
             if(level < 1.0) {
+                float lf = (float) level;
                 for(Pixel p: pixels) {
-                    p.scale(level);
+                    p.scale(lf);
                 }
             }
         }
     }
 
-    public void patchDevices(List<Device> devices) {
-        deviceCount = devices.size();
+    /** FIXME The Mixer normally runs in a separate thread, so it should make a
+     * deep copy of the devices[], in case the user edits their associated
+     * PatchSheet later, while the show is running. Also, it would be best if
+     * Device were a read-only interface so that it could be safely shared
+     * among Layers.
+     */
+    public void patchDevices(Device[] devices) {
+        deviceCount = devices.length;
         for(Mixable layer : layers) {
             layer.patchDevices(devices);
         }
     }
 
+    /** See borrowing contract on Effect. */
     public Pixel[] render() {
-        // TODO make a whole new frame? or copy the developed frame before giving it away? clarify ownership.
         this.mixWith(pixels);
         return pixels;
     }
@@ -144,7 +151,7 @@ public class Mixer extends MixableBase implements Mixable, Iterable<Mixable> {
     }
 
     /** A Mixer doesn't currently care when its parent Mixer's level changes. */
-    public void levelChanged(float oldLevel, float newLevel) {}
+    public void levelChanged(double oldLevel, double newLevel) {}
 
     public List<StatefulAnimator> getSubscribers() {
         return subscribers;

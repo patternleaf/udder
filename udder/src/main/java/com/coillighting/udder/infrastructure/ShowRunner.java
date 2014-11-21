@@ -3,11 +3,13 @@ package com.coillighting.udder.infrastructure;
 import java.util.List;
 import java.util.Queue;
 
-import com.coillighting.udder.effect.Effect;
 import com.coillighting.udder.mix.Frame;
 import com.coillighting.udder.mix.Mixer;
 import com.coillighting.udder.mix.TimePoint;
 import com.coillighting.udder.model.Pixel;
+import com.coillighting.udder.util.TimingUtil;
+
+import static com.coillighting.udder.util.LogUtil.log;
 
 /** A ShowRunner owns all the infrastructure required to pump events through
  *  a Mixer which implements the current scenegraph. This object owns the scene
@@ -27,19 +29,25 @@ public class ShowRunner implements Runnable {
 
     // Timing measurements.
     // Normally (busyWait=false) fps roughly equals 1000/frameDelayMillis.
-    protected int frameDelayMillis = 30; // ignored if busywait
+    public static int DEFAULT_FRAME_DELAY_MILLIS = 10;
+    protected int frameDelayMillis = DEFAULT_FRAME_DELAY_MILLIS; // ignored if busywait
     protected boolean busyWait = false; // wait in a hot idle loop, not thread sleep
     protected long previousFrameRealTimeMillis = 0;
     protected long frameCounter = 0;
 
-    // Break out idling into its own method so the profiler can account
-    // for it separately. Only works with standard sleep, NOT busywait mode.
-    // Set it to false when not profiling.
-    private final boolean profilerFriendlySleep = false;
-
-    public ShowRunner(Queue<Command> commandQueue, Mixer mixer,
+    public ShowRunner(Integer frameDelayMillis, Queue<Command> commandQueue, Mixer mixer,
         Router router, List<Queue<Frame>> frameQueues)
     {
+        if(frameDelayMillis != null) {
+            int delay = frameDelayMillis.intValue();
+            if(delay < 1) {
+                throw new IllegalArgumentException("Invalid frame delay (too short): "
+                    + delay + " ms");
+            } else {
+                this.frameDelayMillis = delay;
+            }
+        }
+
         if(commandQueue==null) {
             throw new NullPointerException(
                 "ShowRunner requires a queue that supplies commands.");
@@ -70,7 +78,7 @@ public class ShowRunner implements Runnable {
             int droppedFrameCount = -1;
             final int droppedFrameLogInterval = 1001;
 
-            this.log("Starting show.");
+            log("Starting show.");
 
             while(true) {
 
@@ -84,7 +92,7 @@ public class ShowRunner implements Runnable {
                         try {
                             dest.setState(command.getValue());
                         } catch(Exception e) {
-                            this.log("Failed to issue command to destination "
+                            log("Failed to issue command to destination "
                                 + dest + " at " + path + ": " + e); // TEMP?
                         }
                     }
@@ -99,7 +107,7 @@ public class ShowRunner implements Runnable {
                         // so we count frames until the clock changes in order to
                         // estimate framerate.
                         if(latency > 0) {
-                            this.log("Command latency <= " + latency + " ms (" + frameCounter + " frames / " + latency + " ms) = " + (1000 * frameCounter/latency) + " fps");
+                            log("Command latency <= " + latency + " ms (" + frameCounter + " frames / " + latency + " ms) = " + (1000 * frameCounter/latency) + " fps");
                             previousFrameRealTimeMillis = time;
                             frameCounter = 1;
                         } else {
@@ -109,28 +117,23 @@ public class ShowRunner implements Runnable {
 
                     this.mixer.animate(timePoint);
 
-                    // TODO clarify ownership of pixels.. render() isn't quite threadsafe yet.
-                    // The transmitters MUST NOT modify pixels[] or their contents.
-                    // FIXME Should make an ImmutablePixel interface now that multiple transmitters
-                    // are trusted not to write to pixels. Unfortunately Java does not
-                    // support immutable arrays.
-                    // IDEA Could use object pooling to recycle these frames without
+                    // FUTURE Could use object pooling to recycle these Frames without
                     // reallocation when the downstream transmitter is done with them.
-                    // This worked well in LD50. Same goes with the pixel arrays.
-                    Pixel[] pixels = this.mixer.render();
+                    // This worked well in LD50.
+                    Pixel[] mixerPixels = this.mixer.render();
 
                     int q=0;
                     for(Queue<Frame> frameQueue: frameQueues) {
-                        Frame frame = new Frame(timePoint, pixels);
+                        Frame frame = Frame.createByCopy(timePoint, mixerPixels);
 
                         if(!frameQueue.offer(frame)) {
                             if(droppedFrameCount == -1) {
-                                this.log("Frame queue #" + q + " (of " + frameQueues.size()
+                                log("Frame queue #" + q + " (of " + frameQueues.size()
                                     + " queues) overflow. Dropped frame at " + timePoint);
                                 droppedFrameCount = 1;
                             } else {
                                 if(droppedFrameCount + 1 >= droppedFrameLogInterval) {
-                                    this.log("Frame queue #" + q + " (of " + frameQueues.size()
+                                    log("Frame queue #" + q + " (of " + frameQueues.size()
                                         + " queues) overflow on frame at "
                                         + timePoint + ". Dropped " + droppedFrameCount
                                         + " frames since the previous message like this.");
@@ -148,65 +151,24 @@ public class ShowRunner implements Runnable {
                     // more than 10 layers * 2 Kpixels, 1 of them animated.
                     // Performance degraded by roughly 20% when I animated 10 of
                     // them instead.
-                    ShowRunner.waitBusy(10000);
+                    TimingUtil.waitBusy(10000);
                     sleepy = false;
                 } else {
                     // Our crude timing mechanism currently does not account for
                     // the cost of processing each command.
-                    if(profilerFriendlySleep) {
-                        this.waitSleepy(this.frameDelayMillis); // For profiling. (DEBUG)
-                    } else {
-                        // Normal
-                        Thread.sleep(this.frameDelayMillis);
-                    }
+                    this.waitSleepy(this.frameDelayMillis);
                     sleepy = false;
                 }
             }
         } catch(InterruptedException e) {
-            this.log("Stopping show.");
+            log("Stopping show.");
         }
     }
 
     // We break this out into a separate method so that a profiler can easily
-    // distinguish between a real hotspot and a quick nap. Enable above.
+    // distinguish between a real hotspot and a quick nap.
     protected void waitSleepy(long Duration) throws InterruptedException {
         Thread.sleep(this.frameDelayMillis);
     }
 
-    public void log(Object msg) {
-        System.out.println(msg);
-    }
-
-
-    //--------------------------------------------------------------------------
-    // TODO move timing utils
-
-    private static volatile long waitSeed = System.nanoTime();
-
-    /** Wait by forcing the CPU to spin for several cycles, correlated with
-     *  the specified duration, evading optimizations that might rewrite this
-     *  method into a no-op. An alternative to a quick thread sleep, which isn't
-     *  very quick at these scales. EXPERIMENTAL.
-     */
-    public static void waitBusy(long duration) {
-        // See research here:
-        //    http://shipilev.net/blog/2014/nanotrusting-nanotime/
-        // and benchmarking source here (formally GP2, but apparently derived
-        // prior research into e.g. random-number generators etc.):
-        //    (GPL2) http://hg.openjdk.java.net/code-tools/jmh/file/cde312963a3d/jmh-core/src/main/java/org/openjdk/jmh/logic/BlackHole.java#l400
-
-        // Randomize, then reuse, the seed to avoid optimizations.
-        long t = waitSeed;
-
-        // See the article re: this backwards-counting trick.
-        for (long i=duration; i>0; i--) {
-            // 48 bit linear congruential generator with prime addend.
-            t += (t * 0x5DEECE66DL + 0xBL + i) & (0xFFFFFFFFFFFFL);
-        }
-
-        // Memoization buster
-        if (t == 42) {
-            waitSeed += t;
-        }
-    }
 }

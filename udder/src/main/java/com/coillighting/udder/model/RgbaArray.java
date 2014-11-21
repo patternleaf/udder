@@ -8,7 +8,6 @@ public class RgbaArray {
     private Integer[] pixels = null;
 
     public RgbaArray(Integer[] pixels) {
-        // TODO assert not null
         this.pixels = pixels;
     }
 

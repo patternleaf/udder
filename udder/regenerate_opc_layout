@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+# Delete the OPC layout JSON file, then regenerate a new one on the basis of
+# the current patch sheet given in your properties file. After regenerating the
+# layout, Udder will quit.
+#
+# This example uses the bundled jar to accomplish this task. If you are actively
+# hacking the patch sheet interpreter or the OPC layout JSON generator, then you
+# should write your own script to run your modified Udder from its build
+# location.
+#
+# Don't edit the layout file. Edit your patch sheet, then let Udder generate the
+# layout file, or you'll lose your changes.
+#
+# You don't need a layout file unless you're using the OPC gl_server as a
+# monitor.
+
+
+LAYOUT="conf/opc_layout.json"
+rm $LAYOUT
+java -cp "dist/udder-0.4.jar" com.coillighting.udder.Main conf/dairy.properties --create-opc-layout $LAYOUT

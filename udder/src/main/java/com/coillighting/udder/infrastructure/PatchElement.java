@@ -34,8 +34,9 @@ public class PatchElement {
     private int group;
     private int address;
 
-    // TODO validate parameter ranges
     public PatchElement(double[] point, int group, int address) {
+        if(address < 0) throw new IllegalArgumentException("Negative device address: " + address);
+        if(group < 0) throw new IllegalArgumentException("Negative group index: " + group);
         this.point = point;
         this.group = group;
         this.address = address;

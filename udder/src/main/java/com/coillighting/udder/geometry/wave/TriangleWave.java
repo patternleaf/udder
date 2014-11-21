@@ -1,6 +1,6 @@
 package com.coillighting.udder.geometry.wave;
 
-import com.coillighting.udder.Util;
+import com.coillighting.udder.geometry.Crossfade;
 
 /** A linearly interpolated signal that continuously oscillates between two
  *  values, with sharp corners at the values themselves.
@@ -23,7 +23,7 @@ import com.coillighting.udder.Util;
             x1 = start;
         }
         x *= 2.0;
-        return Util.crossfadeLinear(x, x0, x1);
+        return Crossfade.linear(x, x0, x1);
     }
 
 }

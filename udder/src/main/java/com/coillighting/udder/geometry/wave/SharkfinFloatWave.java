@@ -1,6 +1,6 @@
 package com.coillighting.udder.geometry.wave;
 
-import com.coillighting.udder.Util;
+import com.coillighting.udder.geometry.Crossfade;
 
 /** A sinusoidally interpolated signal that continuously oscillates from start
  *  to end, then discontinuously jumps back to the start value.
@@ -12,7 +12,7 @@ import com.coillighting.udder.Util;
     }
 
     public float interpolate(float x) {
-        return Util.crossfadeSinusoidal(x, start, end);
+        return Crossfade.sinusoidal(x, start, end);
     }
 
 }

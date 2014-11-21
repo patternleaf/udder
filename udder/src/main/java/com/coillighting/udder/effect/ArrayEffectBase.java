@@ -25,7 +25,7 @@ public abstract class ArrayEffectBase extends EffectBase {
     }
 
     public Object getState() {
-        return null; // TODO
+        return null; // TODO ArrayEffectBase state
     }
 
     public void setState(Object state) throws ClassCastException {

@@ -1,8 +1,8 @@
 package com.coillighting.udder.effect.woven;
 
-import com.coillighting.udder.Util;
 import com.coillighting.udder.blend.BlendOp;
 import com.coillighting.udder.blend.MaxBlendOp;
+import com.coillighting.udder.geometry.Reshape;
 import com.coillighting.udder.mix.TimePoint;
 import com.coillighting.udder.model.Pixel;
 
@@ -38,6 +38,7 @@ public class WeftCue extends CueBase {
     }
 
     public void animate(TimePoint timePoint) {
+
         if(fadeState == CueFadeStateEnum.START) {
             weftX = 0;
             weftY = 0;
@@ -52,7 +53,6 @@ public class WeftCue extends CueBase {
             }
 
         } else if(fadeState == CueFadeStateEnum.RUNNING) {
-
             if(this.isElapsed(timePoint)) {
                 // Finish the outgoing step as well as any remaining
                 // steps, then move on to the next cue. Timing is never
@@ -92,11 +92,11 @@ public class WeftCue extends CueBase {
 
                 // Fade from white to threadColor as we fade in.
                 Pixel color = new Pixel(threadColor); // could reuse this tmp obj
-                float brightness = Util.reshapeExponential((float) elapsed, 2.0f);
+                float brightness = Reshape.exponential((float) elapsed, 2.0f);
                 color.blendWith(cursorColor, 1.0f - brightness, blendOp);
 
                 // Fade in from black, a little jumpier than warp because the shuttle is snappy.
-                color.scale(Util.reshapeExponential(brightness, 0.25f));
+                color.scale(Reshape.exponential(brightness, 0.25f));
 
                 frame.weft[weftX][weftY].setColor(color);
             }

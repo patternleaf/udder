@@ -12,18 +12,14 @@ public abstract class EffectBase implements Effect {
     protected Pixel[] pixels = null;
     protected Device[] devices = null;
 
-    /** Reinitialize the raster to match the size of the new patch sheet. */
-    public void patchDevices(List<Device> devices) {
-        int length = devices.size();
-        if(length > 0) {
-            this.devices = new Device[length];
-            for(int i=0; i<this.devices.length; i++) {
-                this.devices[i] = devices.get(i);
-            }
+    /** Reinitialize the Pixel array to match the size of the new patch sheet. */
+    public void patchDevices(Device[] devices) {
+        if(devices.length > 0) {
+            this.devices = devices.clone();
         } else {
             this.devices = null;
         }
-        this.initPixels(length);
+        this.initPixels(this.devices.length);
     }
 
     protected void initPixels(int length) {
@@ -39,9 +35,8 @@ public abstract class EffectBase implements Effect {
 
     public void animate(TimePoint timePoint) { }
 
+    /** See borrowing contract on Effect. */
     public Pixel[] render() {
-        // TODO spell out borrowing contract for render! borrow must not modify.
-        // Probably do this with an (Immutable) Pixel & MutablePixel.
         return this.pixels;
     }
 
@@ -49,6 +44,6 @@ public abstract class EffectBase implements Effect {
      *  past 0%. Most effects don't care, but some will want to rewind when
      *  that happens.
      */
-    public void levelChanged(float oldLevel, float newLevel) {}
+    public void levelChanged(double oldLevel, double newLevel) {}
 
 }

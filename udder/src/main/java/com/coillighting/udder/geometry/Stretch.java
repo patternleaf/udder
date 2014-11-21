@@ -4,7 +4,7 @@ import java.awt.geom.Point2D;
 
 /** Distort 2D coordinates using a 4-point quad control polygon.
  *  So far this has been tested only with 2D inputs limited to the unit
- *  square. TODO: test with inputs greater than 1 or less than 0.
+ *  square.
  */
 public class Stretch {
 
@@ -72,6 +72,8 @@ public class Stretch {
 }
 
 /* TODO: port tests from Python
+ * TODO: test with inputs greater than 1 or less than 0.
+
 def stretch1d(n, nmin, nmax):
     """n: normalized to [0..1.0]"""
     return nmin + n * (nmax - nmin)

@@ -1,8 +1,7 @@
 package com.coillighting.udder.effect.woven;
 
-import com.coillighting.udder.Util;
+import com.coillighting.udder.geometry.Reshape;
 import com.coillighting.udder.mix.TimePoint;
-import com.coillighting.udder.model.Pixel;
 
 /** Pulse the completed scene to retain visual interest. */
 public class FinaleCue extends CueBase {
@@ -57,7 +56,7 @@ public class FinaleCue extends CueBase {
 
     // x in range [0.0..1.0]
     public double fadeOut(double x) {
-        return Util.reshapeExponential(1.0 - x, 1.1);
+        return Reshape.exponential(1.0 - x, 1.1);
     }
 
     public void animate(TimePoint timePoint) {
@@ -80,15 +79,13 @@ public class FinaleCue extends CueBase {
 
                 if (elapsed <= timeShare) {
                     // STEP A - accelerating oscillation
-                    // TODO - involve all the colors in all the layers - maybe add
-                    // a scaling factor to WovenFrame itself?
                     y = (float) this.accelerate(elapsedSeconds);
                 } else {
                     double plateauDuration = (1.0 - timeShare) * 0.666;
                     double releaseDuration = 1.0 - timeShare - plateauDuration;
 
                     if(elapsed <= timeShare + plateauDuration) {
-                        // STEP B - hold it
+                        // STEP B - hold
                         double x = (elapsed - timeShare) / plateauDuration;
                         y = (float) this.plateau(x);
                     } else {
@@ -101,7 +98,6 @@ public class FinaleCue extends CueBase {
                 // maybe separate backgrounds for front and rear gate?
 
                 float bgScale = y * (float)scale;
-                // TODO variable color here
                 this.frame.background.setColor(bgScale * 0.20f, bgScale * 0.0f, bgScale * 1.0f);
             }
         }

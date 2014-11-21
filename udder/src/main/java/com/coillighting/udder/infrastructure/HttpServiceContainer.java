@@ -13,9 +13,12 @@ import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.Status;
 
-import com.coillighting.udder.Util;
-
 import static org.boon.Exceptions.SoftenedException;
+
+import com.coillighting.udder.util.CollectionUtil;
+import com.coillighting.udder.util.StringUtil;
+
+import static com.coillighting.udder.util.LogUtil.log;
 
 /** The HTTP controller for Udder's Simple-brand webserver.
  *  Receives requests, translates them into commands, and responds as needed.
@@ -140,7 +143,7 @@ public class HttpServiceContainer implements Container {
             // attempt to respond.
             StringWriter sw = new StringWriter();
             t.printStackTrace(new PrintWriter(sw));
-            this.log("Uncaught error in request " + (requestIndex - 1)
+            log("Uncaught error in request " + (requestIndex - 1)
                     + ": " + t + '\n' + sw);
         }
     }
@@ -157,7 +160,7 @@ public class HttpServiceContainer implements Container {
         int index = this.requestIndex;
         ++this.requestIndex; // Increment before any possible exception.
         response.setStatus(Status.OK);
-        String responseBody = "TODO " + index;
+        String responseBody = "TODO GET " + index;
         this.respond(response, responseBody);
     }
 
@@ -176,36 +179,36 @@ public class HttpServiceContainer implements Container {
                 if(accepted) {
                     response.setStatus(Status.OK);
                     responseBody = "OK " + index;
-                    if(this.debug) this.log(command.toString() + ' ' + responseBody);
+                    if(this.debug) log(command.toString() + ' ' + responseBody);
                 } else {
                     // For some reason, Status doesn't know about RFC 6585.
                     response.setCode(429);
                     response.setDescription("Too Many Requests");
                     responseBody = "DROPPED " + index;
-                    if(this.debug) this.log("Request " + index + " for " + command + " dropped. No room in queue.");
+                    if(this.debug) log("Request " + index + " for " + command + " dropped. No room in queue.");
                 }
             }
 
         } catch (RoutingException e) {
-            String routes = Util.join(Util.sorted(this.commandMap.keySet()), "\n    ");
+            String routes = StringUtil.join(CollectionUtil.sorted(this.commandMap.keySet()), "\n    ");
             response.setStatus(Status.NOT_FOUND);
             responseBody = "NOT_FOUND " + index;
-            this.log(e.getMessage() + "\nAvailable routes:\n    " + routes);
+            log(e.getMessage() + "\nAvailable routes:\n    " + routes);
 
         } catch (UnsupportedEncodingException e) {
             response.setStatus(Status.BAD_REQUEST);
             responseBody = "UNSUPPORTED_ENCODING " + index;
-            if(this.verbose) this.log("Unsupported character encoding in request " + index + ": " + e);
+            if(this.verbose) log("Unsupported character encoding in request " + index + ": " + e);
 
         } catch (ClassCastException e) {
-            this.log("Error (malformed JSON?) in request " + index + ": " + e);
+            log("Error (malformed JSON?) in request " + index + ": " + e);
 
             // Save you hours of misguided debugging by explaining this error.
             // Example of an incomprehensible parser error, with no real indication
             // of the problem: I tried to parse "foo" and caught an error saying,
             // "java.lang.ClassCastException: org.boon.core.value.CharSequenceValue
             // cannot be cast to com.coillighting.udder.Command".
-            this.log("Note that ClassCastExceptions are sometimes really just "
+            log("Note that ClassCastExceptions are sometimes really just "
                     + "JSON syntax errors, but the Boon parser's error messages "
                     + "are inarticulate.");
 
@@ -215,12 +218,12 @@ public class HttpServiceContainer implements Container {
         } catch(SoftenedException e) {
             response.setStatus(Status.BAD_REQUEST);
             responseBody = "PARSE_ERROR " + index;
-            if(this.verbose) this.log("Boon failed to parse a valid command from request " + index + ": " + e);
+            if(this.verbose) log("Boon failed to parse a valid command from request " + index + ": " + e);
 
         } catch(CommandParserException e) {
             response.setStatus(Status.BAD_REQUEST);
             responseBody = "PARSE_ERROR " + index;
-            if(this.verbose) this.log("Failed to parse a valid command from request " + index + ": " + e);
+            if(this.verbose) log("Failed to parse a valid command from request " + index + ": " + e);
 
         } catch(Exception e) {
             response.setStatus(Status.BAD_REQUEST);
@@ -228,7 +231,7 @@ public class HttpServiceContainer implements Container {
 
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
-            this.log("Unexpected error in request " + index + ": " + e + '\n' + sw);
+            log("Unexpected error in request " + index + ": " + e + '\n' + sw);
         }
 
         this.respond(response, responseBody);
@@ -253,7 +256,7 @@ public class HttpServiceContainer implements Container {
         } catch (IOException e) {
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
-            this.log("Error writing response body: " + e + '\n' + sw);
+            log("Error writing response body: " + e + '\n' + sw);
             return false;
         }
     }

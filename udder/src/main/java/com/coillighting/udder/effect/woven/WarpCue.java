@@ -1,8 +1,8 @@
 package com.coillighting.udder.effect.woven;
 
-import com.coillighting.udder.Util;
 import com.coillighting.udder.blend.BlendOp;
 import com.coillighting.udder.blend.MaxBlendOp;
+import com.coillighting.udder.geometry.Reshape;
 import com.coillighting.udder.mix.TimePoint;
 import com.coillighting.udder.model.Pixel;
 
@@ -22,10 +22,7 @@ public class WarpCue extends CueBase {
 
     public WarpCue(long duration, WovenFrame frame, Pixel threadColor) {
         super(duration, frame);
-
-        // TODO variable colors
         this.threadColor = new Pixel(threadColor);
-
         this.cursorColor = Pixel.white();
         this.backgroundColor = Pixel.black();
         this.blendOp = new MaxBlendOp();
@@ -83,15 +80,15 @@ public class WarpCue extends CueBase {
 
                 // Fade from white to threadColor as we fade in.
                 Pixel color = new Pixel(threadColor); // could reuse this tmp obj
-                float brightness = Util.reshapeExponential((float) elapsed, 2.0f);
+                float brightness = Reshape.exponential((float) elapsed, 2.0f);
                 color.blendWith(cursorColor, 1.0f - brightness, blendOp);
 
                 // Fade in from black
-                color.scale(Util.reshapeExponential(brightness, 0.36f));
+                color.scale(Reshape.exponential(brightness, 0.36f));
 
                 frame.warp[warpIndex].setColor(color);
 
-                float bgScale = 0.5f * (float) Util.reshapeExponential(
+                float bgScale = 0.5f * (float) Reshape.exponential(
                     1.0 - this.getFractionElapsed(timePoint), 3.0);
                 frame.background.setColor(bgScale * 1.0f, bgScale * 0.5f, bgScale * 0.0f);
             }

@@ -9,10 +9,10 @@ import com.coillighting.udder.mix.TimePoint;
  */
 public abstract class MixableBase implements Mixable {
 
-    protected BlendOp blendOp = null; // TODO: default to max mode
+    // If you don't know what BlenOp to set, start with MaxBlendOp.
+    protected BlendOp blendOp = null;
 
-    // TODO convert to double
-    protected float level = 0.0f; // dark by default so we can fade in, not pop on
+    protected double level = 0.0; // dark by default so we can fade in, not pop on
 
     public MixableBase() { }
 
@@ -28,17 +28,17 @@ public abstract class MixableBase implements Mixable {
         this.blendOp = blendOp;
     }
 
-    public float getLevel() {
+    public double getLevel() {
         return this.level;
     }
 
-    public void setLevel(float level) {
-        if(level < 0.0f) {
-            level = 0.0f;
-        } else if(level > 1.0f) {
-            level = 1.0f;
+    public void setLevel(double level) {
+        if(level < 0.0) {
+            level = 0.0;
+        } else if(level > 1.0) {
+            level = 1.0;
         }
-        float old = this.level;
+        double old = this.level;
         if(old != level) {
             this.level=level;
             this.notifyLevelChanged(old, level);
@@ -48,6 +48,6 @@ public abstract class MixableBase implements Mixable {
     /** Subclasses may optionally override this method if they implement
      *  a custom response to level changes.
      */
-    protected void notifyLevelChanged(float oldLevel, float newLevel) {}
+    protected void notifyLevelChanged(double oldLevel, double newLevel) {}
 
 }

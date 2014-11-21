@@ -3,9 +3,11 @@ package com.coillighting.udder.effect.woven;
 import java.util.LinkedHashMap;
 
 import com.coillighting.udder.effect.EffectBase;
-import static com.coillighting.udder.effect.woven.CueEnum.*;
 import com.coillighting.udder.mix.TimePoint;
 import com.coillighting.udder.model.Pixel;
+
+import static com.coillighting.udder.util.LogUtil.log;
+import static com.coillighting.udder.effect.woven.CueEnum.*;
 
 /** The Woven effect conveys the motions of manually weaving on a loom. This
  *  effect is mapped onto the Boulder Dairy's architectural-scale metal tapestry
@@ -75,10 +77,10 @@ public class WovenEffect extends EffectBase {
         // if(currentStep == WEFT) return; // TEMP-DEBUG
 
         if(step == null) {
-            if(this.verbose) this.log("\n\n============================ reset woven scene");
+            if(this.verbose) log("\n\n============================ reset woven scene");
             this.reset();
         } else {
-            if(this.verbose) this.log("\n---------------------------- woven cue " + step);
+            if(this.verbose) log("\n---------------------------- woven cue " + step);
             Cue cue = cues.get(step);
             if(cue == null) {
                 throw new NullPointerException("Invalid cue: " + step);
@@ -99,7 +101,7 @@ public class WovenEffect extends EffectBase {
             this.setStep(BLACKOUT);
         } else {
             boolean takeNext = false;
-            for(CueEnum step: cues.keySet()) { // TODO confirm this is iterating in order as advertised
+            for(CueEnum step: cues.keySet()) {
                 if(takeNext) {
                     this.setStep(step);
                     return;
@@ -133,10 +135,6 @@ public class WovenEffect extends EffectBase {
         }
     }
 
-    protected void log(Object msg) {
-        System.out.println(msg);
-    }
-
     public void animate(TimePoint timePoint) {
         if(currentCue == null) {
             this.nextCue();
@@ -146,7 +144,7 @@ public class WovenEffect extends EffectBase {
             this.nextCue();
         }
         // TEMP: ASCII placeholder animation
-        if(this.verbose) this.log(this.frame);
+        if(this.verbose) log(this.frame);
     }
 
     public Pixel[] render() {

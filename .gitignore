@@ -26,4 +26,6 @@ udder.sublime-*
 .idea
 out
 *.diff
+
 *SWITCHEROO
+_notes
