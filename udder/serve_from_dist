@@ -11,4 +11,4 @@
 # If the gl server segfaults, it probably just can't find the opc_layout.json
 # conf file.
 
-java -Xverify:none -cp "dist/udder-0.4.jar" com.coillighting.udder.Main conf/dairy.properties
+java -Xverify:none -cp "dist/udder-0.4.1.jar" com.coillighting.udder.Main conf/dairy.properties
