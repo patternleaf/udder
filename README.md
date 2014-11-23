@@ -1,4 +1,4 @@
-udder 0.4.0-rc6
+udder 0.4.1-pre
 ===============
 
 HTTP server, animators, mixer, and Open Pixel Control (OPC) renderer for a 2014 public lighting installation at Boulder's Dairy Center for the Arts.
@@ -147,7 +147,7 @@ and tooling to this project (including its earlier incarnation as LD50):
 * Erin Rosenthal
 * Goolie Gould
 * Josh Erickson
-* Sparkfun.com
+* [Sparkfun.com](http://www.sparkfun.com)
 * ...and the whole RA crew.
 
 
