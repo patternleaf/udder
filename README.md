@@ -147,8 +147,9 @@ and tooling to this project (including its earlier incarnation as LD50):
 * Erin Rosenthal
 * Goolie Gould
 * Josh Erickson
+* Jordan K. "Janitor" Paul
 * [Sparkfun.com](http://www.sparkfun.com)
-* ...and the whole RA crew.
+* ...and all the loyal beta testers from RA, Vox Lux, and Invisible Photons.
 
 
 Apache License, v2.0
