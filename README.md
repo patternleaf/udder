@@ -1,9 +1,9 @@
 udder 0.4.1-rc1
 ===============
 
-HTTP server, animators, mixer, and Open Pixel Control (OPC) renderer for a 2014 public lighting installation at Boulder's Dairy Center for the Arts.
+HTTP server, animators, mixer, and an Open Pixel Control (OPC) renderer for a 2014 public lighting installation at Boulder's Dairy Center for the Arts.
 
-The core API is designed as a toolkit of reusable lighting server components, so you can create your own shows by plugging in your custom effects to Udder's infrastructure components.
+The core API is designed as a toolkit of reusable lighting server components, so you can create your own shows by writing custom effects that plug in to Udder's infrastructure components.
 
 This API focuses on RGB LEDs. Soon we will add basic support for dimmers, strobes, OSC, MIDI, and DMX. If you are interested in controlling complex devices such as moving lights and robots, you might want to keep tabs on our more ambitious project, [libsinuous](https://github.com/coil-lighting/sinuous).
 
@@ -11,7 +11,7 @@ This API focuses on RGB LEDs. Soon we will add basic support for dimmers, strobe
 Author
 ------
 
-[Mike Bissell, Coil Lighting: http://www.coil-lighting.com](http://www.coil-lighting.com/)
+Mike Bissell, Coil Lighting: [http://www.coil-lighting.com](http://www.coil-lighting.com/)
 
 
 Getting Started - Running Examples
