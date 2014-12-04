@@ -3,16 +3,31 @@ udder 0.4.1-rc1
 
 HTTP server, animators, mixer, and Open Pixel Control (OPC) renderer for a 2014 public lighting installation at Boulder's Dairy Center for the Arts.
 
+The core API is designed as a toolkit of reusable lighting server components, so you can create your own shows by plugging in your custom effects to Udder's infrastructure components.
+
+This API focuses on RGB LEDs. Soon we will add basic support for dimmers, strobes, OSC, MIDI, and DMX. If you are interested in controlling complex devices such as moving lights and robots, you might want to keep tabs on our more ambitious project, [libsinuous](https://github.com/coil-lighting/sinuous).
+
 
 Author
 ------
-[Mike Bissell, Coil Lighting](http://www.coil-lighting.com/)
+
+[Mike Bissell, Coil Lighting: http://www.coil-lighting.com](http://www.coil-lighting.com/)
 
 
-Getting Started
----------------
+Getting Started - Running Examples
+----------------------------------
 
-You need to install JDK 1.7+ and Maven 3.2.3+.
+To run the example app (which is configured to display the Dairy show), you must install JRE 1.7+ or JDK 1.7+. Your computer might already come with Java 1.7+. If not, look [here](https://www.java.com/en/download/help/download_options.xml).
+
+You should be able to serve Udder from the dist jar using the `udder/serve_from_dist` script, once the Java interpreter is in your path.
+
+The dist jar contains the two non-JDK dependencies, Boon and Simple.
+
+
+Getting Started - Hacking Udder
+-------------------------------
+
+To modify Udder, you need to install JDK 1.7+ and Maven 3.2.3+.
 
 To help bootstrap development, this repository temporarily comes with a copy of Maven 3.2.3 plus several jars required by the application. Eventually these resources will disappear. If you've already installed the JDK and Maven on your devbox, you don't have to use them. Mac OS X users may `source env.sh` to get set up rapidly.
 
@@ -20,7 +35,9 @@ Once Maven and the JDK are installed in your current environment (see `env.sh` f
 
 After the build script succeeds, you may start the server using the `serve_from_build` script in the same directory. By default the server listens on [http://localhost:8080](http://localhost:8080) and attempts to render at 100fps max.
 
-Alternately, you should be able to serve from the dist jar using the neighboring `serve_from_dist` script, if your environment is set up. (More on this in a few days.)
+Currently the built jar does not incorporate the Boon and Simple jars. Instead, it includes them by reference as part of the Java classpath using the -cp argument, using the localized copies temporarily included with this repo. Soon we will enable bundling in order to ameliorate classpath woes.
+
+To write your own shows, you normally just import Udder's dist jar (see below) into your own, separate project. By early 2015 we hope to separate Udder's core API into its own jar, leaving the Dairy show as an example application. At that point you will stop importing Udder and import the core API instead. (More to come.)
 
 
 Udder Service Architecture in a Nutshell
