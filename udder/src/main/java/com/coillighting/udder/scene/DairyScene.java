@@ -3,7 +3,6 @@ package com.coillighting.udder.scene;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import static java.io.File.separator;
 
 import com.coillighting.udder.blend.BlendOp;
@@ -57,31 +56,67 @@ public abstract class DairyScene {
         // layers look good together. When the mixer's shuffler
         // is running, pairs and trios of adjacent layers
         // appear together, fading in and out.
-        String [] sequencedTextures = {
-                "blue_skull_necklace.png",
-                "green_gilled_lace.png",
-                "yellow_antennae.png",
-                "cyan_chains.png",
-                "magenta_loops.png",
-                "yellow_lavender_calligraphic.png",
-                "purple_chains.png",
-                "amber_mustachioed_cthulus.png",
-                "orange_mustachioed_cthulus.png",
-                "purple_blue_chains.png",
-                "red_triclops_minimal.png",
-                "red_triclops_embellished.png",
-                "light_blue_calligraphemes.png",
-                "lavender_propellers.png",
-                "skyblue_loops.png",
-                "mauve_taupe_worms.png",
-                "redblue_triclops.png",
+        String adir = "dairy_collection_A_720p" + separator;
+        String bdir = "dairy_collection_B" + separator;
+
+        String [] sequencedTextures_A = {
+                adir + "blue_skull_necklace.png",
+                adir + "green_gilled_lace.png",
+                adir + "yellow_antennae.png",
+                adir + "cyan_chains.png",
+                adir + "magenta_loops.png",
+                adir + "yellow_lavender_calligraphic.png",
+                adir + "purple_chains.png",
+                adir + "amber_mustachioed_cthulus.png",
+                adir + "orange_mustachioed_cthulus.png",
+                adir + "purple_blue_chains.png",
+                adir + "red_triclops_minimal.png",
+                adir + "red_triclops_embellished.png",
+                adir + "light_blue_calligraphemes.png",
+                adir + "lavender_propellers.png",
+                adir + "skyblue_loops.png",
+                adir + "mauve_taupe_worms.png",
+                adir + "redblue_triclops.png",
         };
+
+        String [] sequencedTextures_AandB = {
+                bdir + "flames.jpg",
+                adir + "amber_mustachioed_cthulus.png",
+                bdir + "flower_pedals.jpg",
+                adir + "rose_tint_trigrams.png",
+                bdir + "luminous_purple_flower.jpg",
+                adir + "coppertone_trigrams.png",
+                bdir + "orange_clouds.jpg",
+                adir + "light_amber_trigrams.png",
+                bdir + "pink_yellow_orange_flowers.jpg",
+                adir + "light_cyan_trigrams.png",
+                bdir + "orange_green_geometry.jpg",
+                adir + "orange_mustachioed_cthulus.png",
+                bdir + "purple_on_green_flower.jpg",
+                adir + "redblue_triclops.png",
+                bdir + "space_clouds.jpg",
+                adir + "green_gilled_lace.png",
+                bdir + "trippy.jpg",
+                adir + "red_triclops_minimal.png",
+                bdir + "warm_cool_weave.jpg",
+                adir + "purple_chains.png",
+                bdir + "warped_squares.jpg",
+                adir + "light_amber_trigrams.png",
+                bdir + "water_orange.jpg",
+                adir + "mauve_taupe_worms.png",
+                bdir + "white_yellow_flowers.jpg",
+                adir + "yellow_antennae.png",
+                bdir + "yellow_on_green_flowers.jpg"
+        };
+
+        // TEMP for the dairy
+        String [] sequencedTextures = sequencedTextures_AandB;
 
         int sequenceStartIndex = layers.size();
         for(String filename: sequencedTextures) {
             Layer texture = new Layer("Texture " + filename,
                 new TextureEffect(
-                    "images" + separator + "dairy_collection_A_720p" + separator + filename));
+                    "images" + separator + filename));
             texture.setBlendOp(max);
             layers.add(texture);
         }
