@@ -1,4 +1,4 @@
-udder 0.4.1-rc1
+udder 0.4.1-rc2
 ===============
 
 HTTP server, animators, mixer, and an Open Pixel Control (OPC) renderer for a 2014 public lighting installation at Boulder's Dairy Center for the Arts.
