@@ -62,11 +62,11 @@ Details:
 * **Photons** enter the eyes of the audience and of the **lighting designer**. Thus the cycle is complete.
 
 Important points:
-* Udder has a **multithreaded** architecture, coupled by two concurrent queues.
-* Data flows down **one** non-branching path, through the three linked stages of the pipeline.
+* Udder has a **multithreaded** architecture, coupled by two kinds of concurrent queues.
+* If you're transmitting to just one OPC server, data flows down **one** non-branching path, through the three linked stages of the pipeline.
 * The ShowRunner processes commands and renders frames **asynchronously** with respect to incoming requests.
 * The OpcTransmitter broadcasts frames **asynchronously** with respect to the renderer.
-* You may optionally connect multiple output queues to multiple OpcTransmitters, to copy the show to multiple destinations independently. We used this to stream frames to both physical LED strips and a 3D visualizer simultaneously. Each transmitter runs in its own thread, with its own timing parameters.
+* You may optionally connect multiple output queues to multiple OpcTransmitters, to copy the show to multiple destinations independently. We used this to stream frames to both physical LED strips and a 3D visualizer simultaneously. Each transmitter runs in its own thread, with its own timing parameters. In this case, dataflow branches out at the second kind of concurrent queue. Each output gets its own queue.
 
 
 Udder Animation Architecture in a Nutshell
