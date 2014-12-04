@@ -33,7 +33,7 @@ To help bootstrap development, this repository temporarily comes with a copy of 
 
 Once Maven and the JDK are installed in your current environment (see `env.sh` for examples), `cd udder` and run either the `build` script or `build_clean`.
 
-After the build script succeeds, you may start the server using the `serve_from_build` script in the same directory. By default the server listens on [http://localhost:8080](http://localhost:8080) and attempts to render at 100fps max.
+After the build script succeeds, you may start the server using the `serve_from_build` script in the same directory. By default the server listens on [http://localhost:8080](http://localhost:8080) and attempts to render at 100 fps max. These options may be specified in a .properties file.
 
 Currently the built jar does not incorporate the Boon and Simple jars. Instead, it includes them by reference as part of the Java classpath using the -cp argument, using the localized copies temporarily included with this repo. Soon we will enable bundling in order to ameliorate classpath woes.
 
