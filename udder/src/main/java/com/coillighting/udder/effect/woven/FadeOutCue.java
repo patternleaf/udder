@@ -1,5 +1,6 @@
 package com.coillighting.udder.effect.woven;
 
+import com.coillighting.udder.geometry.Reshape;
 import com.coillighting.udder.mix.TimePoint;
 import com.coillighting.udder.model.Pixel;
 
@@ -21,7 +22,10 @@ public class FadeOutCue extends CueBase {
                 this.frame.setBrightness(0.0);
                 this.stopTimer();
             }
-            this.frame.setBrightness(1.0 - elapsed);
+
+            // Bright fade out, quick tail-off:
+            // http://www.wolframalpha.com/input/?i=%281.0-x%29**0.4+from+0+to+1
+            this.frame.setBrightness(Reshape.exponential(1.0 - elapsed, 0.4));
         }
     }
 

@@ -118,9 +118,9 @@ public abstract class DairyScene {
             + " devices to the DairyScene's Mixer.");
 
         for(Mixable layer: mixer) {
-            layer.setLevel(0.0f);
+            layer.setLevel(0.0);
         }
-        mixer.setLevel(1.0f);
+        mixer.setLevel(1.0);
 
         System.out.println(mixer.getDescription());
         System.out.println("Shuffled sequence start layer: "

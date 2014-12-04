@@ -40,10 +40,10 @@ public class DairyShuffler implements StatefulAnimator {
     protected Interpolation interpolationModeIncoming;
     protected Interpolation interpolationModeOutgoing;
     protected int incomingLayerIndex;
-    protected float incomingLevel;
-    protected float primaryLevel;
-    protected float outgoingLevel;
-    protected float wovenLevel;
+    protected double incomingLevel;
+    protected double primaryLevel;
+    protected double outgoingLevel;
+    protected double wovenLevel;
 
     // temp variables we don't want to keep reallocating in every event
     private Point2D.Double off;
@@ -107,10 +107,10 @@ public class DairyShuffler implements StatefulAnimator {
         wovenEffect.reset();
         cueDurationMillis = wovenCueDurationMillis;
         incomingLayerIndex = -1; // < 0: nothing incoming
-        incomingLevel = 0.0f;
-        primaryLevel = 0.0f;
-        outgoingLevel=0.0f;
-        wovenLevel = 0.0f;
+        incomingLevel = 0.0;
+        primaryLevel = 0.0;
+        outgoingLevel=0.0;
+        wovenLevel = 0.0;
         interpolationModeIncoming = Interpolation.SINUSOIDAL;
         interpolationModeOutgoing = Interpolation.SINUSOIDAL;
         cueStartTimeMillis = -1; // < 0: not started
@@ -164,7 +164,7 @@ public class DairyShuffler implements StatefulAnimator {
 
             if (wovenMode) {
                 if (cueStartTimeMillis == now) {
-                    wovenLevel = 1.0f;
+                    wovenLevel = 1.0;
                     mixer.getLayer(wovenLayerIndex).setLevel(wovenLevel);
                 }
             } else {
@@ -175,24 +175,24 @@ public class DairyShuffler implements StatefulAnimator {
                 // FUTURE: implement a 1D Interpolator API, for now just piggyback
                 // on the existing 2D API and ignore y.
                 // FIXME: convert all layer levels to doubles.
-                incomingLevel = (float) current.x;
+                incomingLevel = current.x;
                 this.setTextureLevelConditionally(incomingLevel, li);
 
                 // primary look (if applicable)
                 li -= 1;
-                primaryLevel = 1.0f;
+                primaryLevel = 1.0;
                 this.setTextureLevelConditionally(primaryLevel, li);
 
                 // outgoing look (if applicable)
                 li -= 1;
                 interpolator.interpolate2D(interpolationModeOutgoing, pct, on, current, off);
-                outgoingLevel = (float) current.x;
+                outgoingLevel = current.x;
                 this.setTextureLevelConditionally(outgoingLevel, li);
             }
         }
     }
 
-    private void setTextureLevelConditionally(float level, int layerIndex) {
+    private void setTextureLevelConditionally(double level, int layerIndex) {
         if(layerIndex >= shuffleLayerStartIndex
                 && layerIndex <= shuffleLayerEndIndex) {
             mixer.getLayer(layerIndex).setLevel(level);

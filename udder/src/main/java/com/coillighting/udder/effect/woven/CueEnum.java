@@ -3,10 +3,10 @@ package com.coillighting.udder.effect.woven;
 public enum CueEnum {
 
     BLACKOUT("blackout"),
-    CURTAIN("curtain"),
+    // CURTAIN("curtain"), cut 12/4 per crew consensus
     WARP("warp"),
     WEFT("weft"),
-    FINALE("finale"),
+    // FINALE("finale"), cut (ditto)
     FADEOUT("fadeout");
 
     private String value;

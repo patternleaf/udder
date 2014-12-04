@@ -19,7 +19,11 @@ public class WovenFrame {
     protected BlendOp blendOp = null;
     protected double brightness = 1.0;
 
-    /** A single pixel maps onto the whole background. */
+    /** A single pixel maps onto the whole background.
+     * We previously used this to implement general washes and background
+     * pulses, but those were cut 12/4, so now it's just a black value
+     * for initializing this effect's internal compositing loop.
+     */
     public Pixel background = null;
 
     /** A single horizontal scanline row represents the warp. */
@@ -162,12 +166,6 @@ public class WovenFrame {
                 // Draw the nearest neighbor in the warp for this pixel.
                 // Fill from right to left.
                 final int xWarp = warp.length - 1 - (int)(px * warpScale);
-
-                // TEMP background colors to indicate px and group# (green=front)
-                // these actually look pretty good as the background for a high sat
-                // blue warp and a high sat red weft:
-                // if(group == 0) pixel.setColor(0.0f, 0.7f * (float) px, 0.0f);
-                // else if(group == 1) pixel.setColor(0.7f * (float) px, 0.0f, 0.0f);
 
                 // Draw the nearest neighbor in the weft for this pixel.
                 final double center = 0.125; // oscillate around this line
