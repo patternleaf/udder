@@ -29,7 +29,7 @@ Getting Started - Hacking Udder
 
 To modify Udder, you need to install JDK 1.7+ and Maven 3.2.3+.
 
-To help bootstrap development, this repository temporarily comes with a copy of Maven 3.2.3 plus several jars required by the application. Eventually these resources will disappear. If you've already installed the JDK and Maven on your devbox, you don't have to use them. Mac OS X users may `source env.sh` to get set up rapidly.
+To help bootstrap development, this repository temporarily comes with a copy of Maven 3.2.3 plus several jars required by the application. Eventually these resources will disappear. If you've already installed the JDK and Maven on your devbox, you don't have to use the included copy of Maven. Mac OS X users may `source env.sh` to get set up rapidly.
 
 Once Maven and the JDK are installed in your current environment (see `env.sh` for examples), `cd udder` and run either the `build` script or `build_clean`.
 
