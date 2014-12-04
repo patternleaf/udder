@@ -19,9 +19,9 @@ Getting Started - Running Examples
 
 To run the example app (which is configured to display the Dairy show), you must install JRE 1.7+ or JDK 1.7+. Your computer might already come with Java 1.7+. If not, look [here](https://www.java.com/en/download/help/download_options.xml).
 
-You should be able to serve Udder from the dist jar using the `udder/serve_from_dist` script, once the Java interpreter is in your path.
+You should be able to serve Udder from the official distribution jar using the `udder/serve_from_dist` script, once the Java interpreter is in your path.
 
-The dist jar contains the two non-JDK dependencies, Boon and Simple.
+The official dist jar contains the two non-JDK dependencies, Boon and Simple.
 
 
 Getting Started - Hacking Udder
