@@ -149,13 +149,12 @@ Wishlist
 
 Acknowledgements
 ----------------
-Special thanks to the following LDs, engineers, and suppliers for contributing
-concepts, bug reports, parts, funds, visual designs, bug fixes, hands-on testing,
-and tooling to this project (including its earlier incarnation as LD50):
+Special thanks to the following LDs, engineers, organizations, venues, and suppliers for contributing concepts, bug reports, parts, funds, visual designs, bug fixes, hands-on testing, studio space, and tooling to this project (including its earlier incarnation as LD50):
 
 * Allison Vanderslice
 * Becky Vanderslice
 * Chris Macklin
+* The Dairy Center for the Arts, Boulder, Colorado
 * Dan Cohn
 * Dan Julio
 * Dave Able
@@ -166,7 +165,8 @@ and tooling to this project (including its earlier incarnation as LD50):
 * Josh Erickson
 * Jordan K. "Janitor" Paul
 * [Sparkfun.com](http://www.sparkfun.com)
-* ...and all the loyal beta testers from RA, Vox Lux, and Invisible Photons.
+* The Handweavers Guild of Boulder
+* ...and all the loyal beta testers from Coil, RA, Vox Lux, and Invisible Photons.
 
 
 Apache License, v2.0
