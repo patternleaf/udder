@@ -95,18 +95,20 @@ public class Mixer extends MixableBase implements Mixable, Iterable<Mixable> {
      *  ending with the foreground.
      */
     public void mixWith(Pixel[] otherPixels) {
-        pixels = new Pixel[deviceCount]; // canvas
-
-        for(int i=0; i<pixels.length; i++) {
-            pixels[i] = new Pixel(0.0f, 0.0f, 0.0f);
+        // Clear the canvas
+        for(Pixel pixel: pixels) {
+            pixel.setBlack();
         }
 
+        // Draw all visible layers
         if(level > 0.0) {
             for(Mixable layer : this) {
                 if(layer.getLevel() > 0.0) {
                     layer.mixWith(pixels);
                 }
             }
+
+            // Adjust brightness according to master fader
             if(level < 1.0) {
                 float lf = (float) level;
                 for(Pixel p: pixels) {
@@ -127,6 +129,14 @@ public class Mixer extends MixableBase implements Mixable, Iterable<Mixable> {
         for(Mixable layer : layers) {
             layer.patchDevices(devices);
         }
+
+        // Initialize the reusable canvas.
+        pixels = new Pixel[deviceCount];
+
+        for(int i=0; i<pixels.length; i++) {
+            pixels[i] = Pixel.black();
+        }
+
     }
 
     /** See borrowing contract on Effect. */

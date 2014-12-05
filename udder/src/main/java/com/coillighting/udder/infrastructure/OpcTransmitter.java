@@ -39,7 +39,7 @@ public class OpcTransmitter implements Runnable {
     protected final boolean verbose = false;
     protected final boolean debug = true;
 
-    // Don't keep reallocation this
+    // Keep one black pixel to skip needless reallocations:
     private final Pixel black = new Pixel(0.0f, 0.0f, 0.0f);
 
     public OpcTransmitter(SocketAddress opcServerAddr,

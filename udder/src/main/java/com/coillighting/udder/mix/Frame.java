@@ -2,7 +2,9 @@ package com.coillighting.udder.mix;
 
 import com.coillighting.udder.model.Pixel;
 
-/** An instantaneous sample of all timebased pixel values for the entire scene. */
+/** An instantaneous sample of all timebased pixel values for the entire scene.
+ * FUTURE: try pooling Frames to reduce heap allocations.
+ */
 public class Frame {
 
     private TimePoint timePoint;

@@ -9,7 +9,7 @@ import com.coillighting.udder.mix.TimePoint;
  */
 public abstract class MixableBase implements Mixable {
 
-    // If you don't know what BlenOp to set, start with MaxBlendOp.
+    // If you don't know what BlendOp to set, start with MaxBlendOp.
     protected BlendOp blendOp = null;
 
     protected double level = 0.0; // dark by default so we can fade in, not pop on

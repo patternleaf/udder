@@ -117,9 +117,12 @@ public class ShowRunner implements Runnable {
 
                     this.mixer.animate(timePoint);
 
-                    // FUTURE Could use object pooling to recycle these Frames without
-                    // reallocation when the downstream transmitter is done with them.
-                    // This worked well in LD50.
+                    // These pixels belong to mixer, and Effect's contract
+                    // prohibits ShowRunner from sharing them beyond this
+                    // point, so we'll make a copy per output frameQueue.
+                    // FUTURE Could use object pooling to recycle these Frames
+                    // without reallocating when the downstream transmitter is
+                    // done with them. This worked well in LD50.
                     Pixel[] mixerPixels = this.mixer.render();
 
                     int q=0;

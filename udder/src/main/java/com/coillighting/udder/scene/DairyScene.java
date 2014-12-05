@@ -59,6 +59,9 @@ public abstract class DairyScene {
         String adir = "dairy_collection_A_720p" + separator;
         String bdir = "dairy_collection_B" + separator;
 
+        // This playlist looks nice, and it plays back smoothly, but there
+        // aren't enough open patterns between the dark, detailed ones to
+        // sufficiently illuminate the whole structure.
         String [] sequencedTextures_A = {
                 adir + "blue_skull_necklace.png",
                 adir + "green_gilled_lace.png",
@@ -79,6 +82,28 @@ public abstract class DairyScene {
                 adir + "redblue_triclops.png",
         };
 
+        // The following playlist sufficiently illuminates the structure,
+        // but the nice, detailed motion gets washed out because there
+        // are so many open patterns.
+        //
+        // Warning: adding a few more layers than this overloads some
+        // (currently unknown) stage of the pipeline when run on the
+        // Dairy's little Beaglebone server. This causes quasiperiodic
+        // sticky-looking frame drops of usually about 1/3 second every
+        // approx. 4 sec. These are especially visible when the shuffled
+        // texture layers are visible, but you can also see in the Woven
+        // effect. The Fadecandy's interpolation tries to paper over the
+        // missing frames, but it hurts the brain to look at. I speculate
+        // that this has something to do with thread scheduling, because
+        // I've never been able to reproduce this bug on my multicore
+        // MBP. Especially weird is that dropping the frame rate by 50%
+        // or even 75% doesn't seem to change the sticky playback. That is
+        // big clue #1. Two more  clues: 2) the CPU is not quite maxxed out
+        // (according to htop) while this bug is visible, and running htop
+        // or not (which occupies 9% CPU itself) doesn't obviously change
+        // the stickiness. 3) The logs never report dropped frames, leading
+        // me to speculate that Udder never rendered those frames to begin
+        // with.
         String [] sequencedTextures_AandB = {
                 bdir + "flames.jpg",
                 adir + "amber_mustachioed_cthulus.png",
@@ -106,7 +131,7 @@ public abstract class DairyScene {
                 adir + "mauve_taupe_worms.png",
                 bdir + "white_yellow_flowers.jpg",
                 adir + "yellow_antennae.png",
-                bdir + "yellow_on_green_flowers.jpg"
+                bdir + "yellow_on_green_flowers.jpg",
         };
 
         // TEMP for the dairy
