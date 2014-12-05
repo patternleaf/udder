@@ -147,10 +147,27 @@ public class DairyShuffler implements StatefulAnimator {
                 } else {
                     // Start fading in the next texture.
                     // Choose a new easing curve each time.
-                    interpolationModeIncoming = interpolator.randomMode(10, 40, 70);
-                    interpolationModeOutgoing = interpolator.randomMode(10, 40, 70);
+
+                    // We used to favor a brighter, three-way mix, but since
+                    // we added many open patterns, we've increased the probability
+                    // of a thinner, mostly solo or duet mix, by increasing the
+                    // chance of a POWER mix to 50/50.
+                    interpolationModeIncoming = interpolator.randomMode(20, 35, 50);
+                    interpolationModeOutgoing = interpolator.randomMode(20, 35, 50);
 
                     cueDurationMillis = textureCueDurationMillis;
+
+                    if(incomingLayerIndex > shuffleLayerEndIndex) {
+                        // At this point there is only one outgoing layer, so
+                        // make it quick to avoid spooking the client.
+                        //
+                        // (The gallery staff gets antsy that the rig has failed
+                        // and calls BV whenever they observe a long-tail
+                        // fade to black, so we cut the final cue short in order
+                        // to loop promptly back to the Woven effect.)
+                        cueDurationMillis *= 0.20;
+                    }
+
                     // finish fading out the outgoing track if needed:
                     this.setTextureLevelConditionally(0.0f, incomingLayerIndex - 2);
                     outgoingLevel = primaryLevel;
@@ -159,7 +176,6 @@ public class DairyShuffler implements StatefulAnimator {
                     incomingLayerIndex++;
                 }
                 cueStartTimeMillis = now;
-                end = cueStartTimeMillis + cueDurationMillis;
             }
 
             if (wovenMode) {

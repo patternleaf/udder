@@ -10,6 +10,11 @@ public class Interpolator {
 
     protected Random random = null;
 
+    /** ROOT: hold out for as long as possible; short, sharp tail.
+     * POWER: fade out to a low level rapidly; long, gradual tail.
+     * SINUSOIDAL, LINEAR: see Wolfram Alpha graph links elsewhere.
+     * TODO: put graph links here, too.
+     */
     public enum Interpolation {
         LINEAR, SINUSOIDAL, ROOT, POWER
     };
@@ -56,7 +61,9 @@ public class Interpolator {
         }
     }
 
-    /** Good values are 10, 50, and 80, in that order. */
+    /** Good values are 10, 50, and 80, in that order.
+     * TODO change names to reflect what they govern.
+     */
     public Interpolation randomMode(int threshold0, int threshold1, int threshold2) {
         Interpolator.Interpolation mode;
         int r = random.nextInt(100);

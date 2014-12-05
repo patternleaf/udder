@@ -120,7 +120,8 @@ public class ShowRunner implements Runnable {
                     // These pixels belong to mixer, and Effect's contract
                     // prohibits ShowRunner from sharing them beyond this
                     // point, so we'll make a copy per output frameQueue.
-                    // FUTURE Could use object pooling to recycle these Frames
+                    //
+                    // FUTURE: Could use object pooling to recycle these Frames
                     // without reallocating when the downstream transmitter is
                     // done with them. This worked well in LD50.
                     Pixel[] mixerPixels = this.mixer.render();
@@ -149,11 +150,11 @@ public class ShowRunner implements Runnable {
                         q++;
                     }
                 } else if(busyWait) {
-                    // EXPERIMENTAL - For load testing. Avoid busyWait in production.
+                    // EXPERIMENTAL: For load testing. Avoid busyWait in production.
                     // duration=10000 gave me 2000-5000 fps in a mix with
                     // more than 10 layers * 2 Kpixels, 1 of them animated.
                     // Performance degraded by roughly 20% when I animated 10 of
-                    // them instead.
+                    // them instead. Since then we've made several optimizations.
                     TimingUtil.waitBusy(10000);
                     sleepy = false;
                 } else {

@@ -119,15 +119,43 @@ public class ServicePipeline {
     }
 }
 
+/** Supply an OpcTransmitter with Frames via a threadsafe queue that blocks on
+ * output until at least one frame is available. The transmitter runs in its
+ * own thread.
+ */
 class TransmissionCoupling {
+
+    /** The smaller the buffer, the easier it will be to overload it by
+     * dumping too many back-to-back commands into Udder. However, it
+     * doesn't make a lot of sense to backlog frames, since this just
+     * adds undesirable latency between the rendering of a frame and
+     * its transmission to the OPC server.
+     *
+     * FUTURE: Consider whether to check for a backlog (and skip a frame)
+     * before rendering a new one. Currently we drop a frame at the last
+     * possible moment, after rendering it, because on a multicore machine,
+     * rendering doesn't block consumption and transmission of output frames
+     * from the frame queue(s). However, on a single core Beaglebone Black
+     * with too many layers, and on a Raspberry Pi with even simple shows, we
+     * have observed (11/14 - 12/04/14) quasiperiodic playback dragging
+     * characterized by approx 0.5 sec moments of "sticky" playback. This
+     * dragging may be due to CPU contention between threads. (Search for
+     * "stick" for related notes and clues elsewhere.)
+     *
+     * We could probably afford reduce bufferSize to 1, but we'd want to
+     * check for excessive frame drops in the logs on the Beaglebone server
+     * before doing so.
+     */
+    public static final int bufferSize = 2;
+
     protected BlockingQueue<Frame> frameQueue = null;
     protected OpcTransmitter opcTransmitter = null;
     protected Thread transmitterThread = null;
 
     public TransmissionCoupling(SocketAddress serverAddr, int[] deviceAddressMap) {
-        frameQueue = new LinkedBlockingQueue<Frame>(32);
+        frameQueue = new LinkedBlockingQueue<Frame>(bufferSize);
         opcTransmitter = new OpcTransmitter(serverAddr, frameQueue,
-                deviceAddressMap.clone());
+            deviceAddressMap.clone());
         transmitterThread = new Thread(opcTransmitter);
     }
 

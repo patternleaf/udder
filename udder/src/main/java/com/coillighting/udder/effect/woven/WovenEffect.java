@@ -51,7 +51,7 @@ public class WovenEffect extends EffectBase {
         cues.put(WARP, new WarpCue(30000 / speedup, frame, warpColor));
         cues.put(WEFT, new WeftCue(45000 / speedup, frame, weftColor));
         // cues.put(FINALE, new FinaleCue(15000 / speedup, frame)); cut (ditto)
-        cues.put(FADEOUT, new FadeOutCue(10000 / speedup, frame));
+        cues.put(FADEOUT, new FadeOutCue(6000 / speedup, frame));
 
         this.reset();
     }
