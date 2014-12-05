@@ -105,9 +105,9 @@ public class WovenFrame {
 
         // Randomly switch to a breakdown mode for the other 1/3 of the time:
         final int randomMode = random.nextInt(101);
-        if(randomMode > 67) {
+        if(randomMode > 90) {
             // Sometimes break it down between the two gates.
-            if(randomMode < 98) {
+            if(randomMode < 99) {
                 // About 30% of the time, show just warp in front, just weft in back.
                 // This meshes with the woven sculpture's lines on those gates.
                 warpEnabled[1] = false;

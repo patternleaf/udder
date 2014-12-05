@@ -41,12 +41,12 @@ public class WovenEffect extends EffectBase {
         // these a little, but for now we'll stay high-sat because BV
         // reported that greens and yellows were looking good on the
         // metal sculpture.
-        Pixel warpColor = new Pixel(0.0f, 1.0f, 0.0f); // was 0.35f, 0.0f, 1.0f, but looked too blue
-        Pixel weftColor = new Pixel(1.0f, 0.9f, 0.0f); // was 1.0f, 0.66f, 0.0f, but looked too red
+        Pixel warpColor = new Pixel(1.0f, 0.4f, 1.0f);
+        Pixel weftColor = new Pixel(1.0f, 0.75f, 0.0f);
 
         int speedup = 1; // for rapid debugging, set > 1
 
-        cues.put(BLACKOUT, new BlackoutCue(1000 / speedup, frame));
+        cues.put(BLACKOUT, new BlackoutCue(100 / speedup, frame)); // keep it quick or museum staff get antsy about blackout
         // cues.put(CURTAIN, new CurtainCue(6000 / speedup, frame)); cut 12/4 per crew's consensus
         cues.put(WARP, new WarpCue(30000 / speedup, frame, warpColor));
         cues.put(WEFT, new WeftCue(45000 / speedup, frame, weftColor));

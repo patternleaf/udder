@@ -1,4 +1,4 @@
 state={
     "enabled": true,
-    "cueDurationMillis": 3000
+    "cueDurationMillis": 5000
 }
