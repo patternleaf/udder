@@ -9,4 +9,13 @@
 # If the gl server segfaults, it probably just can't find the opc_layout.json
 # conf file.
 
-java -Xverify:none -cp "target/udder-0.4.1-SNAPSHOT.jar:lib/simple-5.1.5.jar:lib/boon-0.23.jar" com.coillighting.udder.Main conf/dairy.properties
+PROPERTIES="conf/dairy.properties"
+
+if [[ ! -f $PROPERTIES ]] ; then
+    echo "ERROR: Udder properties file not found: $PROPERTIES"
+    echo "If this is your first time running udder, copy conf/development.properties.example"
+    echo "to your own local $PROPERTIES and try again."
+    exit 1
+fi
+
+java -Xverify:none -cp "target/udder-0.4.1-SNAPSHOT.jar:lib/simple-5.1.5.jar:lib/boon-0.23.jar" com.coillighting.udder.Main $PROPERTIES

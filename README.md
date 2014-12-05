@@ -1,4 +1,4 @@
-Udder 0.4.1-rc10
+Udder 0.4.1-rc11
 ================
 
 HTTP server, animators, mixer, and an Open Pixel Control (OPC) renderer for a 2014 public lighting installation at Boulder's Dairy Center for the Arts.
@@ -156,7 +156,7 @@ Special thanks to the following LDs, engineers, organizations, venues, and suppl
 * Chris Macklin
 * The Dairy Center for the Arts, Boulder, Colorado
 * Dan Cohn
-* Dan Julio
+* [Dan Julio](http://danjuliodesigns.com)
 * Dave Able
 * Ed Colmar
 * Eric Miller
