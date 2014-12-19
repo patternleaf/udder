@@ -65,6 +65,10 @@ public class BoundingCube {
         }
     }
 
+    public String toString() {
+        return "x:[" + minX + ", " + maxX + "] y:[" + minY + ", " + maxY + "] z:[" + minZ + ", " + maxZ + "] w:" + width + " h:" + height + " d:" + depth + "w/h:" + (width/height);
+    }
+
     public double getMinX() {
         return minX;
     }

@@ -28,7 +28,7 @@ public class HttpServiceContainer implements Container {
     protected boolean verbose = true; // log errors
     protected boolean debug = false; // log successful POSTs and our response
     protected Queue<Command> queue; // feed requests to this queue
-    protected Map<String, Class> commandMap; // translate JSON to command object
+    protected Map<String, Class> commandMap; // translate route strings to command "state" Classes
     protected int requestIndex = 0; // Count requests to assist debugging (for now)
 
     public HttpServiceContainer(Queue<Command> queue, Map<String, Class> commandMap) {

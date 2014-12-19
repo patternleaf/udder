@@ -84,6 +84,13 @@ public class ShowRunner implements Runnable {
 
                 Command command = this.commandQueue.poll();
 
+                // TODO Don't necessarily re-animate and re-render in response
+                // to every command. Several densely spaced commands should be
+                // able to effect the same rendered frame. Currently we respond
+                // as fast as possible so that we can explore the response time
+                // of the whole system. Eventually the max command queue polling
+                // delay should be independent of the max frame rendering delay.
+
                 if(command != null || !sleepy) {
                     sleepy = true;
                     if(command != null) {
