@@ -22,8 +22,7 @@ import static com.coillighting.udder.util.LogUtil.log;
 /** Stretch and squeeze a raster image over the pointcloud representing the
  *  Devices in your show. See TextureEffectState for options.
  *
- *  FUTURE add an affine transform layer to the manual side, for
- *  easy rotations, scalings, etc.
+ * TODO rename to StretchEffect.
  */
 public class TextureEffect extends EffectBase {
 
@@ -127,6 +126,7 @@ public class TextureEffect extends EffectBase {
 
     /** If we can't load the image, log an error and proceed.
      *  Don't crash the server.
+     *  FIXME REF deduplicate w/RollEffect.reloadImage
      */
     public void reloadImage() {
         this.clearImage();

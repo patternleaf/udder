@@ -32,13 +32,16 @@ public class RollEffect extends EffectBase {
     protected int imageHeight = 0;
     protected BoundingCube deviceBounds = null;
 
-    /** 0.0 = no rotation, 1.0 = 100% rotation (equivalent to 0.0). */
+    /** offset. 0.0 = no rotation, 1.0 = 100% rotation (equivalent to 0.0). */
     protected double xRotate = 0.0;
     protected double yRotate = 0.0;
 
     /** <=0 = halt rotation, 1000 = 1 second */
-    protected int xPeriodMillis = 1000;
-    protected int yPeriodMillis = 1000;
+    protected int xPeriodMillis = 10000;
+    protected int yPeriodMillis = 10000;
+    // TODO probably want to initialize this to stationary
+
+    protected long previousFrameMillis = 0;
 
     protected boolean interpolateBilinear = false;
 
@@ -148,6 +151,28 @@ public class RollEffect extends EffectBase {
             final double devHeight = deviceBounds.getHeight();
             Point2D.Double xyNorm = new Point2D.Double(0.0, 0.0);
 
+            long now = timePoint.sceneTimeMillis();
+            long elapsed;
+
+            // Frame offsets given baseline x/y rotation and timepoint in the cycle,
+            // NOT YET normalized to [0.0..1.0) -- that happens below.
+            double xFrameOffset;
+            double yFrameOffset;
+            if(previousFrameMillis == 0) {
+                elapsed = 0;
+                xFrameOffset = 0.0;
+                yFrameOffset = 0.0;
+                previousFrameMillis = now;
+            } else {
+                elapsed = now - previousFrameMillis;
+                xFrameOffset = xRotate + (double) elapsed / (double) xPeriodMillis;
+                yFrameOffset = yRotate + (double) elapsed / (double) yPeriodMillis;
+            }
+
+//            previousFrameMillis = now;
+
+            log("frameOffset(" + xFrameOffset + "," + yFrameOffset + ") period(" + xPeriodMillis + "," + yPeriodMillis + ") elapsed " + elapsed);
+
             for(int i=0; i<devices.length; i++) {
                 Device dev = devices[i];
                 double[] xyz = dev.getPoint();
@@ -166,20 +191,23 @@ public class RollEffect extends EffectBase {
                     // Truncate mode: round down fractions to an integer pixel
                     // coordinate, and send that pixel's color to this device
                     // point. Low-rez but a good reference for debugging the
-                    // bilinear mode. Wrap around at the edges.
+                    // bilinear mode. Wrap around at the edges. Normalize to
+                    // [0.0..1.0).
 
-                    double x = (xRotate + xyNorm.x) % 1.0;
+                    double x = (xFrameOffset + xyNorm.x) % 1.0;
                     if(x < 0.0) {
                         x += 1.0;
                     }
 
-                    double y = (yRotate + xyNorm.y) % 1.0;
+                    double y = (yFrameOffset + xyNorm.y) % 1.0;
                     if(y < 0.0) {
                         y += 1.0;
                     }
 
                     int imgX = ((int) (x * imageWidth));
                     int imgY = ((int) (y * imageHeight));
+
+//                    log("xy(" + x + "," + y + ") => img(" + imgX + "," + imgY + ")");
 
                     if(imgX < 0 || imgX >= imageWidth || imgY < 0 || imgY >= imageHeight) {
                         // SANITY. TODO: which exception will image.getRGB throw when out of bounds?
