@@ -48,6 +48,7 @@ public class TextureEffect extends EffectBase {
     // Scratch variables that we shouldn't reallocate on every
     // trip through the animation loop:
     private Pixel p, p11, p12, p21, p22;
+    private Point2D.Double xyNorm;
 
     /** The longest it will take for one corner to complete
      *  a single transit.
@@ -76,6 +77,7 @@ public class TextureEffect extends EffectBase {
         p12 = Pixel.black();
         p21 = Pixel.black();
         p22 = Pixel.black();
+        xyNorm = new Point2D.Double(0.0, 0.0);
 
         this.reloadImage();
     }
@@ -271,7 +273,7 @@ public class TextureEffect extends EffectBase {
             final double devMinY = deviceBounds.getMinY();
             final double devWidth = deviceBounds.getWidth();
             final double devHeight = deviceBounds.getHeight();
-            Point2D.Double xyNorm = new Point2D.Double(0.0, 0.0);
+            xyNorm.setLocation(0.0, 0.0);
             ControlQuad controlQuad;
 
             if(!automatic) {

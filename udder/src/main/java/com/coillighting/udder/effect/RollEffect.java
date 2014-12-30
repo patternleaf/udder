@@ -32,27 +32,32 @@ public class RollEffect extends EffectBase {
     protected int imageHeight = 0;
     protected BoundingCube deviceBounds = null;
 
-    /** offset. 0.0 = no rotation, 1.0 = 100% rotation (equivalent to 0.0). */
+    /** offset. 0.0 = no rotation, 1.0 = 100% rotation (equivalent to 0.0).
+     * Limit this to [0.0..1.0).
+     */
     protected double xRotate = 0.0;
     protected double yRotate = 0.0;
 
     /** <=0 = halt rotation, 1000 = 1 second */
-    protected int xPeriodMillis = 10000;
-    protected int yPeriodMillis = 10000;
+    protected int xPeriodMillis = 0;
+    protected int yPeriodMillis = 0;
     // TODO probably want to initialize this to stationary
 
     protected long previousFrameMillis = 0;
 
     protected boolean interpolateBilinear = false;
 
-    // TODO
     // Scratch variables that we shouldn't reallocate on every
     // trip through the animation loop:
-    // private Pixel p, p11, p12, p21, p22;
+    private Point2D.Double xyNorm;
 
     public RollEffect(String filename) {
         this.filename = filename;
         interpolator = new Interpolator();
+
+        // Initialize temps
+        xyNorm = new Point2D.Double(0.0, 0.0);
+
         this.reloadImage();
     }
 
@@ -149,7 +154,7 @@ public class RollEffect extends EffectBase {
             final double devMinY = deviceBounds.getMinY();
             final double devWidth = deviceBounds.getWidth();
             final double devHeight = deviceBounds.getHeight();
-            Point2D.Double xyNorm = new Point2D.Double(0.0, 0.0);
+            xyNorm.setLocation(0.0, 0.0);
 
             long now = timePoint.sceneTimeMillis();
             long elapsed;
@@ -158,15 +163,26 @@ public class RollEffect extends EffectBase {
             // NOT YET normalized to [0.0..1.0) -- that happens below.
             double xFrameOffset;
             double yFrameOffset;
-            if(previousFrameMillis == 0) {
+            if(previousFrameMillis <= 0) {
                 elapsed = 0;
                 xFrameOffset = 0.0;
                 yFrameOffset = 0.0;
                 previousFrameMillis = now;
             } else {
                 elapsed = now - previousFrameMillis;
-                xFrameOffset = xRotate + (double) elapsed / (double) xPeriodMillis;
-                yFrameOffset = yRotate + (double) elapsed / (double) yPeriodMillis;
+                xFrameOffset = xRotate;
+                yFrameOffset = yRotate;
+                if(xPeriodMillis != 0) {
+                    // Subtract so that a positive period scrolls image details
+                    // to the right across a conventionally oriented rig.
+                    xFrameOffset -= (double) elapsed / (double) xPeriodMillis;
+                }
+                if(yPeriodMillis != 0) {
+                    // Add so that a positive period scrolls image details
+                    // upward across a conventionally oriented rig (because image
+                    // coordinates are flipped, with a NW origin).
+                    yFrameOffset += (double) elapsed / (double) yPeriodMillis;
+                }
             }
 
 //            previousFrameMillis = now;
