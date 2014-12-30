@@ -44,7 +44,7 @@ public class WovenEffect extends EffectBase {
         Pixel warpColor = new Pixel(1.0f, 0.4f, 1.0f);
         Pixel weftColor = new Pixel(1.0f, 0.75f, 0.0f);
 
-        int speedup = 100; // for rapid debugging, set > 1
+        int speedup = 1; // for rapid debugging, set > 1
 
         cues.put(BLACKOUT, new BlackoutCue(100 / speedup, frame)); // keep it quick or museum staff get antsy about blackout
         // cues.put(CURTAIN, new CurtainCue(6000 / speedup, frame)); cut 12/4 per crew's consensus

@@ -4,13 +4,10 @@ import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-//import java.util.List;
-//import java.util.Random;
 import javax.imageio.ImageIO;
-//
+
 import com.coillighting.udder.geometry.BoundingCube;
-//import com.coillighting.udder.geometry.ControlQuad;
-import com.coillighting.udder.geometry.Interpolator;
+import com.coillighting.udder.geometry.Bilinear;
 import com.coillighting.udder.mix.TimePoint;
 import com.coillighting.udder.model.Device;
 import com.coillighting.udder.model.Pixel;
@@ -23,8 +20,6 @@ import static com.coillighting.udder.util.LogUtil.log;
  * options.
  */
 public class RollEffect extends EffectBase {
-
-    protected Interpolator interpolator = null;
 
     protected String filename = null;
     protected BufferedImage image = null;
@@ -48,7 +43,9 @@ public class RollEffect extends EffectBase {
     /** scene time of last frame rendered */
     protected long currentTimeMillis = 0;
 
-    protected boolean interpolateBilinear = false;
+    protected boolean interpolateBilinear = true;
+
+    protected Bilinear bilinear;
 
     // Scratch variables that we shouldn't reallocate on every
     // trip through the animation loop:
@@ -56,7 +53,7 @@ public class RollEffect extends EffectBase {
 
     public RollEffect(String filename) {
         this.filename = filename;
-        interpolator = new Interpolator();
+        bilinear = new Bilinear();
 
         // Initialize temps
         xyNorm = new Point2D.Double(0.0, 0.0);
@@ -264,113 +261,34 @@ public class RollEffect extends EffectBase {
                 xyNorm.x = (xyz[0] - devMinX) / devWidth;
                 xyNorm.y = 1.0 - ((xyz[1] - devMinY) / devHeight);
 
+                double x = (xFrameOffset + xyNorm.x) % 1.0;
+                if(x < 0.0) {
+                    x += 1.0;
+                }
+
+                double y = (yFrameOffset + xyNorm.y) % 1.0;
+                if(y < 0.0) {
+                    y += 1.0;
+                }
+
                 if(!interpolateBilinear) {
                     // Truncate mode: round down fractions to an integer pixel
                     // coordinate, and send that pixel's color to this device
                     // point. Low-rez but a good reference for debugging the
                     // bilinear mode. Wrap around at the edges. Normalize to
                     // [0.0..1.0).
-
-                    double x = (xFrameOffset + xyNorm.x) % 1.0;
-                    if(x < 0.0) {
-                        x += 1.0;
-                    }
-
-                    double y = (yFrameOffset + xyNorm.y) % 1.0;
-                    if(y < 0.0) {
-                        y += 1.0;
-                    }
-
                     int imgX = ((int) (x * imageWidth));
                     int imgY = ((int) (y * imageHeight));
 
-//                    log("xy(" + x + "," + y + ") => img(" + imgX + "," + imgY + ")");
-
-                    if(imgX < 0 || imgX >= imageWidth || imgY < 0 || imgY >= imageHeight) {
-                        // SANITY. TODO: which exception will image.getRGB throw when out of bounds?
-                        pixels[i].setBlack();
-                    } else {
+                    try {
                         int color = image.getRGB(imgX, imgY);
                         pixels[i].setRGBColor(color);
+                    } catch(ArrayIndexOutOfBoundsException e) {
+                        pixels[i].setBlack();
                     }
 
                 } else {
-                    // Bilinear (quadratic) interpolation mode: given the four
-                    // closest pixels to this device point, compute its color.
-                    // https://en.wikipedia.org/wiki/Bilinear_interpolation
-
-                    // Decide whether to clip out-of-bounds pixel coordinates
-                    // to the edge colors (causing streaking, sometimes looks
-                    // good) or just crop them (color that part of the rig
-                    // black). false=crop. FUTURE: could export this option.
-
-
-//                    final boolean streakEnabled = false;
-//                    boolean streaked = false;
-//                    double x = (xyStretched.x * imageWidth) - 1;
-//                    if(x < 0.0) {
-//                        // This will streak the edges if coordinates are out of bounds.
-//                        x = 0.0;
-//                        streaked = true;
-//                    } else if(x >= imageWidth) {
-//                        x = imageWidth - 1; // streak
-//                        streaked = true;
-//                    }
-//                    int x1 = (int) Math.floor(x);
-//                    int x2 = (int) Math.ceil(x);
-//                    if(x2 >= imageWidth) {
-//                        x2 = imageWidth - 1; // streak
-//                        streaked = true;
-//                    }
-//
-//                    double y = (xyStretched.y * imageHeight) - 1;
-//                    if(y < 0.0) {
-//                        y = 0.0; // streak
-//                        streaked = true;
-//                    } else if(y >= imageHeight) {
-//                        y = imageHeight - 1; // streak
-//                        streaked = true;
-//                    }
-//                    int y1 = (int) Math.floor(y);
-//                    int y2 = (int) Math.ceil(y);
-//                    if(y2 >= imageHeight) {
-//                        y2 = imageHeight - 1; // streak
-//                        streaked = true;
-//                    }
-//
-//                    if(streaked && ! streakEnabled) {
-//                        pixels[i].setBlack();
-//                    } else {
-//                        // Sample colors from the four surrounding pixels.
-//                        p11.setRGBColor(image.getRGB(x1, y1));
-//                        p21.setRGBColor(image.getRGB(x2, y1));
-//                        p12.setRGBColor(image.getRGB(x1, y2));
-//                        p22.setRGBColor(image.getRGB(x2, y2));
-//
-//                        // First we do two linear interpolations, R1 and R2,
-//                        // in the x direction.
-//                        final double right = (x1 == x2 ? 0.0 : (x2 - x) / (x2 - x1));
-//                        final double left = (x1 == x2 ? 1.0 : (x - x1) / (x2 - x1));
-//
-//                        final double rR1 = p11.r * right + p21.r * left;
-//                        final double gR1 = p11.g * right + p21.g * left;
-//                        final double bR1 = p11.b * right + p21.b * left;
-//
-//                        final double rR2 = p12.r * right + p22.r * left;
-//                        final double gR2 = p12.g * right + p22.g * left;
-//                        final double bR2 = p12.b * right + p22.b * left;
-//
-//                        // Next interpolate R1 and R2 in the Y direction.
-//                        final double high = (y1 == y2 ? 0.0 : (y2 - y) / (y2 - y1));
-//                        final double low = (y1 == y2 ? 1.0 : (y - y1) / (y2 - y1));
-//                        p.r = (float) (rR1 * high + rR2 * low);
-//                        p.g = (float) (gR1 * high + gR2 * low);
-//                        p.b = (float) (bR1 * high + bR2 * low);
-//
-//                        pixels[i].setColor(p);
-//                        // Of course, this whole time we have falsely assumed
-//                        // linear gamma.
-//                    }
+                    bilinear.interpolate(pixels[i], image, imageWidth, imageHeight, x, y, false);
                 }
             }
         }
