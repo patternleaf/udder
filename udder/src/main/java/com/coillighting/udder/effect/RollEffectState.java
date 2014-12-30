@@ -14,27 +14,27 @@ public class RollEffectState {
      * Send null or the empty string for this value to be ignored, so you keep
      * showing the current file.
      */
-    protected String filename = null;
+    protected String filename;
 
     /** Roll the image loop horizontally this often. 0 ms = stationary. */
-    protected int xPeriodMillis = 0;
+    protected Integer xPeriodMillis;
 
     /** Roll the image loop vertically this often. 0 ms = stationary. */
-    protected int yPeriodMillis = 0;
+    protected Integer yPeriodMillis;
 
     /** Roll the image loop horizontally this often. 0 ms = stationary. */
-    protected double xRotate = 0.0;
+    protected Double xRotate;
 
     /** Roll the image loop vertically this often. 0 ms = stationary. */
-    protected double yRotate = 0.0;
+    protected Double yRotate;
 
     // TODO figure out how to vary rate without changing offset. might
     // need to use Doubles and Integers rather than ints and doubles.
 
-    public RollEffectState(String fileName, int xPeriodMillis, int yPeriodMillis,
-                           double xRotate, double yRotate)
+    public RollEffectState(String fileName, Integer xPeriodMillis, Integer yPeriodMillis,
+                           Double xRotate, Double yRotate)
     {
-        this.filename = filename;
+        this.filename = fileName;
         this.xPeriodMillis = xPeriodMillis;
         this.yPeriodMillis = yPeriodMillis;
         this.xRotate = xRotate;
@@ -55,35 +55,35 @@ public class RollEffectState {
         this.filename = filename;
     }
 
-    public int getXPeriodMillis() {
+    public Integer getXPeriodMillis() {
         return xPeriodMillis;
     }
 
-    public void setXPeriodMillis(int xPeriodMillis) {
+    public void setXPeriodMillis(Integer xPeriodMillis) {
         this.xPeriodMillis = xPeriodMillis;
     }
 
-    public int getYPeriodMillis() {
+    public Integer getYPeriodMillis() {
         return yPeriodMillis;
     }
 
-    public void setYPeriodMillis(int yPeriodMillis) {
+    public void setYPeriodMillis(Integer yPeriodMillis) {
         this.yPeriodMillis = yPeriodMillis;
     }
 
-    public double getXRotate() {
+    public Double getXRotate() {
         return xRotate;
     }
 
-    public void setXRotate(double xRotate) {
+    public void setXRotate(Double xRotate) {
         this.xRotate = xRotate;
     }
 
-    public double getYRotate() {
+    public Double getYRotate() {
         return yRotate;
     }
 
-    public void setYRotate(double yRotate) {
+    public void setYRotate(Double yRotate) {
         this.yRotate = yRotate;
     }
 

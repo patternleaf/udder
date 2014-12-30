@@ -32,9 +32,7 @@ public class RollEffect extends EffectBase {
     protected int imageHeight = 0;
     protected BoundingCube deviceBounds = null;
 
-    /** offset. 0.0 = no rotation, 1.0 = 100% rotation (equivalent to 0.0).
-     * Limit this to [0.0..1.0).
-     */
+    /** offset. 0.0 = no rotation, 1.0 = 100% rotation (equivalent to 0.0). */
     protected double xRotate = 0.0;
     protected double yRotate = 0.0;
 
@@ -72,22 +70,37 @@ public class RollEffect extends EffectBase {
     public void setState(Object state) throws ClassCastException {
         RollEffectState command = (RollEffectState) state;
 
-        // TODO figure out how to vary rate without changing offset. might
-        // need to use Doubles and Integers rather than ints and doubles.
+        // Leave value unchanged if the Command contains a null.
+        Integer xmillis = command.getXPeriodMillis();
+        if(xmillis != null) {
+            xPeriodMillis = xmillis;
+        }
 
-        int xmillis = command.getXPeriodMillis();
-        xPeriodMillis = xmillis <= 0 ? 0 : xmillis;
+        // TODO calculate current offset, correct timing for smooth
+        // modulation of frequency -- this impl will glitch
 
-        int ymillis = command.getYPeriodMillis();
-        yPeriodMillis = ymillis <= 0 ? 0 : ymillis;
+        Integer ymillis = command.getYPeriodMillis();
+        if(xmillis != null) {
+            yPeriodMillis = ymillis;
+        }
 
-        double xrotate = command.getXRotate() % 1.0;
-        if(xrotate < 0.0) xrotate += 1.0;
-        xRotate = xrotate;
+        Double xr = command.getXRotate();
+        if(xr != null) {
+            double xrd = xr % 1.0;
+            if(xrd < 0.0) xrd += 1.0;
+            xRotate = xrd;
+            // Reset image position whenever it is explicitly set.
+            previousFrameMillis = 0;
+        }
 
-        double yrotate = command.getYRotate() % 1.0;
-        if(yrotate < 0.0) yrotate += 1.0;
-        yRotate = yrotate;
+        Double yr = command.getYRotate();
+        if(yr != null) {
+            double yrd = yr % 1.0;
+            if(yrd < 0.0) yrd += 1.0;
+            yRotate = yrd;
+            // Reset image position whenever it is explicitly set.
+            previousFrameMillis = 0;
+        }
 
         String fn = command.getFilename();
         if(!(fn == null || fn.equals("") || fn.equals(filename))) {
