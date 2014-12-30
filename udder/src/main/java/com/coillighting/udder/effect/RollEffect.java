@@ -41,7 +41,12 @@ public class RollEffect extends EffectBase {
     protected int yPeriodMillis = 0;
     // TODO probably want to initialize this to stationary
 
-    protected long previousFrameMillis = 0;
+    /** scene time when we last began rolling the image along the x-axis */
+    protected long xStartTimeMillis = 0;
+    protected long yStartTimeMillis = 0;
+
+    /** scene time of last frame rendered */
+    protected long currentTimeMillis = 0;
 
     protected boolean interpolateBilinear = false;
 
@@ -70,37 +75,13 @@ public class RollEffect extends EffectBase {
     public void setState(Object state) throws ClassCastException {
         RollEffectState command = (RollEffectState) state;
 
-        // Leave value unchanged if the Command contains a null.
-        Integer xmillis = command.getXPeriodMillis();
-        if(xmillis != null) {
-            xPeriodMillis = xmillis;
-        }
+        this.setXRotate(command.getXRotate());
+        this.setYRotate(command.getYRotate());
 
-        // TODO calculate current offset, correct timing for smooth
-        // modulation of frequency -- this impl will glitch
-
-        Integer ymillis = command.getYPeriodMillis();
-        if(xmillis != null) {
-            yPeriodMillis = ymillis;
-        }
-
-        Double xr = command.getXRotate();
-        if(xr != null) {
-            double xrd = xr % 1.0;
-            if(xrd < 0.0) xrd += 1.0;
-            xRotate = xrd;
-            // Reset image position whenever it is explicitly set.
-            previousFrameMillis = 0;
-        }
-
-        Double yr = command.getYRotate();
-        if(yr != null) {
-            double yrd = yr % 1.0;
-            if(yrd < 0.0) yrd += 1.0;
-            yRotate = yrd;
-            // Reset image position whenever it is explicitly set.
-            previousFrameMillis = 0;
-        }
+        // Set period after rotate because we can skip time offset recalculation
+        // if the rotate setters already reinitialized *StartTimeMillis.
+        this.setXPeriodMillis(command.getXPeriodMillis());
+        this.setYPeriodMillis(command.getYPeriodMillis());
 
         String fn = command.getFilename();
         if(!(fn == null || fn.equals("") || fn.equals(filename))) {
@@ -108,6 +89,70 @@ public class RollEffect extends EffectBase {
 
             // Reload last in case there is a problem reading the file.
             this.reloadImage();
+        }
+    }
+
+    /** Leave the current value unchanged if xr is null. */
+    public void setXRotate(Double xr) {
+        if(xr != null) {
+            double xrd = xr % 1.0;
+            if(xrd < 0.0) xrd += 1.0;
+            xRotate = xrd;
+
+            // Reset image position whenever x is explicitly set.
+            xStartTimeMillis = 0;
+        }
+    }
+
+    /** Leave the current value unchanged if yr is null. */
+    public void setYRotate(Double yr) {
+        if(yr != null) {
+            double yrd = yr % 1.0;
+            if(yrd < 0.0) yrd += 1.0;
+            yRotate = yrd;
+
+            // Reset image position whenever y is explicitly set.
+            yStartTimeMillis = 0;
+        }
+    }
+
+    /** Leave the current value unchanged if xmillis is null.
+     * Calculate current phase offset and correct the x-timing
+     * for smooth modulation of frequency. Otherwise every
+     * adjustment to horizontal period would glitch the phase.
+     */
+    public void setXPeriodMillis(Integer xmillis) {
+        if(xmillis != null) {
+            int xmi = (int) xmillis;
+            if(xmi != xPeriodMillis) {
+                if(xStartTimeMillis > 0 && currentTimeMillis > xStartTimeMillis) {
+                    double elapsed = (((double) (currentTimeMillis - xStartTimeMillis))
+                            / (double) xPeriodMillis) % 1.0;
+                    double reclockedElapsed = elapsed * (double) xmi;
+                    xStartTimeMillis = currentTimeMillis - (long) reclockedElapsed;
+                }
+                xPeriodMillis = xmi;
+            }
+        }
+    }
+
+    /** Leave the current value unchanged if ymillis is null.
+     * Calculate current phase offset and correct the y-timing
+     * for smooth modulation of frequency. Otherwise every
+     * adjustment to vertical period would glitch the phase.
+     */
+    public void setYPeriodMillis(Integer ymillis) {
+        if(ymillis != null) {
+            int ymi = (int) ymillis;
+            if(ymi != yPeriodMillis) {
+                if(yStartTimeMillis > 0 && currentTimeMillis > yStartTimeMillis) {
+                    double elapsed = (((double) (currentTimeMillis - yStartTimeMillis))
+                            / (double) yPeriodMillis) % 1.0;
+                    double reclockedElapsed = elapsed * (double)ymi;
+                    yStartTimeMillis = currentTimeMillis - (long) reclockedElapsed;
+                }
+                yPeriodMillis = ymi;
+            }
         }
     }
 
@@ -170,37 +215,40 @@ public class RollEffect extends EffectBase {
             xyNorm.setLocation(0.0, 0.0);
 
             long now = timePoint.sceneTimeMillis();
-            long elapsed;
 
             // Frame offsets given baseline x/y rotation and timepoint in the cycle,
             // NOT YET normalized to [0.0..1.0) -- that happens below.
             double xFrameOffset;
             double yFrameOffset;
-            if(previousFrameMillis <= 0) {
-                elapsed = 0;
+
+            if(xStartTimeMillis <= 0) {
                 xFrameOffset = 0.0;
-                yFrameOffset = 0.0;
-                previousFrameMillis = now;
+                xStartTimeMillis = now;
             } else {
-                elapsed = now - previousFrameMillis;
+                long xElapsed = now - xStartTimeMillis;
                 xFrameOffset = xRotate;
-                yFrameOffset = yRotate;
                 if(xPeriodMillis != 0) {
                     // Subtract so that a positive period scrolls image details
                     // to the right across a conventionally oriented rig.
-                    xFrameOffset -= (double) elapsed / (double) xPeriodMillis;
+                    xFrameOffset -= (double) xElapsed / (double) xPeriodMillis;
                 }
+            }
+
+            if(yStartTimeMillis <= 0) {
+                yFrameOffset = 0.0;
+                yStartTimeMillis = now;
+            } else {
+                long yElapsed = now - yStartTimeMillis;
+                yFrameOffset = yRotate;
                 if(yPeriodMillis != 0) {
                     // Add so that a positive period scrolls image details
                     // upward across a conventionally oriented rig (because image
                     // coordinates are flipped, with a NW origin).
-                    yFrameOffset += (double) elapsed / (double) yPeriodMillis;
+                    yFrameOffset += (double) yElapsed / (double) yPeriodMillis;
                 }
             }
 
-//            previousFrameMillis = now;
-
-            log("frameOffset(" + xFrameOffset + "," + yFrameOffset + ") period(" + xPeriodMillis + "," + yPeriodMillis + ") elapsed " + elapsed);
+            currentTimeMillis = now;
 
             for(int i=0; i<devices.length; i++) {
                 Device dev = devices[i];
