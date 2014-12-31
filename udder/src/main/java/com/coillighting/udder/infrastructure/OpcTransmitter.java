@@ -25,7 +25,7 @@ import static com.coillighting.udder.util.LogUtil.log;
  *
  *  Note: WATCH OUT FOR JAVA'S EVIL SIGNED BYTES.
  */
-public class OpcTransmitter implements Runnable {
+public class OpcTransmitter implements Transmitter {
 
     protected BlockingQueue<Frame> frameQueue;
     protected int maxDelayMillis;
@@ -46,16 +46,16 @@ public class OpcTransmitter implements Runnable {
                           BlockingQueue<Frame> frameQueue,
                           int[] deviceAddressMap)
     {
-        if(frameQueue==null) {
-            throw new NullPointerException(
-                "ShowRunner requires a queue that supplies frames.");
-        }
-        this.frameQueue = frameQueue;
+        this.setFrameQueue(frameQueue);
         this.maxDelayMillis = 15000; // FUTURE: allow the user to tune this
 
         this.serverHost = opcServerAddr.getHost();
         this.serverPort = opcServerAddr.getPort();
         this.deviceAddressMap = deviceAddressMap;
+    }
+
+    public void setFrameQueue(BlockingQueue<Frame> frameQueue) {
+        this.frameQueue = frameQueue;
     }
 
     protected void connect() throws IOException {
@@ -107,6 +107,12 @@ public class OpcTransmitter implements Runnable {
     public void run() {
         try {
             log("Starting OPC transmitter " + this);
+
+            if(frameQueue==null) {
+                throw new NullPointerException(
+                        "OpcTransmitter requires a queue that supplies frames.");
+            }
+
             byte[] message = new byte[0];
             while(true) {
                 try {

@@ -2,7 +2,6 @@ package com.coillighting.udder.scene;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import static java.io.File.separator;
 
 import com.coillighting.udder.blend.BlendOp;
@@ -11,6 +10,8 @@ import com.coillighting.udder.blend.MultiplyBlendOp;
 import com.coillighting.udder.effect.MonochromeEffect;
 import com.coillighting.udder.effect.ChaseEffect;
 import com.coillighting.udder.effect.ArrayEffect;
+import com.coillighting.udder.effect.Effect;
+import com.coillighting.udder.effect.RollEffect;
 import com.coillighting.udder.effect.TextureEffect;
 import com.coillighting.udder.effect.woven.WovenEffect;
 import com.coillighting.udder.mix.Layer;
@@ -139,9 +140,10 @@ public abstract class DairyScene {
 
         int sequenceStartIndex = layers.size();
         for(String filename: sequencedTextures) {
-            Layer texture = new Layer("Texture " + filename,
-                new TextureEffect(
-                    "images" + separator + filename));
+            String path = "images" + separator + filename;
+            Effect effect = new TextureEffect(path); // or RollEffect
+            Layer texture = new Layer("Texture " + filename, effect);
+
             texture.setBlendOp(max);
             layers.add(texture);
         }
