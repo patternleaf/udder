@@ -14,6 +14,6 @@ These images are released under the same license as the Udder server software:
 But don't be a jerk: if you use these images, please give credit where credit is
 due.
 
-Also, don't forget that you must distributed the license to recipients of this 
+Also, don't forget that you must distribut the license to recipients of this
 work or derivative works. See the license text for details.
 
