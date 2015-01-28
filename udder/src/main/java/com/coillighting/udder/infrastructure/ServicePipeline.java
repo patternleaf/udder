@@ -78,7 +78,7 @@ public class ServicePipeline {
         this.commandQueue = new ConcurrentLinkedQueue<Command>();
 
         for(int i=0; i<outputCt; i++) {
-            // TODO add support for heterogeneous transmitter types (like video out)
+            // TODO add support for heterogeneous transmitter types (like image capture, video out)
             Transmitter transmitter = OpcTransmissionCouplingFactory.create(
                     opcServerAddresses.get(i), deviceAddressMap);
             TransmissionCoupling coupling = new TransmissionCoupling(transmitter);

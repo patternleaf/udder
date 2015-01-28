@@ -64,23 +64,23 @@ public abstract class DairyScene {
         // aren't enough open patterns between the dark, detailed ones to
         // sufficiently illuminate the whole structure.
         String [] sequencedTextures_A = {
-                adir + "blue_skull_necklace.png",
+                adir + "blue_skull_necklace.png", // ** blue lightning, good reviews from BV
                 adir + "green_gilled_lace.png",
                 adir + "yellow_antennae.png",
                 adir + "cyan_chains.png",
                 adir + "magenta_loops.png",
                 adir + "yellow_lavender_calligraphic.png",
                 adir + "purple_chains.png",
-                adir + "amber_mustachioed_cthulus.png",
-                adir + "orange_mustachioed_cthulus.png",
-                adir + "purple_blue_chains.png",
-                adir + "red_triclops_minimal.png",
+                adir + "amber_mustachioed_cthulus.png", // too sparse, might modify
+                adir + "orange_mustachioed_cthulus.png",  // too sparse, might modify
+                adir + "purple_blue_chains.png", // see also its twin
+                adir + "red_triclops_minimal.png", // too minimal
                 adir + "red_triclops_embellished.png",
-                adir + "light_blue_calligraphemes.png",
-                adir + "lavender_propellers.png",
-                adir + "skyblue_loops.png",
-                adir + "mauve_taupe_worms.png",
-                adir + "redblue_triclops.png",
+                adir + "light_blue_calligraphemes.png", // probably twinkly, nonreflective off copper
+                adir + "lavender_propellers.png", // overlay
+                adir + "skyblue_loops.png", // for an overlay?
+                adir + "mauve_taupe_worms.png", // scheduled
+                adir + "redblue_triclops.png", // scheduled, boost brightness
         };
 
         // The following playlist sufficiently illuminates the structure,
@@ -106,33 +106,35 @@ public abstract class DairyScene {
         // me to speculate that Udder never rendered those frames to begin
         // with.
         String [] sequencedTextures_AandB = {
-                bdir + "flames.jpg",
-                adir + "amber_mustachioed_cthulus.png",
-                bdir + "flower_pedals.jpg",
-                adir + "rose_tint_trigrams.png",
-                bdir + "luminous_purple_flower.jpg",
-                adir + "coppertone_trigrams.png",
-                bdir + "orange_clouds.jpg",
-                adir + "light_amber_trigrams.png",
-                bdir + "pink_yellow_orange_flowers.jpg",
-                adir + "light_cyan_trigrams.png",
-                bdir + "orange_green_geometry.jpg",
-                adir + "orange_mustachioed_cthulus.png",
-                bdir + "purple_on_green_flower.jpg",
-                adir + "redblue_triclops.png",
-                bdir + "space_clouds.jpg",
-                adir + "green_gilled_lace.png",
-                bdir + "trippy.jpg",
-                adir + "red_triclops_minimal.png",
-                bdir + "warm_cool_weave.jpg",
-                adir + "purple_chains.png",
-                bdir + "warped_squares.jpg",
-                adir + "light_amber_trigrams.png",
-                bdir + "water_orange.jpg",
-                adir + "mauve_taupe_worms.png",
-                bdir + "white_yellow_flowers.jpg",
-                adir + "yellow_antennae.png",
-                bdir + "yellow_on_green_flowers.jpg",
+                bdir + "flames.jpg", // 2
+                adir + "amber_mustachioed_cthulus.png", // 3 nice effect but rather sparse
+                bdir + "flower_pedals.jpg", // 4 offensive
+                adir + "rose_tint_trigrams.png", // 5 ** purple sparks, looks good, brings out copper, full enough, dim but distinct look
+                bdir + "luminous_purple_flower.jpg", // 6
+                // **? 5 + 7: purple twinkles + amber/purple twinkles? ok, lots of motion, full, twinkly, not actually in the playlist though
+                adir + "coppertone_trigrams.png", // 7 ** nice copper mode. tree shadows in wind.
+                bdir + "orange_clouds.jpg", // 8
+                adir + "light_amber_trigrams.png", // 9 ** light amber shimmers, sort of a flattering brown on the metal strips, nice contrast between various strips.
+                bdir + "pink_yellow_orange_flowers.jpg", // 10 clown barf, wtf?
+                // ** 9 + 11 + 7 looks good
+                adir + "light_cyan_trigrams.png", // 11 light blue "lightning" -- maybe not as electric as the pure blue one they cut. nice when it jumps fast.
+                bdir + "orange_green_geometry.jpg", // 12
+                adir + "orange_mustachioed_cthulus.png", // 13 too many black gaps, maybe too primary? notes are conflicted.
+                bdir + "purple_on_green_flower.jpg", // 14
+                adir + "redblue_triclops.png", // 15 red spots with violet undertones, interacts nicely with the rig but rather sparse/dim. palette good.. hints of magenta in there.
+                bdir + "space_clouds.jpg", // 16
+                adir + "green_gilled_lace.png", // 17 too green, too flickery, twinkles
+                bdir + "trippy.jpg", // 18 tame the primary red blotch!
+                adir + "red_triclops_minimal.png", // 19 primary red doesn't cut it
+                bdir + "warm_cool_weave.jpg", // 20
+                adir + "purple_chains.png", // 21 ** deep violet, maybe black holes too big in places esp Sw, subtle but tasteful twinkle effect.
+                bdir + "warped_squares.jpg", // 22
+                adir + "light_amber_trigrams.png", // ** 23 looks good, monochomatic shadowplay on rig, brings out metals like previous similar one. some black gaps too big sometimes
+                bdir + "water_orange.jpg", // 24
+                adir + "mauve_taupe_worms.png", // ** 25 not bad on metal, makes some look red and some purple, rest pink. all pink would be bad.
+                bdir + "white_yellow_flowers.jpg", // 26
+                adir + "yellow_antennae.png", // 27 looks okay on metal, not very bright, this yellow BTW reads just slightly warm esp on metal
+                bdir + "yellow_on_green_flowers.jpg", // 28
         };
 
         // TEMP for the dairy

@@ -61,9 +61,7 @@ public class Interpolator {
         }
     }
 
-    /** Good values are 10, 50, and 80, in that order.
-     * TODO change names to reflect what they govern.
-     */
+    /** Good values are 10, 50, and 80, in that order. */
     public Interpolation randomMode(int threshold0, int threshold1, int threshold2) {
         Interpolator.Interpolation mode;
         int r = random.nextInt(100);
