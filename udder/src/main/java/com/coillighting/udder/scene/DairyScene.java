@@ -83,6 +83,43 @@ public abstract class DairyScene {
                 adir + "redblue_triclops.png", // scheduled, boost brightness
         };
 
+        /*
+ideas
+-----
+flame_scroller_high_key_high_contrast > (orange, mix early, keep late) because people are scared of the dark
+blue_skull_necklace  > (mix late) mostly alone
+light_cyan_trigrams  | (mix late) [should blend nicely with blue above]
+light_amber_trigrams | (mix early) mix all three. verified good.
+coppertone_trigrams  | (mix early, keep late)                 <<< tree shadows, try to solo on outro
+
+flame_scroller_high_key_low_contrast > bright amber, return of the flame
+
+redblue_triclops - boost blue brightness? or use med contrast version? nice palette, nice interaction but too dim
+
+rose_tint_trigrams purple sparks, brings out copper, full enough but still dim
+
+cartoon_flame_scroller_horizontal_* (mix earlyish, maybe flip v?)
+
+rainbow stupidity 1 (mix latish) - maybe tone down primary reds in these a little more? check.
+
+?? amber_mustachioed_cthulus.png (desparsify, hue-diversify background?)
+
+cartoon_rivulet_scroller_horizontal_* (maybe flip h or v?)
+
+rainbow stupidity 2 (mix latish)
+
+purple_chains.png - but fill in black holes "subtle but tasteful w/ deep violet" kind of dark
+    see also purple_blue_chains, which got cut previously
+    (maybe use warmed skyblue_loops as subtle amber overlay?)
+mauve_taupe_worms - not bad on metal, pinkish
+
+pastel rainbow stupidity here?
+- or -
+flame_scroller_low_key_high_contrast > more amber, return of the flame
+- or -
+something not made yet? colorful, structured to fit with the weave -- stacked hexes + blur? simple v-scroll?
+        */
+
         // The following playlist sufficiently illuminates the structure,
         // but the nice, detailed motion gets washed out because there
         // are so many open patterns.
