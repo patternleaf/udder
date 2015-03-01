@@ -12,28 +12,6 @@ def triangular_root(x):
     """
     return ((8.0*x + 1.0)**0.5 - 1.0) / 2.0
 
-def discrete_triangular_root(x):
-    """Return int: the triangular root of x (int or float), rounded down to the
-    nearest integer.
-    Raise ValueError if x is negative.
-    """
-    return int(triangular_root(x))
-
-# useless, cut
-def oscillate_triangular_root(x):
-    n = triangular_root(x) % 1
-    if n >= 0.5:
-        n -= 0.5
-    return n * 2.0
-
-# useless, cut
-def oscillate_discrete_triangular_root(x):
-    n = round(triangular_root(x) % 1)
-    if n == 0:
-        return 0
-    else:
-        return 1
-
 def oscillate_triangular_root_color(offset, scale, palette):
     """Map the pixel at offset to a thread colors (where color cycle frequency
     = len(palette)), given some scale multiplier (in space per thread).
@@ -53,7 +31,7 @@ def oscillate_triangular_root_color(offset, scale, palette):
         n0                              n1
     """
     x1  = offset / scale
-    n0 = float(int(x1))
+    n0 = float(int(triangular_root(x1)))
     x0 = triangular_number(n0)
     n1 = n0 + 1.0
     x2 = triangular_number(n1)
@@ -81,33 +59,22 @@ def test():
 
     assert triangular_root(0.0) == 0.0
     assert triangular_root(0) == 0.0
-    assert discrete_triangular_root(0) == 0
 
     assert abs(triangular_root(0.5) - 0.61803398875) < tolerance
-    assert discrete_triangular_root(0.5) == 0
 
     assert triangular_root(1.0) == 1.0
     assert triangular_root(1) == 1.0
-    assert discrete_triangular_root(1.0) == 1
-    assert discrete_triangular_root(1) == 1
 
     assert abs(triangular_root(1.5) - 1.30277563773) < tolerance
-    assert discrete_triangular_root(1.5) == 1
 
     assert abs(triangular_root(2.0) - 1.56155281281) < tolerance
     assert abs(triangular_root(2) - 1.56155281281) < tolerance
-    assert discrete_triangular_root(2.0) == 1
-    assert discrete_triangular_root(2) == 1
 
     assert triangular_root(3.0) == 2.0
     assert triangular_root(3) == 2.0
-    assert discrete_triangular_root(3.0) == 2
-    assert discrete_triangular_root(3) == 2
 
     assert triangular_root(6.0) == 3.0
     assert triangular_root(6) == 3.0
-    assert discrete_triangular_root(6.0) == 3
-    assert discrete_triangular_root(6) == 3
 
     assert triangular_root(10.0) == 4.0
     assert triangular_root(10) == 4.0
@@ -142,10 +109,6 @@ xs = tuple(xrange(18))
 if True:
     print ''.join(str(x).ljust(6) for x in xs)
     print ''.join(str(round(triangular_root(x),3)).ljust(6) for x in xs)
-    print ''.join(str(discrete_triangular_root(x)).ljust(6) for x in xs)
-    print ''.join(str(round(oscillate_triangular_root(x), 3)).ljust(6) for x in xs)
-    print ''.join(str(oscillate_discrete_triangular_root(x)).ljust(6) for x in xs)
-
     print ''.join(str(round(triangular_number(n),3)).ljust(6) for n in xs)
     print ''.join(str(round(triangular_root(triangular_number(n)),3)).ljust(6) for n in xs)
 
@@ -156,14 +119,12 @@ if True:
     palette2 = ['a', 'b']
     print ''.join(oscillate_triangular_root_color(x, 1.0, palette2).ljust(6) for x in xs)
     osc2 = ''.join(oscillate_triangular_root_color(x, 2.0, palette2) for x in tuple(xrange(42)))
-    print osc2
     expected2 = "abaabbaaabbbaaaabbbbaaaaabbbbbaaaaaabbbbbb"
     assert expected2 == osc2, "\n%r\n%r" % (expected2, osc2)
 
     palette3 = ['a', 'b', 'c']
     print ''.join(oscillate_triangular_root_color(x, 3.0, palette3).ljust(6) for x in xs)
     osc3 = ''.join(oscillate_triangular_root_color(float(x), 3.0, palette3) for x in tuple(xrange(63)))
-    print osc3
     expected3 = "abcaabbccaaabbbcccaaaabbbbccccaaaaabbbbbcccccaaaaaabbbbbbcccccc"
     ruler1 = ''.join(str(i % 10) for i in xrange(len(expected3)))
     ruler10 = ''.join(str(int(i/10)) for i in xrange(len(expected3)))
@@ -173,7 +134,6 @@ if True:
     palette4 = ['a', 'b', 'c', 'd']
     print ''.join(oscillate_triangular_root_color(x, 4.0, palette4).ljust(6) for x in xs)
     osc4 = ''.join(oscillate_triangular_root_color(float(x), 4.0, palette4) for x in tuple(xrange(84)))
-    print osc4
     expected4 = "abcdaabbccddaaabbbcccdddaaaabbbbccccddddaaaaabbbbbcccccdddddaaaaaabbbbbbccccccdddddd"
     ruler1 = ''.join(str(i % 10) for i in xrange(len(expected4)))
     ruler10 = ''.join(str(int(i/10)) for i in xrange(len(expected4)))
@@ -185,7 +145,6 @@ if True:
     freq = 8.0
     print ''.join(oscillate_triangular_root_color(x, freq, palette4).ljust(6) for x in xs)
     osc4x2 = ''.join(oscillate_triangular_root_color(float(x), freq, palette4) for x in tuple(xrange(84*2)))
-    print osc4x2
     expected4x2 = "aabbccddaaaabbbbccccddddaaaaaabbbbbbccccccddddddaaaaaaaabbbbbbbbccccccccddddddddaaaaaaaaaabbbbbbbbbbccccccccccddddddddddaaaaaaaaaaaabbbbbbbbbbbbccccccccccccdddddddddddd"
     ruler1 = ''.join(str(i % 10) for i in xrange(len(expected4x2)))
     ruler10 = ''.join(str(int(i/10)) for i in xrange(len(expected4x2)))
@@ -196,10 +155,8 @@ if True:
     freq = 2.0
     print ''.join(oscillate_triangular_root_color(x, freq, palette4).ljust(6) for x in xs)
     osc4d2 = ''.join(oscillate_triangular_root_color(float(x), freq, palette4) for x in tuple(xrange(84/2)))
-    print osc4d2
     # every 2nd b and d get skipped, predictably
     expected4d2 = "acabcdaabccdaabbccddaaabbcccddaaabbbcccddd"
-    print expected4d2
     ruler1 = ''.join(str(i % 10) for i in xrange(len(expected4d2)))
     ruler10 = ''.join(str(int(i/10)) for i in xrange(len(expected4d2)))
     assert expected4d2 == osc4d2, "\nruler     %s\nruler     %s\nexpected %r !=\nreceived %r" \
@@ -208,7 +165,6 @@ if True:
     palette5 = ['a', 'b', 'c', 'd', 'e']
     print ''.join(oscillate_triangular_root_color(x, 5.0, palette5).ljust(6) for x in xs)
     osc5 = ''.join(oscillate_triangular_root_color(float(x), 5.0, palette5) for x in tuple(xrange(105)))
-    print osc4
     expected5 = "abcdeaabbccddeeaaabbbcccdddeeeaaaabbbbccccddddeeeeaaaaabbbbbcccccdddddeeeeeaaaaaabbbbbbccccccddddddeeeeee"
     ruler1 = ''.join(str(i % 10) for i in xrange(len(expected5)))
     ruler10 = ''.join(str(int(i/10)) for i in xrange(len(expected5)))
