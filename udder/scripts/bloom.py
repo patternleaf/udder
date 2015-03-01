@@ -36,22 +36,16 @@ def oscillate_triangular_root_color(offset, scale, palette):
     n1 = n0 + 1.0
     x2 = triangular_number(n1)
     dxnorm = (x1 - x0) / (x2 - x0)
-    # print "x1 %s  x0 %s  x2 %s = dxnorm %s" % (x1, x0, x2, dxnorm)
     frequency = len(palette) # int
 
     color_index_float = dxnorm * float(frequency)
-    # because 3.0 * 0.333333333 is rounding down
+    # because 3.0 * 0.333333333 is rounding down to 0.0, not up to 1.0:
     if color_index_float % 1 > 0.999999999998:
         color_index_float += 0.01 # bump it up to the next color if it's very close in order to make up for floating point imprecision
 
-    # print "color_index_float = %s => %s" % (color_index_float, int(color_index_float))
-
     color_index = int(color_index_float) # int
-    # print "int(dxnorm %s * float(frequency %s)) = color_index %s" % (dxnorm, frequency, color_index)
-    # print "color_index @%s[x%s] (before) %s" % (offset, frequency, color_index)
     if color_index >= frequency:
         color_index = frequency - 1
-    # print "    color_index @%s[x%s] (after) %s" % (offset, frequency, color_index)
     return palette[color_index]
 
 def test():
