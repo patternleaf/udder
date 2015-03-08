@@ -32,8 +32,6 @@ def oscillate_triangular_root_color(offset, scale, palette):
     offset(float): In pixels. This is the spatial location of the pixel you
     want to color.
 
-    frequency (float): 2.0 for binary blinker, 3 for three-way, ...
-
     scale (float): distince in pixels allocated to the spatial range
         corresponding to x in [1, frequency).
 
@@ -49,8 +47,9 @@ def oscillate_triangular_root_color(offset, scale, palette):
     n1 = n0 + 1.0
     x2 = triangular_number(n1)
     dxnorm = (x1 - x0) / (x2 - x0)
-    frequency = len(palette) # int
 
+    # int: 2.0 for binary blinker, 3.0 for three-way, and so on.
+    frequency = len(palette)
     color_index_float = dxnorm * float(frequency)
 
     # Because 3.0 * 0.333333333 is rounding down to 0.0, not up to 1.0...
@@ -150,20 +149,20 @@ def test_oscillate_triangular_root_color():
     assert expected4 == osc4, "\nruler     %s\nruler     %s\nexpected %r !=\nreceived %r" \
         % (ruler10, ruler1, expected4, osc4)
 
-    # freq > len(palette)
-    freq = 8.0
-    print ''.join(oscillate_triangular_root_color(x, freq, palette4).ljust(6) for x in xs)
-    osc4x2 = ''.join(oscillate_triangular_root_color(float(x), freq, palette4) for x in tuple(xrange(84*2)))
+    # scale > len(palette)
+    scale = 8.0
+    print ''.join(oscillate_triangular_root_color(x, scale, palette4).ljust(6) for x in xs)
+    osc4x2 = ''.join(oscillate_triangular_root_color(float(x), scale, palette4) for x in tuple(xrange(84*2)))
     expected4x2 = "aabbccddaaaabbbbccccddddaaaaaabbbbbbccccccddddddaaaaaaaabbbbbbbbccccccccddddddddaaaaaaaaaabbbbbbbbbbccccccccccddddddddddaaaaaaaaaaaabbbbbbbbbbbbccccccccccccdddddddddddd"
     ruler1 = ''.join(str(i % 10) for i in xrange(len(expected4x2)))
     ruler10 = ''.join(str(int(i/10)) for i in xrange(len(expected4x2)))
     assert expected4x2 == osc4x2, "\nruler     %s\nruler     %s\nexpected %r !=\nreceived %r" \
         % (ruler10, ruler1, expected4x2, osc4x2)
 
-    # freq < len(palette)
-    freq = 2.0
-    print ''.join(oscillate_triangular_root_color(x, freq, palette4).ljust(6) for x in xs)
-    osc4d2 = ''.join(oscillate_triangular_root_color(float(x), freq, palette4) for x in tuple(xrange(84/2)))
+    # scale < len(palette)
+    scale = 2.0
+    print ''.join(oscillate_triangular_root_color(x, scale, palette4).ljust(6) for x in xs)
+    osc4d2 = ''.join(oscillate_triangular_root_color(float(x), scale, palette4) for x in tuple(xrange(84/2)))
     # every 2nd b and d get skipped, predictably
     expected4d2 = "acabcdaabccdaabbccddaaabbcccddaaabbbcccddd"
     ruler1 = ''.join(str(i % 10) for i in xrange(len(expected4d2)))
