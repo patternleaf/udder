@@ -22,7 +22,7 @@ def oscillate_triangular_root_color(offset, scale, palette):
     frequency (float): 2.0 for binary blinker, 3 for three-way, ...
 
     scale (float): distince in pixels allocated to the spatial range
-        corresponding to x in [1, 2.0).
+        corresponding to x in [1, frequency).
 
     Impl schematic:
          | dxnorm ||||||||||||||||||||||
@@ -39,14 +39,14 @@ def oscillate_triangular_root_color(offset, scale, palette):
     frequency = len(palette) # int
 
     color_index_float = dxnorm * float(frequency)
-    # because 3.0 * 0.333333333 is rounding down to 0.0, not up to 1.0:
-    if color_index_float % 1 > 0.999999999998:
-        color_index_float += 0.01 # bump it up to the next color if it's very close in order to make up for floating point imprecision
 
-    color_index = int(color_index_float) # int
-    if color_index >= frequency:
-        color_index = frequency - 1
-    return palette[color_index]
+    # Because 3.0 * 0.333333333 is rounding down to 0.0, not up to 1.0...
+    # In case color_index_float % 1 is ~= 0.999999999998, harmless otherwise.
+    # bump it up to the next color if it's very close in order to make up for
+    # floating point imprecision:
+    color_index_float += 0.01
+
+    return palette[int(color_index_float)]
 
 def test():
     tolerance = 0.00000000001 # floating point slop
@@ -111,7 +111,7 @@ if True:
     print ''.join(oscillate_triangular_root_color(x, 1.0, palette1).ljust(6) for x in xs)
 
     palette2 = ['a', 'b']
-    print ''.join(oscillate_triangular_root_color(x, 1.0, palette2).ljust(6) for x in xs)
+    print ''.join(oscillate_triangular_root_color(x, 2.0, palette2).ljust(6) for x in xs)
     osc2 = ''.join(oscillate_triangular_root_color(x, 2.0, palette2) for x in tuple(xrange(42)))
     expected2 = "abaabbaaabbbaaaabbbbaaaaabbbbbaaaaaabbbbbb"
     assert expected2 == osc2, "\n%r\n%r" % (expected2, osc2)
