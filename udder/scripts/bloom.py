@@ -1,13 +1,26 @@
 #!/usr/bin/env python
-"""
-Exploratory prototype for Blooming Series|Leaf|Cube|Tesseract effect.
+"""Exploratory prototype for Blooming Series|Leaf|Cube|Tesseract effect.
+
+Run tests with `nosetests bloom.py`.
 """
 
 def triangular_number(n):
+    """Return the nth triangular number.
+    Definition: http://en.wikipedia.org/wiki/Triangular_number
+    """
     return ((2.0*n + 1.0)**2.0 - 1.0) / 8.0
 
 def triangular_root(x):
-    """Return float: the triangular root of x (int or float).
+    """Inverse of triangular_number(n). Given a triangular number x (int or
+    float), return n (float), such that the nth triangular number is x. Since
+    values of x that are not perfectly triangular will not have an integer n
+    value, but will fall between two integer n-offsets, we return a float. The
+    fractional portion indicates that x falls between two triangular numbers.
+
+    Beware: float point imprecision applies. This implementation is just good
+    enough for oscillate_triangular_root_color.
+
+    Return float: the triangular root of x (int or float).
     Raise ValueError if x is negative.
     """
     return ((8.0*x + 1.0)**0.5 - 1.0) / 2.0
@@ -48,7 +61,7 @@ def oscillate_triangular_root_color(offset, scale, palette):
 
     return palette[int(color_index_float)]
 
-def test():
+def test_triangular_root():
     tolerance = 0.00000000001 # floating point slop
 
     assert triangular_root(0.0) == 0.0
@@ -96,17 +109,20 @@ def test():
         assert n - ns[i] < tolerance, "at [%s]: %s !~= %s" % (i, n, ns[i])
         assert triangular_root(n) - x < tolerance
 
-test()
-print "Test complete."
+def test_triangular_number():
+    for x0 in xrange(2048):
+        n = triangular_root(x0)
+        x1 = triangular_number(n)
+        assert abs(x0 - x1) < 0.000000001
 
-xs = tuple(xrange(18))
-if True:
+def test_oscillate_triangular_root_color():
+    xs = tuple(xrange(18))
+    print
     print ''.join(str(x).ljust(6) for x in xs)
     print ''.join(str(round(triangular_root(x),3)).ljust(6) for x in xs)
     print ''.join(str(round(triangular_number(n),3)).ljust(6) for n in xs)
     print ''.join(str(round(triangular_root(triangular_number(n)),3)).ljust(6) for n in xs)
 
-if True:
     palette1 = ['a']
     print ''.join(oscillate_triangular_root_color(x, 1.0, palette1).ljust(6) for x in xs)
 
@@ -133,7 +149,6 @@ if True:
     ruler10 = ''.join(str(int(i/10)) for i in xrange(len(expected4)))
     assert expected4 == osc4, "\nruler     %s\nruler     %s\nexpected %r !=\nreceived %r" \
         % (ruler10, ruler1, expected4, osc4)
-
 
     # freq > len(palette)
     freq = 8.0
@@ -165,6 +180,6 @@ if True:
     assert expected5 == osc5, "\nruler     %s\nruler     %s\nexpected %r !=\nreceived %r" \
         % (ruler10, ruler1, expected5, osc5)
 
-assert oscillate_triangular_root_color(21.0, 3.0, palette3) == 'a'
-assert oscillate_triangular_root_color(22.0, 3.0, palette3) == 'b'
-assert oscillate_triangular_root_color(23.0, 3.0, palette3) == 'b'
+    assert oscillate_triangular_root_color(21.0, 3.0, palette3) == 'a'
+    assert oscillate_triangular_root_color(22.0, 3.0, palette3) == 'b'
+    assert oscillate_triangular_root_color(23.0, 3.0, palette3) == 'b'

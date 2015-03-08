@@ -1,5 +1,6 @@
 *.class
-
+*.pyc
+.coverage
 .DS_Store
 udder/java
 udder/mkjson.py
