@@ -31,7 +31,6 @@ public abstract class DairyScene {
     /** Instantiate a new scene in the form of a Mixer. */
     public static Mixer create(Device[] devices) {
         BlendOp max = new MaxBlendOp();
-        BlendOp mult = new MultiplyBlendOp();
 
         // Add layers from bottom (background) to top (foreground),
         // in order of composition.
@@ -59,12 +58,12 @@ public abstract class DairyScene {
         // is running, pairs and trios of adjacent layers
         // appear together, fading in and out.
         String adir = "images" + separator + "dairy_collection_A_720p" + separator;
-        String bdir = "images" + separator + "dairy_collection_B" + separator;
         String loopdir = "images" + separator + "dairy_collection_B_scrolling_loops" + separator;
 
         // This playlist looks nice, and it plays back smoothly, but there
         // aren't enough open patterns between the dark, detailed ones to
         // sufficiently illuminate the whole structure.
+        /*
         String [] sequencedTextures_A = {
                 adir + "blue_skull_necklace.png", // ** blue lightning, good reviews from BV
                 adir + "green_gilled_lace.png",
@@ -84,7 +83,7 @@ public abstract class DairyScene {
                 adir + "mauve_taupe_worms.png", // scheduled
                 adir + "redblue_triclops.png", // scheduled, boost brightness
         };
-
+        */
         /*
 ideas
 -----
@@ -144,6 +143,7 @@ something not made yet? colorful, structured to fit with the weave -- stacked he
         // the stickiness. 3) The logs never report dropped frames, leading
         // me to speculate that Udder never rendered those frames to begin
         // with.
+        /*
         String [] sequencedTextures_AandB = {
                 bdir + "flames.jpg", // 2
                 adir + "amber_mustachioed_cthulus.png", // 3 nice effect but rather sparse
@@ -175,9 +175,8 @@ something not made yet? colorful, structured to fit with the weave -- stacked he
                 adir + "yellow_antennae.png", // 27 looks okay on metal, not very bright, this yellow BTW reads just slightly warm esp on metal
                 bdir + "yellow_on_green_flowers.jpg", // 28
         };
-
+        */
         RollEffect r;
-        // TODO add .getFileName to new interface ImageEffect
         ArrayList<ImageEffect> fx = new ArrayList<ImageEffect>();
 
         r = new RollEffect(loopdir + "flame_scroller_high_key_high_contrast.png");
@@ -280,12 +279,13 @@ something not made yet? colorful, structured to fit with the weave -- stacked he
 
         // Gel example (removed from the production version of the DairyScene
         // because we didn't wind up using it in the show).
+        // To simulate a gel, add a mult layer atop other content.
         // ------------------------------------------------------------------
         // In the mult blendop, white=transparent. Tint
         // everything globally by adjusting this color.
         // Layer gel = new Layer("Color correction gel",
         //     new MonochromeEffect(Pixel.white()));
-        // gel.setBlendOp(mult);
+        // gel.setBlendOp(new MultiplyBlendOp());
         // layers.add(gel);
 
         Mixer mixer = new Mixer((Collection<Mixable>) layers);
