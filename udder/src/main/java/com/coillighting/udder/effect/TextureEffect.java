@@ -23,7 +23,7 @@ import static com.coillighting.udder.util.LogUtil.log;
  *
  * TODO rename to StretchEffect.
  */
-public class TextureEffect extends EffectBase {
+public class TextureEffect extends EffectBase implements ImageEffect {
 
     protected Interpolator interpolator = null;
     protected Random random = null;
@@ -49,9 +49,7 @@ public class TextureEffect extends EffectBase {
     private Pixel p, p11, p12, p21, p22;
     private Point2D.Double xyNorm;
 
-    /** The longest it will take for one corner to complete
-     *  a single transit.
-     */
+    /** The longest it will take for one corner to complete a single transit. */
     int maxTempoMillis = 18000;
 
     public TextureEffect(String filename) {
@@ -117,6 +115,10 @@ public class TextureEffect extends EffectBase {
     public void patchDevices(Device[] devices) {
         super.patchDevices(devices);
         deviceBounds = Device.getDeviceBoundingCube(devices);
+    }
+
+    public String getFilename() {
+        return this.filename;
     }
 
     private void clearImage() {

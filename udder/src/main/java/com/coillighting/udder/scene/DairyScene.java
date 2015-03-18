@@ -11,6 +11,7 @@ import com.coillighting.udder.effect.MonochromeEffect;
 import com.coillighting.udder.effect.ChaseEffect;
 import com.coillighting.udder.effect.ArrayEffect;
 import com.coillighting.udder.effect.Effect;
+import com.coillighting.udder.effect.ImageEffect;
 import com.coillighting.udder.effect.RollEffect;
 import com.coillighting.udder.effect.TextureEffect;
 import com.coillighting.udder.effect.woven.WovenEffect;
@@ -57,8 +58,9 @@ public abstract class DairyScene {
         // layers look good together. When the mixer's shuffler
         // is running, pairs and trios of adjacent layers
         // appear together, fading in and out.
-        String adir = "dairy_collection_A_720p" + separator;
-        String bdir = "dairy_collection_B" + separator;
+        String adir = "images" + separator + "dairy_collection_A_720p" + separator;
+        String bdir = "images" + separator + "dairy_collection_B" + separator;
+        String loopdir = "images" + separator + "dairy_collection_B_scrolling_loops" + separator;
 
         // This playlist looks nice, and it plays back smoothly, but there
         // aren't enough open patterns between the dark, detailed ones to
@@ -174,44 +176,117 @@ something not made yet? colorful, structured to fit with the weave -- stacked he
                 bdir + "yellow_on_green_flowers.jpg", // 28
         };
 
-        // TEMP for the dairy
-        String [] sequencedTextures = sequencedTextures_AandB;
+        RollEffect r;
+        // TODO add .getFileName to new interface ImageEffect
+        ArrayList<ImageEffect> fx = new ArrayList<ImageEffect>();
+
+        r = new RollEffect(loopdir + "flame_scroller_high_key_high_contrast.png");
+        r.setYPeriodMillis(1000);
+        fx.add(r);
+
+        // *mix late:
+        // ** blue lightning, good reviews from BV
+        fx.add(new TextureEffect(adir + "blue_skull_necklace.png"));
+
+        //(mix late) [should blend nicely with blue above
+        fx.add(new TextureEffect(adir + "light_cyan_trigrams.png"));
+
+        // (mix early) mix all three. verified good.
+        fx.add(new TextureEffect(adir + "light_amber_trigrams.png"));
+
+        // (mix early, keep late) <<< tree shadows, try to solo on outro
+        fx.add(new TextureEffect(adir + "coppertone_trigrams.png"));
+
+        // flames descend on coppertone tree shadows
+        r = new RollEffect(loopdir + "flame_scroller_high_key_low_contrast.png");
+        r.setYPeriodMillis(2000);
+        fx.add(r);
+
+        // boost blue brightness? or use med contrast version? nice palette, nice interaction but too dim
+        fx.add(new TextureEffect(adir + "medium_contrast" + separator + "redblue_triclops_medium_contrast.png"));
+
+        // purple sparks, brings out copper, full enough but still dim
+        fx.add(new TextureEffect(adir + "rose_tint_trigrams.png"));
+
+        // also try blurs
+        // (maybe flip h or v?)
+        r = new RollEffect(loopdir + "cartoon_flame_scroller_horizontal_crisp.png");
+        r.setXPeriodMillis(2000);
+        fx.add(r);
+
+        // (mix latish) - maybe tone down primary reds in these a little more? check.
+        r = new RollEffect(loopdir + "rainbow_stupidity_scroller_wavy.png");
+        r.setYPeriodMillis(5000);
+        fx.add(r);
+
+        // ?? amber_mustachioed_cthulus.png (desparsify, hue-diversify background?)
+        fx.add(new TextureEffect(adir + "amber_mustachioed_cthulus.png"));
+
+        // also try blurs
+        // (maybe flip h or v?)
+        r = new RollEffect(loopdir + "cartoon_rivulet_scroller_horizontal_crisp.png");
+        r.setXPeriodMillis(7000);
+        fx.add(r);
+
+        // TODO maybe a brighter look here <<<<<<<<<<<<<<<<<<
+
+        // purple_chains.png - but fill in black holes "subtle but tasteful w/ deep violet" kind of dark
+        // see also purple_blue_chains, which got cut previously
+        // (maybe use warmed skyblue_loops as subtle amber overlay?)
+        fx.add(new TextureEffect(adir + "purple_chains.png"));
+        fx.add(new TextureEffect(adir + "mauve_taupe_worms.png"));
+
+        // facets?
+        // pastel rainbow stupidity here?
+        // - or -
+        // flame_scroller_low_key_high_contrast > more amber, return of the flame
+        // - or -
+        // something not made yet? colorful, structured to fit with the weave -- stacked hexes + blur? simple v-scroll?
+        // ** blue lightning, again - PLACEHOLDER TODO
+        fx.add(new TextureEffect(adir + "blue_skull_necklace.png"));
 
         int sequenceStartIndex = layers.size();
-        for(String filename: sequencedTextures) {
-            String path = "images" + separator + filename;
-            Effect effect = new TextureEffect(path); // or RollEffect
-            Layer texture = new Layer("Texture " + filename, effect);
-
+        for(ImageEffect ie: fx) {
+            Layer texture = new Layer(ie.getClass().getSimpleName() + " " + ie.getFilename(), ie);
             texture.setBlendOp(max);
             layers.add(texture);
         }
         int sequenceEndIndex = layers.size() - 1;
 
+        // Example: chase effect (removed from the production version
+        // of DairyScene because it was not part of the show).
+        // ----------------------------------------------------------
         // A chase that runs over the devices in patch sheet order
         // (not spatial order, not OPC address order).
         // Requires an external raster to display anything.
         // A useful test pattern generator because in its default config,
         // it scrolls the chase by a single pixel at a time.
-        Layer chase = new Layer("Chase", new ChaseEffect(null));
-        chase.setBlendOp(max);
-        layers.add(chase);
+        // Layer chase = new Layer("Chase", new ChaseEffect(null));
+        // chase.setBlendOp(max);
+        // layers.add(chase);
 
-        // Supply an array of colors to be directly
-        // mapped onto the rig with these two layers.
+        // A user may supply an array of colors to map directly onto the
+        // rig with these external inputs.
         Layer externalA = new Layer("External input A", new ArrayEffect(null));
         externalA.setBlendOp(max);
         layers.add(externalA);
 
-        Layer externalB = new Layer("External input B", new ArrayEffect(null));
-        externalB.setBlendOp(max);
-        layers.add(externalB);
+        // Example: add a second external input (disabled for now, to
+        // maximize performance).
+        // -------------------------------------------------------------
+        // Layer externalB = new Layer("External input B", new ArrayEffect(null));
+        // externalB.setBlendOp(max);
+        // layers.add(externalB);
 
+        // Gel example (removed from the production version of the DairyScene
+        // because we didn't wind up using it in the show).
+        // ------------------------------------------------------------------
         // In the mult blendop, white=transparent. Tint
         // everything globally by adjusting this color.
-        Layer gel = new Layer("Color correction gel", new MonochromeEffect(Pixel.white()));
-        gel.setBlendOp(mult);
-        layers.add(gel);
+        // Layer gel = new Layer("Color correction gel",
+        //     new MonochromeEffect(Pixel.white()));
+        // gel.setBlendOp(mult);
+        // layers.add(gel);
 
         Mixer mixer = new Mixer((Collection<Mixable>) layers);
         mixer.patchDevices(devices);

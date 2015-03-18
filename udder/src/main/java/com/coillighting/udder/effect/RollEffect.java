@@ -19,7 +19,7 @@ import static com.coillighting.udder.util.LogUtil.log;
  * edges. You may roll horizontally and/or vertically. See RollEffectState for
  * options.
  */
-public class RollEffect extends EffectBase {
+public class RollEffect extends EffectBase implements ImageEffect {
 
     protected String filename = null;
     protected BufferedImage image = null;
@@ -59,6 +59,10 @@ public class RollEffect extends EffectBase {
         xyNorm = new Point2D.Double(0.0, 0.0);
 
         this.reloadImage();
+    }
+
+    public String getFilename() {
+        return this.filename;
     }
 
     public Class getStateClass() {
