@@ -8,7 +8,6 @@ import com.coillighting.udder.mix.Layer;
 import com.coillighting.udder.mix.Mixable;
 import com.coillighting.udder.mix.Mixer;
 
-import javax.swing.plaf.nimbus.State;
 
 /** Route command names (ordinarily derives from HTTP request URLs) to their
  *  consumers in a Mixer tree.
