@@ -43,11 +43,11 @@ public class BoundingCube {
         this(minX, minY, 0.0, width, height, 0.0);
     }
 
-    public boolean isEmpty() {
+    public final boolean isEmpty() {
         return width < 0.0 || height < 0.0 || depth < 0.0;
     }
 
-    public boolean contains(double x, double y, double z) {
+    public final boolean contains(double x, double y, double z) {
         if(this.isEmpty()) {
             return false;
         } else {
@@ -57,7 +57,7 @@ public class BoundingCube {
         }
     }
 
-    public boolean contains(Point3D pt) {
+    public final boolean contains(Point3D pt) {
         if(pt != null) {
             return this.contains(pt.getX(), pt.getY(), pt.getZ());
         } else {
@@ -69,59 +69,63 @@ public class BoundingCube {
         return "x:[" + minX + ", " + maxX + "] y:[" + minY + ", " + maxY + "] z:[" + minZ + ", " + maxZ + "] w:" + width + " h:" + height + " d:" + depth + "w/h:" + (width/height);
     }
 
-    public double getMinX() {
+    public final double getMinX() {
         return minX;
     }
 
-    public void setMinX(double minX) {
+    public final void setMinX(double minX) {
         this.minX = minX;
     }
 
-    public double getMinY() {
+    public final double getMinY() {
         return minY;
     }
 
-    public void setMinY(double minY) {
+    public final void setMinY(double minY) {
         this.minY = minY;
     }
 
-    public double getMinZ() {
+    public final double getMinZ() {
         return minZ;
     }
 
-    public void setMinZ(double minZ) {
+    public final void setMinZ(double minZ) {
         this.minZ = minZ;
     }
 
-    public double getWidth() {
+    public final double getWidth() {
         return width;
     }
 
-    public void setWidth(double width) {
+    public final void setWidth(double width) {
         this.width = width;
     }
 
-    public double getHeight() {
+    public final double getHeight() {
         return height;
     }
 
-    public void setHeight(double height) {
+    public final void setHeight(double height) {
         this.height = height;
     }
 
-    public double getDepth() {
+    public final double getDepth() {
         return depth;
     }
 
-    public void setDepth(double depth) {
+    public final void setDepth(double depth) {
         this.depth = depth;
     }
 
-    public double getMaxX() {
+    public final double getMaxX() {
         return minX + width;
     }
 
-    public double getMaxY() {
+    public final double getMaxY() {
         return minY + height;
+    }
+
+    public final double getMaxZ() {
+        return minZ + depth;
     }
 }
