@@ -76,7 +76,7 @@ public class TriangularSequence extends Object {
         double dxnorm = (x1 - x0) / (x2 - x0);
 
         double color_index = dxnorm * (double)palette.length;
-        double tmp_color_index = color_index; //TEMP
+//        double tmp_color_index = color_index; //TEMP
 
         // Because 3.0 * 0.333333333 is rounding down to 0.0, not up to 1.0...
         // In case color_index_float % 1 is ~= 0.999999999998, harmless otherwise.
@@ -87,7 +87,7 @@ public class TriangularSequence extends Object {
         if(palette_index >= palette.length) {
             palette_index = palette.length - 1;
         }
-        System.out.println("color_index " + tmp_color_index + "=> " + color_index + " pixd " + palette_index + " = dxnorm " + dxnorm + " palette.len " + (double)palette.length); // TEMP
+//        System.out.println("color_index " + tmp_color_index + "=> " + color_index + " pixd " + palette_index + " = dxnorm " + dxnorm + " palette.len " + (double)palette.length); // TEMP
         return palette[palette_index];
     }
 
