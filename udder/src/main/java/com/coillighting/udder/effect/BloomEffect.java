@@ -61,12 +61,58 @@ public class BloomEffect extends EffectBase {
     }
 
     public Object getState() {
-        return null; // TODO BloomEffectState
+        return new BloomEffectState(this.copyPalette(), enableBilateralSym,
+                enableNestedBilateralSym);
     }
 
-    // TODO set palette, scale, reflection, axes enabled
+    public Pixel[] copyPalette() {
+        Pixel[] p = null;
+        if(palette != null) {
+            p = new Pixel[palette.length];
+            for(int i = 0; i < palette.length; i++) {
+                p[i] = new Pixel(palette[i]);
+            }
+        }
+        return p;
+    }
+
     public void setState(Object state) throws ClassCastException {
-        log("TODO: BlooomEffect.setState()");
+        BloomEffectState command = (BloomEffectState) state;
+        Pixel[] p = command.getPalette();
+
+        // Deep copy the given palette, filling in missing items with black.
+        // Ignore extra colors.
+        if(p != null && p.length > 0) {
+            int size = p.length;
+            int max = BloomTiling.REPERTOIRES.length + 1;
+            if(size > max) {
+                size = max;
+            }
+
+            repertoire = BloomTiling.REPERTOIRES[size];
+            tiling = BloomTiling.TILINGS_2D[repertoire.length];
+            palette = new Pixel[size];
+
+            for(int i=0; i<size; i++) {
+                Pixel color = p[i];
+                if(color == null) {
+                    color = Pixel.black();
+                } else {
+                    color = new Pixel(color);
+                }
+                palette[i] = color;
+            }
+        }
+
+        Boolean bilateral = command.getEnableBilateralSym();
+        if(bilateral != null) {
+            enableBilateralSym = bilateral;
+        }
+
+        Boolean nested = command.getEnableNestedBilateralSym();
+        if(nested != null) {
+            enableNestedBilateralSym = nested;
+        }
     }
 
     public void patchDevices(Device[] devices) {

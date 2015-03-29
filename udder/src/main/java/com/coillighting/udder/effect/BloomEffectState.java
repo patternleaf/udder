@@ -1,17 +1,57 @@
 package com.coillighting.udder.effect;
 
+import com.coillighting.udder.model.Pixel;
+
 /** Convey public parameters to and from BloomEffect instances.
  *  This class serves as a JSON mapping target for Boon.
  */
 public class BloomEffectState {
 
-    protected int temp = 0;
+    /** Tile these colors across the scene. 9 colors max. Ignore extras. */
+    protected Pixel[] palette = null;
 
-    public int getTemp() {
-        return temp;
+    /** Reflect the effect down the middle. */
+    protected Boolean enableBilateralSym = true;
+
+    /** Reflect the reflection. (Do nothing if enableBilateralSym is false.)
+     *  Traditional for Blooming Leaves.
+     */
+    protected Boolean enableNestedBilateralSym = true;
+
+    public BloomEffectState(Pixel[] palette,
+                            Boolean enableBilateralSym,
+                            Boolean enableNestedBilateralSym)
+    {
+        this.palette = palette;
+        this.enableBilateralSym = enableBilateralSym;
+        this.enableNestedBilateralSym = enableNestedBilateralSym;
     }
 
-    public void setTemp(int temp) {
-        this.temp = temp;
+
+    public Pixel[] getPalette() {
+        return this.palette;
     }
+
+    public void setPalette(Pixel[] palette) {
+        this.palette = palette;
+    }
+
+
+    public Boolean getEnableBilateralSym() {
+        return enableBilateralSym;
+    }
+
+    public void setEnableBilateralSym(Boolean enableBilateralSym) {
+        this.enableBilateralSym = enableBilateralSym;
+    }
+
+
+    public Boolean getEnableNestedBilateralSym() {
+        return enableNestedBilateralSym;
+    }
+
+    public void setEnableNestedBilateralSym(Boolean enableNestedBilateralSym) {
+        this.enableNestedBilateralSym = enableNestedBilateralSym;
+    }
+
 }
