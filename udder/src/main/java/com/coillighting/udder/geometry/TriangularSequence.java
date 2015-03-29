@@ -53,6 +53,7 @@ public class TriangularSequence extends Object {
      *
      *  scale: Distince in pixels allocated to the spatial range
      *      corresponding to x in [1, frequency). Must be positive.
+     *      TODO: clarify this comment
      *
      *  palette: Integer keys to some external collection of color elements.
      *      A palette of length 1 will yield monotone results. Length 2 creates
@@ -75,13 +76,19 @@ public class TriangularSequence extends Object {
         double dxnorm = (x1 - x0) / (x2 - x0);
 
         double color_index = dxnorm * (double)palette.length;
+        double tmp_color_index = color_index; //TEMP
 
         // Because 3.0 * 0.333333333 is rounding down to 0.0, not up to 1.0...
         // In case color_index_float % 1 is ~= 0.999999999998, harmless otherwise.
         // Bump it up to the next color if it's very close in order to make up for
         // floating point imprecision:
-        color_index += 0.01;
-        return palette[(int)color_index];
+        color_index += 0.00000001; // TODO improve this value's precision
+        int palette_index = (int)color_index;
+        if(palette_index >= palette.length) {
+            palette_index = palette.length - 1;
+        }
+        System.out.println("color_index " + tmp_color_index + "=> " + color_index + " pixd " + palette_index + " = dxnorm " + dxnorm + " palette.len " + (double)palette.length); // TEMP
+        return palette[palette_index];
     }
 
     public static final int[] triangularSequence(int length, int[] palette)
