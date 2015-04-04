@@ -86,11 +86,19 @@ public class DairyShuffler implements StatefulAnimator {
             } else if(timings == null) {
                 throw new IllegalArgumentException("A list of fade times is required.");
             } else if(timings.length != ct) {
-                throw new IllegalArgumentException("Exactly " + ct + " fade times is required, but you supplied " + timings.length + " of them.");
+                throw new IllegalArgumentException("Exactly " + ct +
+                        " fade times slots are required, because that's how many layers are in your mixer, but you supplied "
+                        + timings.length + " of them.");
             } else {
-                for(DairyShufflerFadeTiming d: timings) {
-                    if(d == null) {
-                        throw new IllegalArgumentException("Every DairyShufflerFadeTiming object must not be null.");
+                for(int i=0; i<timings.length; i++) {
+                    if(timings[i] == null) {
+                        if(i >= shuffleLayerStartIndex && i <= shuffleLayerEndIndex) {
+                            throw new IllegalArgumentException("Every shuffled layer must have a DairyShufflerFadeTiming "
+                                    + "object which is not null, but timings[" + i + "] is null.");
+                        } else {
+                            throw new IllegalArgumentException("A non-shuffled layer must never have a DairyShufflerFadeTiming "
+                                    + "object, but timings[" + i + "] is not null.");
+                        }
                     }
                 }
                 this.fadeTimings = timings;
@@ -202,17 +210,38 @@ public class DairyShuffler implements StatefulAnimator {
                     mixer.getLayer(wovenLayerIndex).setLevel(wovenLevel);
                 }
             } else {
+                // texture mode only, not in woven mode
+                int li = incomingLayerIndex;
+                DairyShufflerFadeTiming inTiming, outTiming;
+
+                // N.B. Fade in and out are not applied to Woven mode thanks to
+                // the range check in setTextureLevelConditionally.
+                // TODO the following code is a recent edition, probably not too robust. TEST.
+                if(li - 2 < shuffleLayerStartIndex) {
+                    // won't matter, but must be not null
+                    outTiming = fadeTimings[shuffleLayerStartIndex];
+                } else {
+                    outTiming = fadeTimings[li - 2];
+                }
+
+                if(li > shuffleLayerEndIndex) {
+                    // likewise won't matter, but must be not null
+                    inTiming = fadeTimings[shuffleLayerEndIndex];
+                } else {
+                    inTiming = fadeTimings[li];
+                }
+
                 // Crossfade out of the outgoing cue and into the incoming cue.
                 // Do not change the primary cue, which is like the current track.
                 double cuePct = (double) (now - cueStartTimeMillis) / cueDurationMillis;
 
                 // To fade out faster, make this number smaller.
                 // Range: 0 - 1.0 for 0% to 100% of cue time spent fading.
-                double cueFadeOutPct = 1.0;
+                double cueFadeOutPct = outTiming.out;
                 double outPct;
 
                 // To fade in faster, make this number smaller.
-                double cueFadeInPct = 1.0;
+                double cueFadeInPct = inTiming.in;
                 double inPct;
 
                 if(cuePct >= cueFadeOutPct || cueFadeOutPct == 0.0) {
@@ -235,7 +264,6 @@ public class DairyShuffler implements StatefulAnimator {
                 }
 
                 // incoming look (if applicable)
-                int li = incomingLayerIndex;
                 interpolator.interpolate2D(interpolationModeIncoming, inPct, off, current, on);
                 // FUTURE: implement a 1D Interpolator API, but for now just
                 // piggyback on the existing 2D API and ignore y.
@@ -257,6 +285,10 @@ public class DairyShuffler implements StatefulAnimator {
         }
     }
 
+    /** Only try to fade in or out a texture layer. Allow Woven to handle its
+     *  own dynamics, and ignore out of range layers. Simplifies the impl of
+     *  animate somewhat.
+     */
     private void setTextureLevelConditionally(double level, int layerIndex) {
         if(layerIndex >= shuffleLayerStartIndex
                 && layerIndex <= shuffleLayerEndIndex) {
