@@ -1,0 +1,11 @@
+state={
+    "palette": [
+        {"r": 0.20, "g": 0.0, "b": 1.0},
+        {"r": 0.05, "g": 0.10, "b": 1.00},
+        {"r": 1.0, "g": 0.75, "b": 0.00}
+    ],
+    "enableBilateralSym": true,
+    "enableNestedBilateralSym": true,
+    "enableX": true,
+    "enableY": true
+}
