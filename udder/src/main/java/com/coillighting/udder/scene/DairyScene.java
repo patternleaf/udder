@@ -40,7 +40,6 @@ public abstract class DairyScene {
         // in order of composition.
         ArrayList<Mixable> layers = new ArrayList<Mixable>();
 
-
         // The background is additive (unlike the gel layer
         // below), so add color globally using this level.
         Layer background = new Layer("Background",
@@ -64,66 +63,66 @@ public abstract class DairyScene {
         String loopdir = "images" + separator + "dairy_collection_B_scrolling_loops" + separator;
 
         RollEffect r;
-        ArrayList<Effect> fx = new ArrayList<Effect>();
+        ArrayList<EffectSlot> fx = new ArrayList<EffectSlot>();
 
         r = new RollEffect(loopdir + "flame_scroller_high_key_high_contrast.png");
         r.setYPeriodMillis(1000);
-        fx.add(r);
+        fx.add(new EffectSlot(r, 1.0, 1.0));
 
         // *mix late:
         // ** blue lightning, good reviews from BV
-        fx.add(new TextureEffect(adir + "blue_skull_necklace.png"));
+        fx.add(new EffectSlot(new TextureEffect(adir + "blue_skull_necklace.png"), 1.0, 1.0));
 
         //(mix late) [should blend nicely with blue above
-        fx.add(new TextureEffect(adir + "light_cyan_trigrams.png"));
+        fx.add(new EffectSlot(new TextureEffect(adir + "light_cyan_trigrams.png"), 1.0, 1.0));
 
         // (mix early) mix all three. verified good.
-        fx.add(new TextureEffect(adir + "light_amber_trigrams.png"));
+        fx.add(new EffectSlot(new TextureEffect(adir + "light_amber_trigrams.png"), 1.0, 1.0));
 
         // (mix early, keep late) <<< tree shadows, try to solo on outro
-        fx.add(new TextureEffect(adir + "coppertone_trigrams.png"));
+        fx.add(new EffectSlot(new TextureEffect(adir + "coppertone_trigrams.png"), 1.0, 1.0));
 
         // flames descend on coppertone tree shadows
         r = new RollEffect(loopdir + "flame_scroller_high_key_low_contrast.png");
         r.setYPeriodMillis(2000);
-        fx.add(r);
+        fx.add(new EffectSlot(r, 1.0, 1.0));
 
         // nice palette, nice interaction, might need to be even brighter
-        fx.add(new TextureEffect(adir + "medium_contrast" + separator + "redblue_triclops_medium_contrast.png"));
+        fx.add(new EffectSlot(new TextureEffect(adir + "medium_contrast" + separator + "redblue_triclops_medium_contrast.png"), 1.0, 1.0));
 
         // purple sparks, brings out copper, full enough but still dim
-        fx.add(new TextureEffect(adir + "rose_tint_trigrams.png"));
+        fx.add(new EffectSlot(new TextureEffect(adir + "rose_tint_trigrams.png"), 1.0, 1.0));
 
         // TODO also try blurry versions (maybe flip h or v?)
         r = new RollEffect(loopdir + "cartoon_flame_scroller_horizontal_crisp.png");
         r.setXPeriodMillis(2000);
-        fx.add(r);
+        fx.add(new EffectSlot(r, 1.0, 1.0));
 
         // (mix latish) - maybe tone down primary reds in these a little more? check.
         r = new RollEffect(loopdir + "rainbow_stupidity_scroller_wavy.png");
         r.setYPeriodMillis(5000);
-        fx.add(r);
+        fx.add(new EffectSlot(r, 1.0, 1.0));
 
         // ?? amber_mustachioed_cthulus.png (desparsify, hue-diversify background? TODO)
-        fx.add(new TextureEffect(adir + "amber_mustachioed_cthulus.png"));
+        fx.add(new EffectSlot(new TextureEffect(adir + "amber_mustachioed_cthulus.png"), 1.0, 1.0));
 
         // TODO also try blurry versions (maybe flip h or v?)
         r = new RollEffect(loopdir + "cartoon_rivulet_scroller_horizontal_crisp.png");
         r.setXPeriodMillis(7000);
-        fx.add(r);
+        fx.add(new EffectSlot(r, 1.0, 1.0));
 
         // TODO set palette
         // for bloom: green and orange? (maybe elsewhere, old note) TODO
         BloomEffect b = new BloomEffect();
         BloomEffectState bes = new BloomEffectState(null, true, true, true, true);
         b.setState(new BloomEffectState(null, true, true, true, true));
-        fx.add(b);
+        fx.add(new EffectSlot(b, 1.0, 1.0));
 
         // purple_chains.png - but fill in black holes "subtle but tasteful w/ deep violet" kind of dark
         // see also purple_blue_chains, which got cut previously.
         // (maybe use warmed skyblue_loops as subtle amber overlay?)
-        fx.add(new TextureEffect(adir + "purple_chains.png"));
-        fx.add(new TextureEffect(adir + "mauve_taupe_worms.png"));
+        fx.add(new EffectSlot(new TextureEffect(adir + "purple_chains.png"), 1.0, 1.0));
+        fx.add(new EffectSlot(new TextureEffect(adir + "mauve_taupe_worms.png"), 1.0, 1.0));
 
         // facets?
         // pastel rainbow stupidity here?
@@ -132,33 +131,40 @@ public abstract class DairyScene {
         // - or -
         // something not made yet? colorful, structured to fit with the weave -- stacked hexes + blur? simple v-scroll?
         // ** blue lightning, again - PLACEHOLDER TODO
-        fx.add(new TextureEffect(adir + "blue_skull_necklace.png"));
+        fx.add(new EffectSlot(new TextureEffect(adir + "blue_skull_necklace.png"), 1.0, 1.0));
 
         // TODO set palette
         // for bloom: green and orange? (maybe elsewhere, old note) TODO
         b = new BloomEffect();
         b.setState(new BloomEffectState(null, true, true, true, true));
-        fx.add(b);
+        fx.add(new EffectSlot(b, 1.0, 1.0));
 
         // TODO set palette,simplify
         b = new BloomEffect();
         b.setState(new BloomEffectState(null, true, true, false, true));
-        fx.add(b);
+        fx.add(new EffectSlot(b, 1.0, 1.0));
 
         // TODO set palette, simplify
         b = new BloomEffect();
         b.setState(new BloomEffectState(null, false, false, true, false));
-        fx.add(b);
+        fx.add(new EffectSlot(b, 1.0, 1.0));
 
         int sequenceStartIndex = layers.size();
-        for(Effect effect: fx) {
-            String layerName = effect.getClass().getSimpleName();
-            if(effect instanceof ImageEffect) {
-                layerName += " " + ((ImageEffect)effect).getFilename();
+
+        // Communicate per-layer fade-in and fade-out timings to the shuffler
+        int expectedLayerCount = layers.size() + fx.size() + 1; // kludge, sorry
+        DairyShufflerFadeTiming[] timings = new DairyShufflerFadeTiming[expectedLayerCount];
+
+        for(int i=0; i<fx.size(); i++) {
+            EffectSlot slot = fx.get(i);
+            String layerName = slot.effect.getClass().getSimpleName();
+            if(slot.effect instanceof ImageEffect) {
+                layerName += " " + ((ImageEffect)slot.effect).getFilename();
             }
-            Layer layer = new Layer(layerName, effect);
+            Layer layer = new Layer(layerName, slot.effect);
             layer.setBlendOp(max);
             layers.add(layer);
+            timings[i + sequenceStartIndex] = slot.timing;
         }
         int sequenceEndIndex = layers.size() - 1;
 
@@ -212,7 +218,6 @@ public abstract class DairyScene {
         System.out.println("Shuffled sequence start layer: "
                 + sequenceStartIndex + " end layer: " + sequenceEndIndex);
 
-        DairyShufflerFadeTiming [] timings = null; // TEMP
         // This shuffler will subscribe itself to the mixer, which therefore
         // retains a reference. The shuffler retains a backref to the mixer.
         new DairyShuffler(mixer, wovenLayerIndex, sequenceStartIndex, sequenceEndIndex, timings);
@@ -342,3 +347,14 @@ something not made yet? colorful, structured to fit with the weave -- stacked he
                 bdir + "yellow_on_green_flowers.jpg", // 28
         };
         */
+
+
+class EffectSlot {
+    public Effect effect = null;
+    public DairyShufflerFadeTiming timing = null;
+
+    public EffectSlot(Effect effect, double in, double out) {
+        this.effect = effect;
+        this.timing = new DairyShufflerFadeTiming(in, out);
+    }
+}
