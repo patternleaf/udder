@@ -35,6 +35,8 @@ public class DairyShuffler implements StatefulAnimator {
     long wovenCueDurationMillis;
     long cueDurationMillis;
 
+    private DairyShufflerFadeTiming[] fadeTimings;
+
     boolean enabled;
     boolean wovenMode;
     protected Interpolation interpolationModeIncoming;
@@ -50,7 +52,9 @@ public class DairyShuffler implements StatefulAnimator {
     private Point2D.Double current;
     private Point2D.Double on;
 
-    public DairyShuffler(Mixer mixer, int wovenLayerIndex, int shuffleLayerStartIndex, int shuffleLayerEndIndex) {
+    public DairyShuffler(Mixer mixer, int wovenLayerIndex, int shuffleLayerStartIndex, int shuffleLayerEndIndex,
+                         DairyShufflerFadeTiming[] timings)
+    {
         if(mixer == null) {
             throw new NullPointerException("DairyShuffler requires a Mixer before it can shuffle.");
         } else {
@@ -78,6 +82,18 @@ public class DairyShuffler implements StatefulAnimator {
                     && wovenLayerIndex <= shuffleLayerEndIndex) {
                 throw new IllegalArgumentException(
                     "A shuffler's woven layer may not also be a shuffled layer.");
+
+            } else if(timings == null) {
+                throw new IllegalArgumentException("A list of fade times is required.");
+            } else if(timings.length != ct) {
+                throw new IllegalArgumentException("Exactly " + ct + " fade times is required, but you supplied " + timings.length + " of them.");
+            } else {
+                for(DairyShufflerFadeTiming d: timings) {
+                    if(d == null) {
+                        throw new IllegalArgumentException("Every DairyShufflerFadeTiming object must not be null.");
+                    }
+                }
+                this.fadeTimings = timings;
             }
         }
 

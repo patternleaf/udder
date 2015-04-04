@@ -212,9 +212,10 @@ public abstract class DairyScene {
         System.out.println("Shuffled sequence start layer: "
                 + sequenceStartIndex + " end layer: " + sequenceEndIndex);
 
+        DairyShufflerFadeTiming [] timings = null; // TEMP
         // This shuffler will subscribe itself to the mixer, which therefore
         // retains a reference. The shuffler retains a backref to the mixer.
-        new DairyShuffler(mixer, wovenLayerIndex, sequenceStartIndex, sequenceEndIndex);
+        new DairyShuffler(mixer, wovenLayerIndex, sequenceStartIndex, sequenceEndIndex, timings);
 
         return mixer;
     }
