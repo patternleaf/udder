@@ -91,14 +91,13 @@ public class DairyShuffler implements StatefulAnimator {
                         + timings.length + " of them.");
             } else {
                 for(int i=0; i<timings.length; i++) {
-                    if(timings[i] == null) {
-                        if(i >= shuffleLayerStartIndex && i <= shuffleLayerEndIndex) {
-                            throw new IllegalArgumentException("Every shuffled layer must have a DairyShufflerFadeTiming "
-                                    + "object which is not null, but timings[" + i + "] is null.");
-                        } else {
-                            throw new IllegalArgumentException("A non-shuffled layer must never have a DairyShufflerFadeTiming "
-                                    + "object, but timings[" + i + "] is not null.");
-                        }
+                    boolean inRange = i >= shuffleLayerStartIndex && i <= shuffleLayerEndIndex;
+                    if(timings[i] == null && inRange) {
+                        throw new IllegalArgumentException("Every shuffled layer must have a DairyShufflerFadeTiming "
+                                + "object which is not null, but timings[" + i + "] is null.");
+                    } else if(timings[i] != null && ! inRange) {
+                        throw new IllegalArgumentException("A non-shuffled layer must never have a DairyShufflerFadeTiming "
+                                + "object, but timings[" + i + "] is not null.");
                     }
                 }
                 this.fadeTimings = timings;
