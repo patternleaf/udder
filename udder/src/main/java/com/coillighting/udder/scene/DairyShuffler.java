@@ -152,8 +152,8 @@ public class DairyShuffler implements StatefulAnimator {
                     // we added many open patterns, we've increased the probability
                     // of a thinner, mostly solo or duet mix, by increasing the
                     // chance of a POWER mix to 50/50.
-                    interpolationModeIncoming = interpolator.randomMode(20, 35, 50);
-                    interpolationModeOutgoing = interpolator.randomMode(20, 35, 50);
+                    interpolationModeIncoming = interpolator.randomMode(20, 75, 95);
+                    interpolationModeOutgoing = interpolator.randomMode(20, 75, 95);
 
                     cueDurationMillis = textureCueDurationMillis;
 

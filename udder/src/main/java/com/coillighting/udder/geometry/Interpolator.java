@@ -69,9 +69,16 @@ public class Interpolator {
     }
 
     /**
-     *  Pick a random mode, specifying the probability of choosing a given mode.
+     *  Pick a random transition mode, specifying the probability of choosing
+     *  each mode as a series of breakpoints from 0 to 100 (along a 100% scale).
      *
-     *  Good values are 10, 50, and 80, in that order.
+     *  Good values are 10, 50, and 80, in that order. I prefer to avoid LINEAR
+     *  because it looks mechanical, although throwing it in every once in a
+     *  while is a nice contrast to the higher continuity transitions.
+     *
+     *  FUTURE: Add a proper SIGMOIDAL, one which starts and finishes a little
+     *      faster than SINUSOIDAL.
+     *
      *  Visualize the basic repertoire of transition curves here:
      *
      *  LINEAR:
