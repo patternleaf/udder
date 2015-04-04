@@ -3,6 +3,13 @@ package com.coillighting.udder.geometry;
 import java.awt.geom.Point2D;
 import java.util.Random;
 
+/**
+ * Implement a crossfade curve whose shape varies randomly within a
+ * user-specified envelope. This is analogous to a DJ crossfader with
+ * a second, linked fader for continuously selecting between a repertoire
+ * of transition profiles: sharp transitions, smooth linear transitions,
+ * smooth nonlinear transitions, ...
+ */
 public class Interpolator {
 
     private double rootModePower;
@@ -61,7 +68,32 @@ public class Interpolator {
         }
     }
 
-    /** Good values are 10, 50, and 80, in that order. */
+    /**
+     *  Pick a random mode, specifying the probability of choosing a given mode.
+     *
+     *  Good values are 10, 50, and 80, in that order.
+     *  Visualize the basic repertoire of transition curves here:
+     *
+     *  LINEAR:
+     *      http://www.wolframalpha.com/input/?i=graph+y%3Dx+from+0+to+1
+     *
+     *  SINUSOIDAL:
+     *      http://www.wolframalpha.com/input/?i=graph+y%3D%28sin%28pi*%28x-0.5%29%29%2B+1%29%2F2+from+0+to+1
+     *
+     *  ROOT:
+     *      where rootModePower = 0.5 (square root):
+     *          http://www.wolframalpha.com/input/?i=graph+y%3Dx**0.5+from+0+to+1
+     *      where rootModePower = 1/3 (cube root):
+     *          http://www.wolframalpha.com/input/?i=graph+y%3Dx**%281%2F3%29+from+0+to+1
+     *
+     *  POWER:
+     *      where powerModePower = 2.0 (quadradic fade-in):
+     *          http://www.wolframalpha.com/input/?i=graph+y%3Dx**2+from+0+to+1
+     *      where powerModePower = 3.0 (cubic fade-in):
+     *          http://www.wolframalpha.com/input/?i=graph+y%3Dx**3+from+0+to+1
+     *
+     *  Your exponents may vary. Just change rootModePower and/or powerModePower.
+     */
     public Interpolation randomMode(int threshold0, int threshold1, int threshold2) {
         Interpolator.Interpolation mode;
         int r = random.nextInt(100);
