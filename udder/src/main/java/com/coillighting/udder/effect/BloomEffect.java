@@ -49,8 +49,8 @@ public class BloomEffect extends EffectBase {
     // not rotated in space (which it is not). So we'll optimize by skipping
     // the Z axis for now.
     //
-    // FUTURE: make a volumetric demo with legible Z axis, Cubatron-style.
-    //
+    // FUTURE: Enable the Z axis.
+    // FUTURE: Make a volumetric demo with a legible Z axis, Cubatron-style.
     // protected double devMinZ = 0.0;
     // protected double devDepth = 0.0;
     // protected double zCenterOffset = 0.0;
@@ -62,7 +62,7 @@ public class BloomEffect extends EffectBase {
 
     public Object getState() {
         return new BloomEffectState(this.copyPalette(), enableBilateralSym,
-                enableNestedBilateralSym);
+                enableNestedBilateralSym, enableX, enableY);
     }
 
     public Pixel[] copyPalette() {
@@ -113,6 +113,16 @@ public class BloomEffect extends EffectBase {
         if(nested != null) {
             enableNestedBilateralSym = nested;
         }
+
+        Boolean x = command.getEnableX();
+        if(x != null) {
+            enableX = x;
+        }
+
+        Boolean y = command.getEnableY();
+        if(y != null) {
+            enableY = y;
+        }
     }
 
     public void patchDevices(Device[] devices) {
@@ -133,7 +143,6 @@ public class BloomEffect extends EffectBase {
         // zQuarterOffset = devDepth * 0.25;
 
     }
-
 
     public void animate(TimePoint timePoint) {
         Device dev = null;
@@ -196,6 +205,8 @@ public class BloomEffect extends EffectBase {
             scale = 1.0;
         }
     }
+
+
 }
 
 

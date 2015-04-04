@@ -11,22 +11,32 @@ public class BloomEffectState {
     protected Pixel[] palette = null;
 
     /** Reflect the effect down the middle. */
-    protected Boolean enableBilateralSym = true;
+    protected Boolean enableBilateralSym = null;
 
     /** Reflect the reflection. (Do nothing if enableBilateralSym is false.)
      *  Traditional for Blooming Leaves.
      */
-    protected Boolean enableNestedBilateralSym = true;
+    protected Boolean enableNestedBilateralSym = null;
+
+
+    /** Vary the pattern in the X dimension. */
+    protected Boolean enableX = null;
+
+    /** Vary the pattern in the Y dimension. */
+    protected Boolean enableY = null;
 
     public BloomEffectState(Pixel[] palette,
                             Boolean enableBilateralSym,
-                            Boolean enableNestedBilateralSym)
+                            Boolean enableNestedBilateralSym,
+                            Boolean enableX,
+                            Boolean enableY)
     {
         this.palette = palette;
         this.enableBilateralSym = enableBilateralSym;
         this.enableNestedBilateralSym = enableNestedBilateralSym;
+        this.enableX = enableX;
+        this.enableY = enableY;
     }
-
 
     public Pixel[] getPalette() {
         return this.palette;
@@ -54,4 +64,19 @@ public class BloomEffectState {
         this.enableNestedBilateralSym = enableNestedBilateralSym;
     }
 
+    public Boolean getEnableX() {
+        return enableX;
+    }
+
+    public void setEnableX(Boolean enableX) {
+        this.enableX = enableX;
+    }
+
+    public Boolean getEnableY() {
+        return enableY;
+    }
+
+    public void setEnableY(Boolean enableY) {
+        this.enableY = enableY;
+    }
 }
