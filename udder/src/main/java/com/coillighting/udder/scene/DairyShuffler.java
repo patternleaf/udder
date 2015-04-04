@@ -179,17 +179,50 @@ public class DairyShuffler implements StatefulAnimator {
             }
 
             if (wovenMode) {
+                // Don't crossfade into the Woven cue. It builds from black
+                // without any help from this Shuffler.
                 if (cueStartTimeMillis == now) {
                     wovenLevel = 1.0;
                     mixer.getLayer(wovenLayerIndex).setLevel(wovenLevel);
                 }
             } else {
-                double pct = (double) (now - cueStartTimeMillis) / cueDurationMillis;
+                // Crossfade out of the outgoing cue and into the incoming cue.
+                // Do not change the primary cue, which is like the current track.
+                double cuePct = (double) (now - cueStartTimeMillis) / cueDurationMillis;
+
+                // To fade out faster, make this number smaller.
+                // Range: 0 - 1.0 for 0% to 100% of cue time spent fading.
+                double cueFadeOutPct = 1.0;
+                double outPct;
+
+                // To fade in faster, make this number smaller.
+                double cueFadeInPct = 1.0;
+                double inPct;
+
+                if(cuePct >= cueFadeOutPct || cueFadeOutPct == 0.0) {
+                    // Done fading out already.
+                    outPct = 0.0;
+                } else {
+                    // Keep fading out, aiming to be done cueFadeOutPct of the
+                    // way along the cue's timeline.
+                    outPct = cuePct / cueFadeOutPct;
+                }
+
+                double inThreshold = 1.0 - cueFadeInPct;
+                if(cuePct <= inThreshold || cueFadeInPct == 0.0) {
+                    // Don't start fading in yet.
+                    inPct = 0.0;
+                } else {
+                    // Continue fading in, beginning cueFadeInPct of the way
+                    // along the cue's timeline.
+                    inPct = (cuePct - inThreshold) / cueFadeInPct;
+                }
+
                 // incoming look (if applicable)
                 int li = incomingLayerIndex;
-                interpolator.interpolate2D(interpolationModeIncoming, pct, off, current, on);
-                // FUTURE: implement a 1D Interpolator API, for now just piggyback
-                // on the existing 2D API and ignore y.
+                interpolator.interpolate2D(interpolationModeIncoming, inPct, off, current, on);
+                // FUTURE: implement a 1D Interpolator API, but for now just
+                // piggyback on the existing 2D API and ignore y.
                 // FIXME: convert all layer levels to doubles.
                 incomingLevel = current.x;
                 this.setTextureLevelConditionally(incomingLevel, li);
@@ -201,7 +234,7 @@ public class DairyShuffler implements StatefulAnimator {
 
                 // outgoing look (if applicable)
                 li -= 1;
-                interpolator.interpolate2D(interpolationModeOutgoing, pct, on, current, off);
+                interpolator.interpolate2D(interpolationModeOutgoing, outPct, on, current, off);
                 outgoingLevel = current.x;
                 this.setTextureLevelConditionally(outgoingLevel, li);
             }
