@@ -113,8 +113,11 @@ public abstract class DairyScene {
         // TODO set palette, something coming out of water
         // for bloom: green and orange? (maybe elsewhere, old note) TODO
         BloomEffect b = new BloomEffect();
-        BloomEffectState bes = new BloomEffectState(null, true, true, true, true);
-        b.setState(new BloomEffectState(null, true, true, true, true));
+        Pixel[] cool2WayPalette = {
+            new Pixel(0.11f, 0.05f, 1.0f), // purple
+            new Pixel(0.0f, 0.85f, 0.1f) // green
+        };
+        b.setState(new BloomEffectState(cool2WayPalette, true, true, true, true));
         fx.add(new EffectSlot(b, 1.0, 1.0));
 
         // purple_chains.png - but fill in black holes "subtle but tasteful w/ deep violet" kind of dark
@@ -123,20 +126,34 @@ public abstract class DairyScene {
         fx.add(new EffectSlot(new TextureEffect(adir + "purple_chains.png"), 1.0, 1.0));
         fx.add(new EffectSlot(new TextureEffect(adir + "mauve_taupe_worms.png"), 1.0, 0.9));
 
-        // TODO set palette
-        // for bloom: green and orange? (maybe elsewhere, old note) TODO blue lightning +cyan?
+        // 3 colors, full reflective symmetry, both axes
         b = new BloomEffect();
-        b.setState(new BloomEffectState(null, true, true, true, true));
+        Pixel[] mixed3WayPalette = {
+            new Pixel(1.0f, 0.8f, 0.0f), // yellow
+            new Pixel(0.8f, 0.0f, 1.0f), // magenta
+            new Pixel(0.0f, 0.0f, 0.75f), // medium blue
+        };
+        b.setState(new BloomEffectState(mixed3WayPalette, true, true, true, true));
         fx.add(new EffectSlot(b, 1.0, 0.8));
 
-        // TODO set palette,simplify
+        // 2 colors, perhaps less saturated, simpler symmetry, both axes
         b = new BloomEffect();
-        b.setState(new BloomEffectState(null, true, true, false, true));
+        Pixel [] transitional2WayPalette = {
+            // TODO check neutrality - should be silvery blue (remember green pixels are too bright on these LEDs)
+            new Pixel(0.8f, 0.70f, 1.0f), // bright blue grey
+            new Pixel(0.05f, 0.125f, 0.6f) // medium blue with a hint of cyan
+        };
+        b.setState(new BloomEffectState(transitional2WayPalette, true, true, false, true));
         fx.add(new EffectSlot(b, 0.6, 0.7));
 
-        // TODO set palette, simplify
+        // white, simplified to just about an eighth of a blooming leaf, one axis
         b = new BloomEffect();
-        b.setState(new BloomEffectState(null, false, false, true, false));
+        Pixel [] monoPalette = {
+            new Pixel(1.0f, 0.9f, 1.0f), // white, loud green channel toned down a little
+            new Pixel(0.0f, 0.0f, 0.0f), // black
+        };
+        // (default B&W palette before Woven)
+        b.setState(new BloomEffectState(monoPalette, false, false, true, false));
         fx.add(new EffectSlot(b, 0.5, 1.0));
 
         int sequenceStartIndex = layers.size();
