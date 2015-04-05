@@ -20,7 +20,6 @@ curl -X POST -d @json/level_off.json http://localhost:8080/mixer0/layer16
 curl -X POST -d @json/level_off.json http://localhost:8080/mixer0/layer17
 curl -X POST -d @json/level_off.json http://localhost:8080/mixer0/layer18
 curl -X POST -d @json/level_off.json http://localhost:8080/mixer0/layer19
-curl -X POST -d @json/level_off.json http://localhost:8080/mixer0/layer20
 
 echo "(If shuffle mode is running, it may immediately counteract this effect."
 echo "You may wish to shuffler_disabled first.)"

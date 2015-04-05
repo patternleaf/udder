@@ -152,7 +152,7 @@ public abstract class DairyScene {
         // two colors, simplified to just about an eighth of a blooming leaf, one axis
         b = new BloomEffect();
         Pixel [] dualPalette = {
-            new Pixel(1.0f, 0.72f, 0.10f), // amber/orange
+            new Pixel(1.0f, 0.66f, 0.10f), // amber/orange
             new Pixel(0.0f, 0.0f, 0.45f), // dim blue
         };
         // (this looked even better with pure black and white, but intense for this setting)
