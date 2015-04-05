@@ -67,25 +67,24 @@ public abstract class DairyScene {
 
         r = new RollEffect(loopdir + "flame_scroller_high_key_high_contrast.png");
         r.setYPeriodMillis(1000);
-        fx.add(new EffectSlot(r, 1.0, 1.0));
+        fx.add(new EffectSlot(r, 1.0, 0.35));
 
-        // *mix late:
-        // ** blue lightning, good reviews from BV
+        // blue lightning, good reviews from BV, blends well with flame
         fx.add(new EffectSlot(new TextureEffect(adir + "blue_skull_necklace.png"), 1.0, 1.0));
 
-        //(mix late) [should blend nicely with blue above
-        fx.add(new EffectSlot(new TextureEffect(adir + "light_cyan_trigrams.png"), 1.0, 1.0));
+        // should blend nicely with blue above
+        fx.add(new EffectSlot(new TextureEffect(adir + "light_cyan_trigrams.png"), 0.2, 1.0));
 
-        // (mix early) mix all three. verified good.
+        // mix all three similar looks, this + 2 above. verified good in person.
         fx.add(new EffectSlot(new TextureEffect(adir + "light_amber_trigrams.png"), 1.0, 1.0));
 
         // (mix early, keep late) <<< tree shadows, try to solo on outro
         fx.add(new EffectSlot(new TextureEffect(adir + "coppertone_trigrams.png"), 1.0, 1.0));
 
-        // flames descend on coppertone tree shadows
+        // flames descend suddenly on coppertone tree shadows
         r = new RollEffect(loopdir + "flame_scroller_high_key_low_contrast.png");
         r.setYPeriodMillis(2000);
-        fx.add(new EffectSlot(r, 1.0, 1.0));
+        fx.add(new EffectSlot(r, 0.35, 0.7));
 
         // nice palette, nice interaction, might need to be even brighter
         fx.add(new EffectSlot(new TextureEffect(adir + "medium_contrast" + separator + "redblue_triclops_medium_contrast.png"), 1.0, 1.0));
@@ -94,24 +93,24 @@ public abstract class DairyScene {
         fx.add(new EffectSlot(new TextureEffect(adir + "rose_tint_trigrams.png"), 1.0, 1.0));
 
         // TODO also try blurry versions (maybe flip h or v?)
-        r = new RollEffect(loopdir + "cartoon_flame_scroller_horizontal_crisp.png");
-        r.setXPeriodMillis(2000);
-        fx.add(new EffectSlot(r, 1.0, 1.0));
+        r = new RollEffect(loopdir + "cartoon_flame_scroller_horizontal_gaussian_blur_4.2.png");
+        r.setXPeriodMillis(2300);
+        fx.add(new EffectSlot(r, 0.5, 0.4));
 
         // (mix latish) - maybe tone down primary reds in these a little more? check.
         r = new RollEffect(loopdir + "rainbow_stupidity_scroller_wavy.png");
-        r.setYPeriodMillis(5000);
-        fx.add(new EffectSlot(r, 1.0, 1.0));
+        r.setYPeriodMillis(5100);
+        fx.add(new EffectSlot(r, 0.35, 0.45));
 
         // ?? amber_mustachioed_cthulus.png (desparsify, hue-diversify background? TODO)
-        fx.add(new EffectSlot(new TextureEffect(adir + "amber_mustachioed_cthulus.png"), 1.0, 1.0));
+        fx.add(new EffectSlot(new TextureEffect(adir + "amber_mustachioed_cthulus.png"), 0.5, 0.5));
 
-        // TODO also try blurry versions (maybe flip h or v?)
-        r = new RollEffect(loopdir + "cartoon_rivulet_scroller_horizontal_crisp.png");
-        r.setXPeriodMillis(7000);
-        fx.add(new EffectSlot(r, 1.0, 1.0));
+        // like water (perhaps try flipping h or v?)
+        r = new RollEffect(loopdir + "cartoon_rivulet_scroller_horizontal_gaussian_blur_4.2.png");
+        r.setXPeriodMillis(6600);
+        fx.add(new EffectSlot(r, 0.5, 0.5));
 
-        // TODO set palette
+        // TODO set palette, something coming out of water
         // for bloom: green and orange? (maybe elsewhere, old note) TODO
         BloomEffect b = new BloomEffect();
         BloomEffectState bes = new BloomEffectState(null, true, true, true, true);
@@ -122,32 +121,23 @@ public abstract class DairyScene {
         // see also purple_blue_chains, which got cut previously.
         // (maybe use warmed skyblue_loops as subtle amber overlay?)
         fx.add(new EffectSlot(new TextureEffect(adir + "purple_chains.png"), 1.0, 1.0));
-        fx.add(new EffectSlot(new TextureEffect(adir + "mauve_taupe_worms.png"), 1.0, 1.0));
-
-        // facets?
-        // pastel rainbow stupidity here?
-        // - or -
-        // flame_scroller_low_key_high_contrast > more amber, return of the flame
-        // - or -
-        // something not made yet? colorful, structured to fit with the weave -- stacked hexes + blur? simple v-scroll?
-        // ** blue lightning, again - PLACEHOLDER TODO
-        fx.add(new EffectSlot(new TextureEffect(adir + "blue_skull_necklace.png"), 1.0, 1.0));
+        fx.add(new EffectSlot(new TextureEffect(adir + "mauve_taupe_worms.png"), 1.0, 0.9));
 
         // TODO set palette
-        // for bloom: green and orange? (maybe elsewhere, old note) TODO
+        // for bloom: green and orange? (maybe elsewhere, old note) TODO blue lightning +cyan?
         b = new BloomEffect();
         b.setState(new BloomEffectState(null, true, true, true, true));
-        fx.add(new EffectSlot(b, 1.0, 1.0));
+        fx.add(new EffectSlot(b, 1.0, 0.8));
 
         // TODO set palette,simplify
         b = new BloomEffect();
         b.setState(new BloomEffectState(null, true, true, false, true));
-        fx.add(new EffectSlot(b, 1.0, 1.0));
+        fx.add(new EffectSlot(b, 0.6, 0.7));
 
         // TODO set palette, simplify
         b = new BloomEffect();
         b.setState(new BloomEffectState(null, false, false, true, false));
-        fx.add(new EffectSlot(b, 1.0, 1.0));
+        fx.add(new EffectSlot(b, 0.5, 1.0));
 
         int sequenceStartIndex = layers.size();
 
