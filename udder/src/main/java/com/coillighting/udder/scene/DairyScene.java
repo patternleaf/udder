@@ -124,13 +124,13 @@ public abstract class DairyScene {
         // see also purple_blue_chains, which got cut previously.
         // (maybe use warmed skyblue_loops as subtle amber overlay?)
         fx.add(new EffectSlot(new TextureEffect(adir + "purple_chains.png"), 1.0, 1.0));
-        fx.add(new EffectSlot(new TextureEffect(adir + "orange_tape_worms.png"), 1.0, 0.9));
+        fx.add(new EffectSlot(new TextureEffect(adir + "yellow_tape_worms.png"), 1.0, 0.9));
 
         // clown stripes: 3 colors, full reflective symmetry, both axes
         b = new BloomEffect();
         Pixel[] mixed3WayPalette = {
             new Pixel(1.0f, 0.8f, 0.0f), // yellow
-            new Pixel(0.85f, 0.6f, 0.5f), // orange
+            new Pixel(0.85f, 0.6f, 0.00f), // orange
             new Pixel(0.0f, 0.0f, 0.75f), // medium blue
         };
         b.setState(new BloomEffectState(mixed3WayPalette, true, true, true, true));
@@ -139,8 +139,8 @@ public abstract class DairyScene {
         // two colors, simpler symmetry, both axes
         b = new BloomEffect();
         Pixel [] transitional2WayPalette = {
-            new Pixel(0.8f, 0.70f, 1.0f), // bright blue grey
-            new Pixel(0.05f, 0.125f, 0.6f) // medium blue with a hint of cyan
+            new Pixel(0.0f, 0.80f, 1.0f), // cyan
+            new Pixel(0.0f, 0.0f, 1.0f) // blue
         };
         b.setState(new BloomEffectState(transitional2WayPalette, true, true, false, true));
         fx.add(new EffectSlot(b, 0.6, 0.7));
@@ -148,8 +148,8 @@ public abstract class DairyScene {
         // two colors, simplified to just about an eighth of a blooming leaf, one axis
         b = new BloomEffect();
         Pixel [] dualPalette = {
-            new Pixel(1.0f, 0.65f, 0.4f), // amber/orange
-            new Pixel(0.3f, 0.05f, 0.025f), // dim red
+            new Pixel(1.0f, 0.80f, 0.10f), // amber/orange
+            new Pixel(0.0f, 0.0f, 0.15f), // dim blue
         };
         // (this looked even better with pure black and white, but intense for this setting)
         b.setState(new BloomEffectState(dualPalette, false, false, true, false));
