@@ -8,7 +8,12 @@ import com.coillighting.udder.model.Pixel;
 
 import static com.coillighting.udder.util.LogUtil.log;
 
-/** TODO DOC */
+/**
+ * A multicolor Blooming Leaf that can vary the discrete threadcount in its
+ * pattern. Easier to see than to explain this traditional weave.
+ *
+ * TODO Document this separately. It's a good example of what Udder was for.
+ */
 public class BloomEffect extends EffectBase {
 
     /** Checkerboard (traditional for Blooming Leaf weaves). */
@@ -17,7 +22,7 @@ public class BloomEffect extends EffectBase {
     protected Pixel[] palette = {Pixel.white(), Pixel.black()};
     protected int[][] tiling = BloomTiling.TILINGS_2D[repertoire.length];
 
-    // TODO parameterize scale modulation?
+    // FUTURE parameterize scale modulation
     // scale: device space units per thread
     protected double scale = 1.0;
     protected double scaleIncrement = 0.05;
@@ -190,18 +195,22 @@ public class BloomEffect extends EffectBase {
 
             int colorIndex = tiling[px][py];
             pixels[i].setColor(palette[colorIndex]);
-
-            // TODO might need to crop out the SE vertical ascenders if I can't think of a good way to keep them from blinking...
-            // alternative idea: only enable Y rather than X because there are not perfect horizontals
         }
 
-        // Animate the scale.
-        scale += scaleIncrement; // TODO - timebase, not framebase, this ++
+        // Animate the scale, which translates to virtual threadcount.
+        // FUTURE: shuold timebase, not framebase, this so that it doesn't
+        // call attention to framerate variations. In practice the Dairy rig
+        // exhibits a pretty consistent framerate, so there was no need for
+        // the Luminescence show.
+        scale += scaleIncrement;
         if(scale > 20.0) {
-            scaleIncrement = -0.05; // keep increment small or it's too discontinuous to read the seizuretron
+            // Keep this increment small or it's too discontinuous to read
+            // and becomes a seizuretron.
+            scaleIncrement = -0.05;
             scale = 20.0;
         } else if(scale < 1.0) {
-            scaleIncrement = 0.05; // TODO - asymmetric increase and decrease? maybe faster increase?
+            // FUTURE - Asymmetric increase and decrease times.
+            scaleIncrement = 0.05;
             scale = 1.0;
         }
     }

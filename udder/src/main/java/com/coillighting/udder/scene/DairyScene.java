@@ -111,25 +111,21 @@ public abstract class DairyScene {
         // purple sparks, brings out copper, full enough but still dim
         fx.add(new EffectSlot(new TextureEffect(adir + "rose_tint_trigrams.png"), 1.0, 1.0));
 
-        // TODO also try blurry versions (maybe flip h or v?)
         r = new RollEffect(loopdir + "cartoon_flame_scroller_horizontal_gaussian_blur_4.2.png");
         r.setXPeriodMillis(4300);
         fx.add(new EffectSlot(r, 0.5, 0.4));
 
-        // (mix latish) - maybe tone down primary reds in these a little more? check.
         r = new RollEffect(loopdir + "rainbow_stupidity_scroller_wavy.png");
         r.setYPeriodMillis(5130);
         fx.add(new EffectSlot(r, 0.35, 0.45));
 
         fx.add(new EffectSlot(new TextureEffect(adir + "light_amber_densely_mustachioed_cthulus.png"), 0.5, 0.5));
 
-        // like water (perhaps try flipping h or v?)
+        // like water (could also flip x or y axis)
         r = new RollEffect(loopdir + "cartoon_rivulet_scroller_horizontal_gaussian_blur_4.2.png");
         r.setXPeriodMillis(6600);
         fx.add(new EffectSlot(r, 0.5, 0.5));
 
-        // TODO set palette, something coming out of water
-        // for bloom: green and orange? (maybe elsewhere, old note) TODO
         BloomEffect b = new BloomEffect();
         Pixel[] cool2WayPalette = {
             new Pixel(0.11f, 0.05f, 1.0f), // purple
@@ -138,9 +134,6 @@ public abstract class DairyScene {
         b.setState(new BloomEffectState(cool2WayPalette, true, true, true, true));
         fx.add(new EffectSlot(b, 1.0, 1.0));
 
-        // purple_chains.png - but fill in black holes "subtle but tasteful w/ deep violet" kind of dark
-        // see also purple_blue_chains, which got cut previously.
-        // (maybe use warmed skyblue_loops as subtle amber overlay?)
         fx.add(new EffectSlot(new TextureEffect(adir + "purple_chains.png"), 1.0, 1.0));
         fx.add(new EffectSlot(new TextureEffect(adir + "yellow_tape_worms.png"), 1.0, 0.9));
 
@@ -158,6 +151,7 @@ public abstract class DairyScene {
             b.setState(new BloomEffectState(mixed3WayPalette, true, true, true, true));
             fx.add(new EffectSlot(b, 1.0, 0.8));
         }
+
         // two colors, simpler symmetry, both axes
         b = new BloomEffect();
         Pixel [] transitional2WayPalette = {
@@ -173,14 +167,15 @@ public abstract class DairyScene {
             new Pixel(1.0f, 0.66f, 0.10f), // amber/orange
             new Pixel(0.0f, 0.0f, 0.45f), // dim blue
         };
-        // (this looked even better with pure black and white, but intense for this setting)
+
+        // (this looked even better with pure black and white, but too intense for this setting)
         b.setState(new BloomEffectState(dualPalette, false, false, true, false));
         fx.add(new EffectSlot(b, 0.5, 1.0));
 
         int sequenceStartIndex = layers.size();
 
         // Communicate per-layer fade-in and fade-out timings to the shuffler
-        int expectedLayerCount = layers.size() + fx.size() + 1; // kludge, sorry
+        int expectedLayerCount = layers.size() + fx.size() + 1;
         DairyShufflerFadeTiming[] timings = new DairyShufflerFadeTiming[expectedLayerCount];
 
         for(int i=0; i<fx.size(); i++) {
