@@ -1,5 +1,5 @@
-Udder v0.4.2
-============
+Udder v0.4.2-rc3
+================
 
 HTTP server, animators, mixer, and an Open Pixel Control (OPC) renderer for a 2014 public lighting installation at Boulder's Dairy Center for the Arts.
 
