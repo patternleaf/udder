@@ -118,11 +118,10 @@ public abstract class DairyScene {
 
         // (mix latish) - maybe tone down primary reds in these a little more? check.
         r = new RollEffect(loopdir + "rainbow_stupidity_scroller_wavy.png");
-        r.setYPeriodMillis(5100);
+        r.setYPeriodMillis(1130);
         fx.add(new EffectSlot(r, 0.35, 0.45));
 
-        // ?? amber_mustachioed_cthulus.png (desparsify, hue-diversify background? TODO)
-        fx.add(new EffectSlot(new TextureEffect(adir + "amber_mustachioed_cthulus.png"), 0.5, 0.5));
+        fx.add(new EffectSlot(new TextureEffect(adir + "light_amber_densely_mustachioed_cthulus.png"), 0.5, 0.5));
 
         // like water (perhaps try flipping h or v?)
         r = new RollEffect(loopdir + "cartoon_rivulet_scroller_horizontal_gaussian_blur_4.2.png");
