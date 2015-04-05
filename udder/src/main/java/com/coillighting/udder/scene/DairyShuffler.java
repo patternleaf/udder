@@ -113,7 +113,7 @@ public class DairyShuffler implements StatefulAnimator {
         this.wovenLayerIndex = wovenLayerIndex;
         this.shuffleLayerStartIndex = shuffleLayerStartIndex;
         this.shuffleLayerEndIndex = shuffleLayerEndIndex;
-        textureCueDurationMillis = 60000;
+        textureCueDurationMillis = 75000;
         this.reset();
         off = new Point2D.Double(0.0, 0.0);
         current = new Point2D.Double(0.0, 0.0);
@@ -175,8 +175,8 @@ public class DairyShuffler implements StatefulAnimator {
                     // we added many open patterns, we've increased the probability
                     // of a thinner, mostly solo or duet mix, by increasing the
                     // chance of a POWER mix to 50/50.
-                    interpolationModeIncoming = interpolator.randomMode(20, 75, 95);
-                    interpolationModeOutgoing = interpolator.randomMode(20, 75, 95);
+                    interpolationModeIncoming = interpolator.randomMode(35, 55, 95);
+                    interpolationModeOutgoing = interpolator.randomMode(35, 55, 95);
 
                     cueDurationMillis = textureCueDurationMillis;
 
@@ -231,7 +231,7 @@ public class DairyShuffler implements StatefulAnimator {
                 }
 
                 // Crossfade out of the outgoing cue and into the incoming cue.
-                // Do not change the primary cue, which is like the current track.
+                // Do not change the primary cue level.
                 double cuePct = (double) (now - cueStartTimeMillis) / cueDurationMillis;
 
                 // To fade out faster, make this number smaller.
@@ -245,7 +245,7 @@ public class DairyShuffler implements StatefulAnimator {
 
                 if(cuePct >= cueFadeOutPct || cueFadeOutPct == 0.0) {
                     // Done fading out already.
-                    outPct = 0.0;
+                    outPct = 1.0;
                 } else {
                     // Keep fading out, aiming to be done cueFadeOutPct of the
                     // way along the cue's timeline.
