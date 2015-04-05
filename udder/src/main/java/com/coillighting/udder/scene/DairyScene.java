@@ -127,15 +127,19 @@ public abstract class DairyScene {
         fx.add(new EffectSlot(new TextureEffect(adir + "yellow_tape_worms.png"), 1.0, 0.9));
 
         // clown stripes: 3 colors, full reflective symmetry, both axes
-        b = new BloomEffect();
-        Pixel[] mixed3WayPalette = {
-            new Pixel(1.0f, 0.8f, 0.0f), // yellow
-            new Pixel(0.85f, 0.6f, 0.00f), // orange
-            new Pixel(0.0f, 0.0f, 0.75f), // medium blue
-        };
-        b.setState(new BloomEffectState(mixed3WayPalette, true, true, true, true));
-        fx.add(new EffectSlot(b, 1.0, 0.8));
-
+        if(false) {
+            // skipping this because it was too much of a trainwreck, and
+            // AV and BV reported that yello tape worms + transitional2WayPalette
+            // bloom were very nice
+            b = new BloomEffect();
+            Pixel[] mixed3WayPalette = {
+                    new Pixel(1.0f, 0.8f, 0.0f), // yellow
+                    new Pixel(0.85f, 0.6f, 0.00f), // orange
+                    new Pixel(0.0f, 0.0f, 0.75f), // medium blue
+            };
+            b.setState(new BloomEffectState(mixed3WayPalette, true, true, true, true));
+            fx.add(new EffectSlot(b, 1.0, 0.8));
+        }
         // two colors, simpler symmetry, both axes
         b = new BloomEffect();
         Pixel [] transitional2WayPalette = {
@@ -148,8 +152,8 @@ public abstract class DairyScene {
         // two colors, simplified to just about an eighth of a blooming leaf, one axis
         b = new BloomEffect();
         Pixel [] dualPalette = {
-            new Pixel(1.0f, 0.80f, 0.10f), // amber/orange
-            new Pixel(0.0f, 0.0f, 0.15f), // dim blue
+            new Pixel(1.0f, 0.72f, 0.10f), // amber/orange
+            new Pixel(0.0f, 0.0f, 0.45f), // dim blue
         };
         // (this looked even better with pure black and white, but intense for this setting)
         b.setState(new BloomEffectState(dualPalette, false, false, true, false));
