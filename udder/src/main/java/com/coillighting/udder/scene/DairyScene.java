@@ -66,8 +66,8 @@ public abstract class DairyScene {
         ArrayList<EffectSlot> fx = new ArrayList<EffectSlot>();
 
         r = new RollEffect(loopdir + "flame_scroller_high_key_high_contrast.png");
-        r.setYPeriodMillis(1000);
-        fx.add(new EffectSlot(r, 1.0, 0.35));
+        r.setYPeriodMillis(1450);
+        fx.add(new EffectSlot(r, 1.0, 0.45));
 
         // blue lightning, good reviews from BV, blends well with flame
         fx.add(new EffectSlot(new TextureEffect(adir + "blue_skull_necklace.png"), 1.0, 1.0));
@@ -83,7 +83,7 @@ public abstract class DairyScene {
 
         // flames descend suddenly on coppertone tree shadows
         r = new RollEffect(loopdir + "flame_scroller_high_key_low_contrast.png");
-        r.setYPeriodMillis(2000);
+        r.setYPeriodMillis(3700);
         fx.add(new EffectSlot(r, 0.35, 0.7));
 
         // nice palette, nice interaction, might need to be even brighter
@@ -94,7 +94,7 @@ public abstract class DairyScene {
 
         // TODO also try blurry versions (maybe flip h or v?)
         r = new RollEffect(loopdir + "cartoon_flame_scroller_horizontal_gaussian_blur_4.2.png");
-        r.setXPeriodMillis(2300);
+        r.setXPeriodMillis(4300);
         fx.add(new EffectSlot(r, 0.5, 0.4));
 
         // (mix latish) - maybe tone down primary reds in these a little more? check.
@@ -124,36 +124,35 @@ public abstract class DairyScene {
         // see also purple_blue_chains, which got cut previously.
         // (maybe use warmed skyblue_loops as subtle amber overlay?)
         fx.add(new EffectSlot(new TextureEffect(adir + "purple_chains.png"), 1.0, 1.0));
-        fx.add(new EffectSlot(new TextureEffect(adir + "mauve_taupe_worms.png"), 1.0, 0.9));
+        fx.add(new EffectSlot(new TextureEffect(adir + "orange_tape_worms.png"), 1.0, 0.9));
 
-        // 3 colors, full reflective symmetry, both axes
+        // clown stripes: 3 colors, full reflective symmetry, both axes
         b = new BloomEffect();
         Pixel[] mixed3WayPalette = {
             new Pixel(1.0f, 0.8f, 0.0f), // yellow
-            new Pixel(0.8f, 0.0f, 1.0f), // magenta
+            new Pixel(0.85f, 0.6f, 0.5f), // orange
             new Pixel(0.0f, 0.0f, 0.75f), // medium blue
         };
         b.setState(new BloomEffectState(mixed3WayPalette, true, true, true, true));
         fx.add(new EffectSlot(b, 1.0, 0.8));
 
-        // 2 colors, perhaps less saturated, simpler symmetry, both axes
+        // two colors, simpler symmetry, both axes
         b = new BloomEffect();
         Pixel [] transitional2WayPalette = {
-            // TODO check neutrality - should be silvery blue (remember green pixels are too bright on these LEDs)
             new Pixel(0.8f, 0.70f, 1.0f), // bright blue grey
             new Pixel(0.05f, 0.125f, 0.6f) // medium blue with a hint of cyan
         };
         b.setState(new BloomEffectState(transitional2WayPalette, true, true, false, true));
         fx.add(new EffectSlot(b, 0.6, 0.7));
 
-        // white, simplified to just about an eighth of a blooming leaf, one axis
+        // two colors, simplified to just about an eighth of a blooming leaf, one axis
         b = new BloomEffect();
-        Pixel [] monoPalette = {
-            new Pixel(1.0f, 0.9f, 1.0f), // white, loud green channel toned down a little
-            new Pixel(0.0f, 0.0f, 0.0f), // black
+        Pixel [] dualPalette = {
+            new Pixel(1.0f, 0.65f, 0.4f), // amber/orange
+            new Pixel(0.3f, 0.05f, 0.025f), // dim red
         };
-        // (default B&W palette before Woven)
-        b.setState(new BloomEffectState(monoPalette, false, false, true, false));
+        // (this looked even better with pure black and white, but intense for this setting)
+        b.setState(new BloomEffectState(dualPalette, false, false, true, false));
         fx.add(new EffectSlot(b, 0.5, 1.0));
 
         int sequenceStartIndex = layers.size();
