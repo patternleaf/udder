@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-# Run Udder from the prebuild jar.
+# Run Udder from the prebuilt jar.
 #
-# We build these all-in-one lib-bundled jars in IntelliJ. They let you run
+# We build these all-in-one lib-bundled jars in IntelliJ IDEA. They let you run
 # Udder's example scene without setting up your build environment.
 #
 # We add the option '-Xverify:none' so that we are allowed to attach an invasive
