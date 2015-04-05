@@ -20,4 +20,4 @@ if [[ ! -f $PROPERTIES ]] ; then
     exit 1
 fi
 
-java -Xverify:none -cp "dist/udder-0.4.1.jar" com.coillighting.udder.Main $PROPERTIES
+java -Xverify:none -cp "dist/udder-0.4.2.jar" com.coillighting.udder.Main $PROPERTIES

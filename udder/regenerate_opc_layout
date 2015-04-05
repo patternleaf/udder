@@ -18,4 +18,4 @@
 
 LAYOUT="conf/opc_layout.json"
 rm $LAYOUT
-java -cp dist/udder-0.4.1.jar com.coillighting.udder.Main conf/dairy.properties --create-opc-layout $LAYOUT
+java -cp dist/udder-0.4.2.jar com.coillighting.udder.Main conf/dairy.properties --create-opc-layout $LAYOUT

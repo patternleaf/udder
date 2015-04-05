@@ -5,7 +5,7 @@
     <groupId>com.coillighting.udder</groupId>
     <artifactId>udder</artifactId>
     <packaging>jar</packaging>
-    <version>0.4.1-SNAPSHOT</version>
+    <version>0.4.2-SNAPSHOT</version>
     <name>udder</name>
     <url>http://maven.apache.org</url>
 

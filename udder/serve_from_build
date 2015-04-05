@@ -18,4 +18,4 @@ if [[ ! -f $PROPERTIES ]] ; then
     exit 1
 fi
 
-java -Xverify:none -cp "target/udder-0.4.1-SNAPSHOT.jar:lib/simple-5.1.5.jar:lib/boon-0.23.jar" com.coillighting.udder.Main $PROPERTIES
+java -Xverify:none -cp "target/udder-0.4.2-SNAPSHOT.jar:lib/simple-5.1.5.jar:lib/boon-0.23.jar" com.coillighting.udder.Main $PROPERTIES

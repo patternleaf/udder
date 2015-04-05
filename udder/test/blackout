@@ -1,6 +1,5 @@
 #!/usr/bin/env sh
 echo "Blacking out individual layers, but leaving mixer master level intact."
-echo "(If shuffle mode is running, it may immediately counteract this effect.)"
 curl -X POST -d @json/level_off.json http://localhost:8080/mixer0/layer0
 curl -X POST -d @json/level_off.json http://localhost:8080/mixer0/layer1
 curl -X POST -d @json/level_off.json http://localhost:8080/mixer0/layer2
@@ -22,5 +21,6 @@ curl -X POST -d @json/level_off.json http://localhost:8080/mixer0/layer17
 curl -X POST -d @json/level_off.json http://localhost:8080/mixer0/layer18
 curl -X POST -d @json/level_off.json http://localhost:8080/mixer0/layer19
 curl -X POST -d @json/level_off.json http://localhost:8080/mixer0/layer20
-curl -X POST -d @json/level_off.json http://localhost:8080/mixer0/layer21
-curl -X POST -d @json/level_off.json http://localhost:8080/mixer0/layer22
+
+echo "(If shuffle mode is running, it may immediately counteract this effect."
+echo "You may wish to shuffler_disabled first.)"
