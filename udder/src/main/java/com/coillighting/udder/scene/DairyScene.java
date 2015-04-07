@@ -84,7 +84,7 @@ public abstract class DairyScene {
         RollEffect r;
         ArrayList<EffectSlot> fx = new ArrayList<EffectSlot>();
 
-        r = new RollEffect(loopdir + "flame_scroller_amber_high_key_high_contrast.png");
+        r = new RollEffect(loopdir + "flame_scroller_amber_medium_contrast.png");
         r.setYPeriodMillis(1450);
         fx.add(new EffectSlot(r, 1.0, 0.45));
 
@@ -101,7 +101,7 @@ public abstract class DairyScene {
         fx.add(new EffectSlot(new TextureEffect(adir + "coppertone_trigrams.png"), 1.0, 1.0));
 
         // flames descend suddenly on coppertone tree shadows
-        r = new RollEffect(loopdir + "flame_scroller_high_key_low_contrast.png");
+        r = new RollEffect(loopdir + "flame_scroller_amber_medium_contrast.png");
         r.setYPeriodMillis(3700);
         fx.add(new EffectSlot(r, 0.35, 0.7));
 
