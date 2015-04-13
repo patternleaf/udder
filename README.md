@@ -41,9 +41,9 @@ Once Maven and the JDK are installed in your current environment, `cd udder` and
 
 After the build script succeeds, you may start the server using the `serve_from_build` script in the same directory. By default the server listens on [http://localhost:8080](http://localhost:8080) and attempts to render at 100 fps max. These options may be specified in a .properties file.
 
-Currently the built jar does not incorporate the Boon and Simple jars. Instead, it includes them by reference as part of the Java classpath using the -cp argument, using the localized copies temporarily included with this repo. Soon we will enable build-time dependency bundling in order to ameliorate classpath woes. The prebuilt jar (udder/dist/udder-VERSION.jar) does bundle the required resources.
+Currently your built jar does not incorporate the Boon and Simple jars. Instead, it includes them by reference as part of the Java classpath using the -cp argument, using the localized copies temporarily included with this repo. Soon we will enable build-time dependency bundling in order to ameliorate classpath woes. The prebuilt jar (udder/dist/udder-VERSION.jar) does bundle the required resources.
 
-To write your own shows, you normally just import Udder's dist jar (see below) into your own, separate project. By early 2015 we hope to separate Udder's core API into its own jar, leaving the Dairy show as an example application. At that point you will stop importing Udder and import the core API instead. (More to come.)
+To write your own shows, you normally just import Udder's prebuilt dist/udder-*.jar (see below) into your own, separate project. By early 2015 we hope to separate Udder's core API into its own library, leaving the Dairy show as an example application. At that point you will stop importing Udder and import the core API instead. (More to come.)
 
 
 Udder Service Architecture in a Nutshell
