@@ -134,7 +134,7 @@ Eric Miller's 3D simulator (currently a Chrome extension) and visualizer for the
 
 Wishlist
 --------
-* Udder is a Java port of LD50, a circa 2005 Objective-C app by the same author. We need to port certain useful Effects from LD50 -- at least the Color Organism and Mister Stroboto.
+* Udder is a Java port of LD50, a circa 2005 Objective-C app by the same author. We need to port certain useful effects from LD50 -- at least the Color Organism and Mister Stroboto.
 * Continue to expand docs.
 * 100% coverage Junit tests.
 * Separate the Boulder Dairy scene into its own app. Document this example with photos when available.
