@@ -58,7 +58,7 @@ Details:
 * A SimpleFramework (v5.1.5) server listens for incoming HTTP **requests**. Request **payloads** are curently expected to be JSON structures.
 * A Boon (v0.23) JSON decoder converts each request **payload** into a **command** object.
 * **Commands** are inserted into a concurrent queue, the **command queue**.
-* In one separate thread, a ShowRunner object runs a periodic event loop, one event per frame. In each frame, **commands** are drained from the **command queue** and processed.
+* In one separate thread, a ShowRunner object runs a quasiperiodic event loop, one event per frame. In each frame, **commands** are drained from the **command queue** and processed.
 * A **command** normally mutates the state of the ShowRunner or one of its children (the Mixer, an Animator, or the Renderer).
 * When there are no more commands to process, the ShowRunner animates, composites, and renders the current **frame**.
 * The current **frame** is then inserted into a second concurrent queue, the **output queue**.
